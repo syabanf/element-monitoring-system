@@ -19,10 +19,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           include: { organization: true },
         });
         if (!user || !user.isActive) return null;
-        const valid = await bcrypt.compare(
-          credentials.password as string,
-          user.passwordHash
-        );
+
+        // Mock mode (no DATABASE_URL): accept the demo password directly
+        const isMock = !process.env.DATABASE_URL;
+        const valid = isMock
+          ? credentials.password === "password123"
+          : await bcrypt.compare(credentials.password as string, user.passwordHash);
         if (!valid) return null;
         await prisma.user.update({
           where: { id: user.id },
