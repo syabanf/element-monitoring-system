@@ -1,7 +1,11 @@
-version: '3.8'
+version: "3.9"
+
 services:
+  # ─── PostgreSQL ──────────────────────────────────────────────────────────────
   postgres:
     image: postgres:16-alpine
+    container_name: element_postgres
+    restart: unless-stopped
     environment:
       POSTGRES_DB: element_monitoring
       POSTGRES_USER: element
@@ -10,11 +14,46 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U element -d element_monitoring"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
+  # ─── Redis ───────────────────────────────────────────────────────────────────
   redis:
     image: redis:7-alpine
+    container_name: element_redis
+    restart: unless-stopped
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ─── Next.js App ─────────────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: element_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://element:element_password@postgres:5432/element_monitoring
+      NEXTAUTH_SECRET: change-this-in-production
+      NEXTAUTH_URL: http://localhost:3000
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      NODE_ENV: production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
 volumes:
   postgres_data:
