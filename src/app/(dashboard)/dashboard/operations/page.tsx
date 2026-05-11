@@ -2,6 +2,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatDistanceToNow } from "date-fns";
 import { Bell, Wifi, WifiOff, AlertTriangle, CheckCircle, Clock, MapPin } from "lucide-react";
+import { SensorHealthRing } from "@/components/dashboard/SensorHealthRing";
+import { SiteBarChart } from "@/components/dashboard/SiteBarChart";
 
 const severityBadge: Record<string, { bg: string; text: string; border: string }> = {
   CRITICAL: { bg: "#FEF2F2", text: "#B91C1C", border: "#FECACA" },
@@ -23,10 +25,11 @@ const statusBadge: Record<string, { bg: string; text: string }> = {
 export default async function OperationsDashboardPage() {
   await auth();
 
-  const [onlineSensors, offlineSensors, faultSensors, openAlerts, recentAlerts, sites] = await Promise.all([
+  const [onlineSensors, offlineSensors, faultSensors, calDueSensors, openAlerts, recentAlerts, sites, siteAssetCounts] = await Promise.all([
     prisma.sensor.count({ where: { status: "ONLINE" } }),
     prisma.sensor.count({ where: { status: "OFFLINE" } }),
     prisma.sensor.count({ where: { status: "FAULT" } }),
+    prisma.sensor.count({ where: { status: "CALIBRATION_DUE" } }),
     prisma.alert.count({ where: { status: { in: ["OPEN", "ACKNOWLEDGED", "INVESTIGATING"] } } }),
     prisma.alert.findMany({
       where: { status: { in: ["OPEN", "ACKNOWLEDGED", "INVESTIGATING"] } },
@@ -38,7 +41,18 @@ export default async function OperationsDashboardPage() {
       take: 20,
     }),
     prisma.site.findMany({ where: { isActive: true }, select: { id: true, name: true } }),
+    prisma.site.findMany({
+      where: { isActive: true },
+      include: { _count: { select: { assets: true } }, assets: { include: { _count: { select: { sensors: true } } } } },
+    }),
   ]);
+
+  const siteChartData = siteAssetCounts.map(s => ({
+    name: s.name,
+    assets: s._count.assets,
+    sensors: s.assets.reduce((sum: number, a: { _count: { sensors: number } }) => sum + a._count.sensors, 0),
+    alerts: 0,
+  }));
 
   const statCards = [
     { label: "Online Sensors", value: onlineSensors, icon: Wifi,          color: "#166534", bg: "#F0FDF4", border: "#BBF7D0" },
@@ -76,6 +90,34 @@ export default async function OperationsDashboardPage() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Sensor Health + Site Breakdown */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-5">
+            <div>
+              <h3 className="text-[#1C1714] font-semibold">Sensor Health</h3>
+              <p className="text-[#9C9285] text-xs mt-0.5">Real-time status breakdown</p>
+            </div>
+            <a href="/sensors" className="text-[#B8901A] text-xs font-semibold hover:underline">View all →</a>
+          </div>
+          <SensorHealthRing online={onlineSensors} offline={offlineSensors} fault={faultSensors} calibrationDue={calDueSensors} />
+        </div>
+        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-[#1C1714] font-semibold">Site Asset Coverage</h3>
+              <p className="text-[#9C9285] text-xs mt-0.5">Assets & sensors per site</p>
+            </div>
+            <a href="/sites" className="text-[#B8901A] text-xs font-semibold hover:underline">View sites →</a>
+          </div>
+          <SiteBarChart data={siteChartData} />
+          <div className="flex items-center gap-4 mt-3">
+            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-[#B8901A]" /><span className="text-[#9C9285] text-xs">Assets</span></div>
+            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-[#E5DDD0]" /><span className="text-[#9C9285] text-xs">Sensors</span></div>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">

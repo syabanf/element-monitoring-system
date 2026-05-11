@@ -9,6 +9,8 @@ import { KpiCard } from "@/components/dashboard/KpiCard";
 import { PillarStatusCard } from "@/components/dashboard/PillarStatusCard";
 import { AlertSummaryRow } from "@/components/dashboard/AlertSummaryRow";
 import { TrendChart } from "@/components/dashboard/TrendChart";
+import { SiteBarChart } from "@/components/dashboard/SiteBarChart";
+import { SensorHealthRing } from "@/components/dashboard/SensorHealthRing";
 
 function seededRand(seed: number, base: number, variance: number) {
   const x = Math.sin(seed) * 10000;
@@ -34,11 +36,14 @@ const utilizationData = [
 export default async function ExecutiveDashboardPage() {
   await auth();
 
-  const [totalSites, totalAssets, onlineSensors, totalSensors, openAlerts, criticalAlerts, recentAlerts, siteData] = await Promise.all([
+  const [totalSites, totalAssets, onlineSensors, totalSensors, offlineSensors, faultSensors, calDueSensors, openAlerts, criticalAlerts, recentAlerts, siteData] = await Promise.all([
     prisma.site.count({ where: { isActive: true } }),
     prisma.asset.count({ where: { status: "ACTIVE" } }),
     prisma.sensor.count({ where: { status: "ONLINE" } }),
     prisma.sensor.count(),
+    prisma.sensor.count({ where: { status: "OFFLINE" } }),
+    prisma.sensor.count({ where: { status: "FAULT" } }),
+    prisma.sensor.count({ where: { status: "CALIBRATION_DUE" } }),
     prisma.alert.count({ where: { status: { in: ["OPEN", "ACKNOWLEDGED", "INVESTIGATING"] } } }),
     prisma.alert.count({ where: { severity: "CRITICAL", status: { in: ["OPEN", "ACKNOWLEDGED"] } } }),
     prisma.alert.findMany({
@@ -52,6 +57,13 @@ export default async function ExecutiveDashboardPage() {
       include: { _count: { select: { assets: true } }, assets: { select: { pillar: true }, take: 999 } },
     }),
   ]);
+
+  const siteChartData = siteData.map(s => ({
+    name: s.name,
+    assets: (s._count as { assets: number }).assets,
+    sensors: Math.round((s._count as { assets: number }).assets * 4.2),
+    alerts: 0,
+  }));
 
   const sensorUptime = totalSensors > 0 ? Math.round((onlineSensors / totalSensors) * 100) : 0;
   const energyTrend = generateTrendData(142500, 20000);
@@ -258,7 +270,7 @@ export default async function ExecutiveDashboardPage() {
         </div>
 
         <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3">
             <h3 className="text-[#1C1714] font-semibold">Site Ranking</h3>
             <a href="/sites" className="text-[#B8901A] text-xs font-semibold hover:underline">View all →</a>
           </div>
@@ -271,17 +283,11 @@ export default async function ExecutiveDashboardPage() {
               const topPillar = Object.entries(pillarCount).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "—";
               const dotColor = i === 0 ? "#22C55E" : i === siteData.length - 1 ? "#B45309" : "#B8901A";
               return (
-                <a
-                  href={`/sites/${site.id}`}
-                  key={site.id}
-                  className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[#F5F3EE] transition-colors"
-                >
+                <a href={`/sites/${site.id}`} key={site.id} className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[#F5F3EE] transition-colors">
                   <span className="text-[#9C9285] text-sm w-5 font-bold font-mono">{i + 1}</span>
                   <div className="flex-1 min-w-0">
                     <p className="text-[#1C1714] text-sm font-semibold truncate">{site.name}</p>
-                    <p className="text-[#9C9285] text-xs">
-                      {(site._count as { assets: number }).assets} assets · {topPillar.replace(/_/g, " ").toLowerCase()}
-                    </p>
+                    <p className="text-[#9C9285] text-xs">{(site._count as { assets: number }).assets} assets · {topPillar.replace(/_/g, " ").toLowerCase()}</p>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: dotColor }} />
@@ -290,6 +296,34 @@ export default async function ExecutiveDashboardPage() {
                 </a>
               );
             })}
+          </div>
+        </div>
+      </div>
+
+      {/* Sensor Health + Site Coverage */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-5">
+            <div>
+              <h3 className="text-[#1C1714] font-semibold">Sensor Health Overview</h3>
+              <p className="text-[#9C9285] text-xs mt-0.5">Fleet-wide status breakdown</p>
+            </div>
+            <a href="/sensors" className="text-[#B8901A] text-xs font-semibold hover:underline">View sensors →</a>
+          </div>
+          <SensorHealthRing online={onlineSensors} offline={offlineSensors} fault={faultSensors} calibrationDue={calDueSensors} />
+        </div>
+        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-[#1C1714] font-semibold">Site Asset Coverage</h3>
+              <p className="text-[#9C9285] text-xs mt-0.5">Assets & estimated sensors per site</p>
+            </div>
+            <a href="/sites" className="text-[#B8901A] text-xs font-semibold hover:underline">View sites →</a>
+          </div>
+          <SiteBarChart data={siteChartData} />
+          <div className="flex items-center gap-4 mt-3">
+            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-[#B8901A]" /><span className="text-[#9C9285] text-xs">Assets</span></div>
+            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-[#E5DDD0]" /><span className="text-[#9C9285] text-xs">Sensors (est.)</span></div>
           </div>
         </div>
       </div>
