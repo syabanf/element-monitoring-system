@@ -4,44 +4,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
-  LayoutDashboard,
-  Activity,
-  Zap,
-  ClipboardCheck,
-  MapPin,
-  Package,
-  Radio,
-  Wifi,
-  Gauge,
-  Bell,
-  FileText,
-  Users,
-  Settings,
-  Shield,
-  BookOpen,
-  ChevronRight,
-  Navigation,
+  LayoutDashboard, Activity, Zap, ClipboardCheck,
+  MapPin, Package, Radio, Wifi, Gauge, Bell,
+  FileText, Users, Settings, Shield, BookOpen, Navigation,
 } from "lucide-react";
 
-interface NavItem {
-  label: string;
-  href: string;
-  icon: React.ElementType;
-}
-
-interface NavSection {
-  title: string;
-  items: NavItem[];
-}
+interface NavItem { label: string; href: string; icon: React.ElementType }
+interface NavSection { title: string; items: NavItem[] }
 
 const navSections: NavSection[] = [
   {
     title: "Overview",
     items: [
-      { label: "Executive Dashboard", href: "/dashboard/executive", icon: LayoutDashboard },
-      { label: "Operations Dashboard", href: "/dashboard/operations", icon: Activity },
-      { label: "Energy Dashboard", href: "/dashboard/energy", icon: Zap },
-      { label: "Compliance Dashboard", href: "/dashboard/compliance", icon: ClipboardCheck },
+      { label: "Executive", href: "/dashboard/executive", icon: LayoutDashboard },
+      { label: "Operations", href: "/dashboard/operations", icon: Activity },
+      { label: "Energy", href: "/dashboard/energy", icon: Zap },
+      { label: "Compliance", href: "/dashboard/compliance", icon: ClipboardCheck },
     ],
   },
   {
@@ -62,22 +40,12 @@ const navSections: NavSection[] = [
     ],
   },
   {
-    title: "Reports",
+    title: "Reports & Admin",
     items: [
-      { label: "Report Center", href: "/reports", icon: FileText },
-    ],
-  },
-  {
-    title: "Settings",
-    items: [
+      { label: "Reports", href: "/reports", icon: FileText },
       { label: "Users", href: "/users", icon: Users },
       { label: "Alert Rules", href: "/alert-rules", icon: Settings },
       { label: "Integrations", href: "/integrations", icon: Shield },
-    ],
-  },
-  {
-    title: "System",
-    items: [
       { label: "Audit Log", href: "/audit-log", icon: BookOpen },
     ],
   },
@@ -87,45 +55,51 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex flex-col w-64 h-screen bg-[#0a0a0a] border-r border-[#2a2a2a] overflow-y-auto flex-shrink-0">
+    <aside className="flex flex-col w-60 h-screen bg-white border-r border-[#E5DDD0] overflow-y-auto flex-shrink-0 shadow-sm">
       {/* Logo */}
-      <div className="flex items-center gap-2 px-6 py-5 border-b border-[#2a2a2a]">
-        <div className="flex flex-col leading-none">
-          <span className="text-white font-bold text-xl tracking-wider">ELEMENT</span>
-          <span className="text-[#e11d48] text-[10px] font-semibold tracking-[0.2em] uppercase">
-            Monitoring
-          </span>
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-[#E5DDD0]">
+        <div className="w-8 h-8 rounded-lg bg-[#B8901A] flex items-center justify-center flex-shrink-0">
+          <span className="text-white font-black text-xs tracking-widest">E</span>
         </div>
-        <div className="ml-auto">
-          <ChevronRight className="text-[#2a2a2a] w-4 h-4" />
+        <div className="flex flex-col leading-none">
+          <span className="text-[#1C1714] font-bold text-sm tracking-wider">ELEMENT</span>
+          <span className="text-[#B8901A] text-[9px] font-semibold tracking-[0.15em] uppercase mt-0.5">
+            Monitoring System
+          </span>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-6">
+      <nav className="flex-1 px-3 py-4 space-y-5 overflow-y-auto">
         {navSections.map((section) => (
           <div key={section.title}>
-            <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-widest text-[#888888]">
+            <p className="px-3 mb-1.5 text-[9px] font-bold uppercase tracking-widest text-[#9C9285]">
               {section.title}
             </p>
             <ul className="space-y-0.5">
               {section.items.map((item) => {
                 const Icon = item.icon;
                 const isActive =
-                  pathname === item.href || pathname.startsWith(item.href + "/");
+                  pathname === item.href ||
+                  (item.href !== "/" && pathname.startsWith(item.href + "/"));
                 return (
                   <li key={item.href}>
                     <Link
                       href={item.href}
                       className={cn(
-                        "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                        "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all",
                         isActive
-                          ? "bg-[#e11d48]/10 text-[#e11d48] border border-[#e11d48]/20"
-                          : "text-[#888888] hover:text-white hover:bg-[#1a1a1a]"
+                          ? "bg-[#FEF7E6] text-[#B8901A] shadow-sm"
+                          : "text-[#5C5248] hover:text-[#1C1714] hover:bg-[#F5F3EE]"
                       )}
                     >
-                      <Icon className="w-4 h-4 flex-shrink-0" />
-                      {item.label}
+                      <Icon
+                        className={cn("w-4 h-4 flex-shrink-0", isActive ? "text-[#B8901A]" : "text-[#9C9285]")}
+                      />
+                      <span className="truncate">{item.label}</span>
+                      {isActive && (
+                        <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#B8901A] flex-shrink-0" />
+                      )}
                     </Link>
                   </li>
                 );
@@ -136,9 +110,9 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-6 py-4 border-t border-[#2a2a2a]">
-        <p className="text-[10px] text-[#888888]">WIT.ID &copy; {new Date().getFullYear()}</p>
-        <p className="text-[10px] text-[#2a2a2a]">v1.0.0</p>
+      <div className="px-5 py-3 border-t border-[#E5DDD0] bg-[#F5F3EE]">
+        <p className="text-[10px] text-[#9C9285] font-medium">WIT.ID &copy; {new Date().getFullYear()}</p>
+        <p className="text-[9px] text-[#D4C8B8] mt-0.5">Element Monitoring v1.0</p>
       </div>
     </aside>
   );

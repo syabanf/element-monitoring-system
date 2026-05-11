@@ -2,20 +2,20 @@ import { prisma } from "@/lib/prisma";
 import { formatDistanceToNow } from "date-fns";
 
 const severityConfig: Record<string, { bg: string; text: string; border: string }> = {
-  CRITICAL: { bg: "#ef444415", text: "#ef4444", border: "#ef444430" },
-  HIGH: { bg: "#f59e0b15", text: "#f59e0b", border: "#f59e0b30" },
-  MEDIUM: { bg: "#3b82f615", text: "#3b82f6", border: "#3b82f630" },
-  LOW: { bg: "#88888815", text: "#888888", border: "#88888830" },
-  INFO: { bg: "#6366f115", text: "#6366f1", border: "#6366f130" },
+  CRITICAL: { bg: "#FEF2F2", text: "#B91C1C", border: "#FECACA" },
+  HIGH: { bg: "#FFFBEB", text: "#B45309", border: "#FDE68A" },
+  MEDIUM: { bg: "#EFF6FF", text: "#1E5FA8", border: "#BFDBFE" },
+  LOW: { bg: "#F5F3EE", text: "#9C9285", border: "#E5DDD0" },
+  INFO: { bg: "#EFF6FF", text: "#1E5FA8", border: "#BFDBFE" },
 };
 
 const statusConfig: Record<string, { bg: string; text: string }> = {
-  OPEN: { bg: "#ef444420", text: "#ef4444" },
-  ACKNOWLEDGED: { bg: "#f59e0b20", text: "#f59e0b" },
-  INVESTIGATING: { bg: "#3b82f620", text: "#3b82f6" },
-  RESOLVED: { bg: "#22c55e20", text: "#22c55e" },
-  CLOSED: { bg: "#88888820", text: "#888888" },
-  FALSE_POSITIVE: { bg: "#88888820", text: "#888888" },
+  OPEN: { bg: "#FEF2F2", text: "#B91C1C" },
+  ACKNOWLEDGED: { bg: "#FFFBEB", text: "#B45309" },
+  INVESTIGATING: { bg: "#EFF6FF", text: "#1E5FA8" },
+  RESOLVED: { bg: "#F0FDF4", text: "#166534" },
+  CLOSED: { bg: "#F5F3EE", text: "#9C9285" },
+  FALSE_POSITIVE: { bg: "#F5F3EE", text: "#9C9285" },
 };
 
 export default async function AlertsPage() {
@@ -44,8 +44,8 @@ export default async function AlertsPage() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-white text-2xl font-bold">Alert Console</h1>
-          <p className="text-[#888888] text-sm mt-0.5">{alerts.length} alerts</p>
+          <h1 className="text-[#1C1714] text-2xl font-bold">Alert Console</h1>
+          <p className="text-[#9C9285] text-sm mt-0.5">{alerts.length} alerts</p>
         </div>
       </div>
 
@@ -54,61 +54,61 @@ export default async function AlertsPage() {
         {Object.entries(statusCounts).map(([status, count]) => {
           const sc = statusConfig[status] ?? statusConfig.CLOSED;
           return (
-            <div key={status} className="flex items-center gap-2 bg-[#111111] border border-[#2a2a2a] rounded-lg px-3 py-1.5">
+            <div key={status} className="flex items-center gap-2 bg-white border border-[#E5DDD0] rounded-lg px-3 py-1.5 shadow-sm">
               <span className="text-sm font-bold" style={{ color: sc.text }}>{count}</span>
-              <span className="text-[#888888] text-xs">{status.replace("_", " ")}</span>
+              <span className="text-[#9C9285] text-xs">{status.replace("_", " ")}</span>
             </div>
           );
         })}
       </div>
 
       {/* Alert list */}
-      <div className="bg-[#111111] border border-[#2a2a2a] rounded-xl overflow-hidden">
+      <div className="bg-white border border-[#E5DDD0] rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full">
             <thead>
-              <tr className="border-b border-[#2a2a2a]">
+              <tr className="bg-[#F5F3EE] border-b border-[#E5DDD0]">
                 {["Severity", "Alert", "Asset / Site", "Type", "Metric", "Assigned To", "Opened", "Status", "Action"].map(h => (
-                  <th key={h} className="text-left text-[#888888] text-xs uppercase tracking-wider px-4 py-3 font-medium whitespace-nowrap">{h}</th>
+                  <th key={h} className="text-left px-5 py-3 text-xs font-bold text-[#9C9285] uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1a1a1a]">
+            <tbody>
               {alerts.map((alert) => {
                 const sev = severityConfig[alert.severity] ?? severityConfig.INFO;
                 const st = statusConfig[alert.status] ?? statusConfig.CLOSED;
                 return (
-                  <tr key={alert.id} className="hover:bg-[#1a1a1a] transition-colors">
-                    <td className="px-4 py-3">
-                      <span className="text-xs px-2 py-0.5 rounded border font-medium" style={{ backgroundColor: sev.bg, color: sev.text, borderColor: sev.border }}>
+                  <tr key={alert.id} className="border-b border-[#EDE8E0] hover:bg-[#F5F3EE] transition-colors last:border-0">
+                    <td className="px-5 py-4">
+                      <span className="text-xs px-2 py-0.5 rounded-full border font-semibold" style={{ backgroundColor: sev.bg, color: sev.text, borderColor: sev.border }}>
                         {alert.severity}
                       </span>
                     </td>
-                    <td className="px-4 py-3 max-w-[200px]">
-                      <p className="text-white text-xs font-medium truncate">{alert.title}</p>
-                      {alert.description && <p className="text-[#888888] text-xs truncate">{alert.description}</p>}
+                    <td className="px-5 py-4 max-w-[200px]">
+                      <p className="text-[#1C1714] text-sm font-medium truncate">{alert.title}</p>
+                      {alert.description && <p className="text-[#9C9285] text-xs truncate">{alert.description}</p>}
                     </td>
-                    <td className="px-4 py-3">
-                      <p className="text-white text-xs">{alert.asset.name}</p>
-                      <p className="text-[#888888] text-xs">{alert.asset.site.name}</p>
+                    <td className="px-5 py-4">
+                      <p className="text-[#1C1714] text-sm">{alert.asset.name}</p>
+                      <p className="text-[#9C9285] text-xs">{alert.asset.site.name}</p>
                     </td>
-                    <td className="px-4 py-3 text-[#888888] text-xs">{alert.alertType.replace(/_/g, " ")}</td>
-                    <td className="px-4 py-3 text-[#888888] text-xs">
+                    <td className="px-5 py-4 text-[#5C5248] text-sm">{alert.alertType.replace(/_/g, " ")}</td>
+                    <td className="px-5 py-4 text-[#5C5248] text-sm">
                       {alert.metricName && (
-                        <span>{alert.metricName}: <strong className="text-white">{alert.metricValue?.toFixed(2)}</strong></span>
+                        <span>{alert.metricName}: <strong className="text-[#1C1714]">{alert.metricValue?.toFixed(2)}</strong></span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-[#888888] text-xs">{alert.assignee?.name ?? "Unassigned"}</td>
-                    <td className="px-4 py-3 text-[#888888] text-xs whitespace-nowrap">
+                    <td className="px-5 py-4 text-[#5C5248] text-sm">{alert.assignee?.name ?? "Unassigned"}</td>
+                    <td className="px-5 py-4 text-[#9C9285] text-xs whitespace-nowrap">
                       {formatDistanceToNow(new Date(alert.openedAt), { addSuffix: true })}
                     </td>
-                    <td className="px-4 py-3">
-                      <span className="text-xs px-2 py-0.5 rounded" style={{ backgroundColor: st.bg, color: st.text }}>
+                    <td className="px-5 py-4">
+                      <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: st.bg, color: st.text }}>
                         {alert.status.replace("_", " ")}
                       </span>
                     </td>
-                    <td className="px-4 py-3">
-                      <a href={`/alerts/${alert.id}`} className="text-[#e11d48] text-xs hover:underline">
+                    <td className="px-5 py-4">
+                      <a href={`/alerts/${alert.id}`} className="text-[#B8901A] text-sm font-medium hover:text-[#9A7A14] hover:underline">
                         View →
                       </a>
                     </td>

@@ -4,20 +4,20 @@ import { formatDistanceToNow, format } from "date-fns";
 import { AlertTriangle, Clock, User, CheckCircle } from "lucide-react";
 
 const severityConfig: Record<string, { bg: string; text: string; border: string }> = {
-  CRITICAL: { bg: "#ef444415", text: "#ef4444", border: "#ef444430" },
-  HIGH: { bg: "#f59e0b15", text: "#f59e0b", border: "#f59e0b30" },
-  MEDIUM: { bg: "#3b82f615", text: "#3b82f6", border: "#3b82f630" },
-  LOW: { bg: "#88888815", text: "#888888", border: "#88888830" },
-  INFO: { bg: "#6366f115", text: "#6366f1", border: "#6366f130" },
+  CRITICAL: { bg: "#FEF2F2", text: "#B91C1C", border: "#FECACA" },
+  HIGH: { bg: "#FFFBEB", text: "#B45309", border: "#FDE68A" },
+  MEDIUM: { bg: "#EFF6FF", text: "#1E5FA8", border: "#BFDBFE" },
+  LOW: { bg: "#F5F3EE", text: "#9C9285", border: "#E5DDD0" },
+  INFO: { bg: "#EFF6FF", text: "#1E5FA8", border: "#BFDBFE" },
 };
 
 const statusConfig: Record<string, { bg: string; text: string }> = {
-  OPEN: { bg: "#ef444420", text: "#ef4444" },
-  ACKNOWLEDGED: { bg: "#f59e0b20", text: "#f59e0b" },
-  INVESTIGATING: { bg: "#3b82f620", text: "#3b82f6" },
-  RESOLVED: { bg: "#22c55e20", text: "#22c55e" },
-  CLOSED: { bg: "#88888820", text: "#888888" },
-  FALSE_POSITIVE: { bg: "#88888820", text: "#888888" },
+  OPEN: { bg: "#FEF2F2", text: "#B91C1C" },
+  ACKNOWLEDGED: { bg: "#FFFBEB", text: "#B45309" },
+  INVESTIGATING: { bg: "#EFF6FF", text: "#1E5FA8" },
+  RESOLVED: { bg: "#F0FDF4", text: "#166534" },
+  CLOSED: { bg: "#F5F3EE", text: "#9C9285" },
+  FALSE_POSITIVE: { bg: "#F5F3EE", text: "#9C9285" },
 };
 
 export default async function AlertDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -45,10 +45,10 @@ export default async function AlertDetailPage({ params }: { params: Promise<{ id
   const st = statusConfig[alert.status] ?? statusConfig.CLOSED;
 
   const timeline = [
-    { time: alert.openedAt, label: "Alert Opened", color: "#ef4444" },
-    ...(alert.acknowledgedAt ? [{ time: alert.acknowledgedAt, label: "Acknowledged", color: "#f59e0b" }] : []),
-    ...(alert.resolvedAt ? [{ time: alert.resolvedAt, label: "Resolved", color: "#22c55e" }] : []),
-    ...(alert.closedAt ? [{ time: alert.closedAt, label: "Closed", color: "#888888" }] : []),
+    { time: alert.openedAt, label: "Alert Opened", color: "#B91C1C" },
+    ...(alert.acknowledgedAt ? [{ time: alert.acknowledgedAt, label: "Acknowledged", color: "#B45309" }] : []),
+    ...(alert.resolvedAt ? [{ time: alert.resolvedAt, label: "Resolved", color: "#166534" }] : []),
+    ...(alert.closedAt ? [{ time: alert.closedAt, label: "Closed", color: "#9C9285" }] : []),
   ];
 
   return (
@@ -60,15 +60,15 @@ export default async function AlertDetailPage({ params }: { params: Promise<{ id
             <AlertTriangle className="w-5 h-5" style={{ color: sev.text }} />
           </div>
           <div>
-            <h1 className="text-white text-xl font-bold">{alert.title}</h1>
-            <p className="text-[#888888] text-sm mt-0.5">{alert.asset.name} · {alert.asset.site.name}</p>
+            <h1 className="text-[#1C1714] text-xl font-bold">{alert.title}</h1>
+            <p className="text-[#9C9285] text-sm mt-0.5">{alert.asset.name} · {alert.asset.site.name}</p>
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
-          <span className="text-xs px-3 py-1 rounded border font-medium" style={{ backgroundColor: sev.bg, color: sev.text, borderColor: sev.border }}>
+          <span className="text-xs px-3 py-1 rounded-full border font-semibold" style={{ backgroundColor: sev.bg, color: sev.text, borderColor: sev.border }}>
             {alert.severity}
           </span>
-          <span className="text-xs px-3 py-1 rounded font-medium" style={{ backgroundColor: st.bg, color: st.text }}>
+          <span className="text-xs px-3 py-1 rounded-full font-semibold" style={{ backgroundColor: st.bg, color: st.text }}>
             {alert.status.replace("_", " ")}
           </span>
         </div>
@@ -78,8 +78,8 @@ export default async function AlertDetailPage({ params }: { params: Promise<{ id
         {/* Main info */}
         <div className="lg:col-span-2 space-y-4">
           {/* Details card */}
-          <div className="bg-[#111111] border border-[#2a2a2a] rounded-xl p-5 space-y-4">
-            <h3 className="text-white font-semibold">Alert Details</h3>
+          <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm space-y-4">
+            <h3 className="text-[#1C1714] font-semibold">Alert Details</h3>
             <div className="grid grid-cols-2 gap-4">
               {[
                 { label: "Alert Type", value: alert.alertType.replace(/_/g, " ") },
@@ -90,36 +90,36 @@ export default async function AlertDetailPage({ params }: { params: Promise<{ id
                 { label: "Asset Type", value: alert.asset.assetType },
               ].map(({ label, value }) => (
                 <div key={label}>
-                  <p className="text-[#888888] text-xs">{label}</p>
-                  <p className="text-white text-sm font-medium">{value}</p>
+                  <p className="text-[#9C9285] text-xs">{label}</p>
+                  <p className="text-[#1C1714] text-sm font-medium">{value}</p>
                 </div>
               ))}
             </div>
             {alert.description && (
-              <div className="border-t border-[#2a2a2a] pt-4">
-                <p className="text-[#888888] text-xs mb-1">Description</p>
-                <p className="text-white text-sm">{alert.description}</p>
+              <div className="border-t border-[#EDE8E0] pt-4">
+                <p className="text-[#9C9285] text-xs mb-1">Description</p>
+                <p className="text-[#1C1714] text-sm">{alert.description}</p>
               </div>
             )}
           </div>
 
           {/* Resolution */}
           {(alert.rootCause || alert.resolution) && (
-            <div className="bg-[#111111] border border-[#22c55e30] rounded-xl p-5 space-y-3">
-              <h3 className="text-white font-semibold flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-[#22c55e]" />
+            <div className="bg-white border border-[#BBF7D0] rounded-xl p-5 shadow-sm space-y-3">
+              <h3 className="text-[#1C1714] font-semibold flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-[#166534]" />
                 Resolution
               </h3>
               {alert.rootCause && (
                 <div>
-                  <p className="text-[#888888] text-xs">Root Cause</p>
-                  <p className="text-white text-sm">{alert.rootCause}</p>
+                  <p className="text-[#9C9285] text-xs">Root Cause</p>
+                  <p className="text-[#1C1714] text-sm">{alert.rootCause}</p>
                 </div>
               )}
               {alert.resolution && (
                 <div>
-                  <p className="text-[#888888] text-xs">Resolution</p>
-                  <p className="text-white text-sm">{alert.resolution}</p>
+                  <p className="text-[#9C9285] text-xs">Resolution</p>
+                  <p className="text-[#1C1714] text-sm">{alert.resolution}</p>
                 </div>
               )}
             </div>
@@ -127,15 +127,15 @@ export default async function AlertDetailPage({ params }: { params: Promise<{ id
 
           {/* Audit trail */}
           {auditTrail.length > 0 && (
-            <div className="bg-[#111111] border border-[#2a2a2a] rounded-xl p-5">
-              <h3 className="text-white font-semibold mb-4">Audit Trail</h3>
+            <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+              <h3 className="text-[#1C1714] font-semibold mb-4">Audit Trail</h3>
               <div className="space-y-3">
                 {auditTrail.map((log) => (
                   <div key={log.id} className="flex items-start gap-3">
-                    <div className="w-2 h-2 rounded-full bg-[#e11d48] mt-1.5 flex-shrink-0" />
+                    <div className="w-2 h-2 rounded-full bg-[#B8901A] mt-1.5 flex-shrink-0" />
                     <div>
-                      <p className="text-white text-sm">{log.action.replace(/_/g, " ")}</p>
-                      <p className="text-[#888888] text-xs">{log.actor?.name ?? "System"} · {format(new Date(log.timestamp), "MMM d, HH:mm")}</p>
+                      <p className="text-[#1C1714] text-sm">{log.action.replace(/_/g, " ")}</p>
+                      <p className="text-[#9C9285] text-xs">{log.actor?.name ?? "System"} · {format(new Date(log.timestamp), "MMM d, HH:mm")}</p>
                     </div>
                   </div>
                 ))}
@@ -147,15 +147,15 @@ export default async function AlertDetailPage({ params }: { params: Promise<{ id
         {/* Sidebar */}
         <div className="space-y-4">
           {/* Timeline */}
-          <div className="bg-[#111111] border border-[#2a2a2a] rounded-xl p-5">
-            <h3 className="text-white font-semibold mb-4">Timeline</h3>
+          <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+            <h3 className="text-[#1C1714] font-semibold mb-4">Timeline</h3>
             <div className="space-y-3">
               {timeline.map(({ time, label, color }) => (
                 <div key={label} className="flex items-start gap-3">
                   <div className="w-2 h-2 rounded-full mt-1 flex-shrink-0" style={{ backgroundColor: color }} />
                   <div>
-                    <p className="text-white text-xs font-medium">{label}</p>
-                    <p className="text-[#888888] text-xs">{format(new Date(time), "MMM d, HH:mm:ss")}</p>
+                    <p className="text-[#1C1714] text-xs font-medium">{label}</p>
+                    <p className="text-[#9C9285] text-xs">{format(new Date(time), "MMM d, HH:mm:ss")}</p>
                   </div>
                 </div>
               ))}
@@ -163,26 +163,26 @@ export default async function AlertDetailPage({ params }: { params: Promise<{ id
           </div>
 
           {/* Assignment */}
-          <div className="bg-[#111111] border border-[#2a2a2a] rounded-xl p-5">
-            <h3 className="text-white font-semibold mb-3">Assignment</h3>
+          <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+            <h3 className="text-[#1C1714] font-semibold mb-3">Assignment</h3>
             <div className="flex items-center gap-2">
-              <User className="w-4 h-4 text-[#888888]" />
-              <span className="text-white text-sm">{alert.assignee?.name ?? "Unassigned"}</span>
+              <User className="w-4 h-4 text-[#9C9285]" />
+              <span className="text-[#1C1714] text-sm">{alert.assignee?.name ?? "Unassigned"}</span>
             </div>
             {alert.slaDeadline && (
               <div className="flex items-center gap-2 mt-2">
-                <Clock className="w-4 h-4 text-[#f59e0b]" />
-                <span className="text-[#f59e0b] text-xs">SLA: {formatDistanceToNow(new Date(alert.slaDeadline), { addSuffix: true })}</span>
+                <Clock className="w-4 h-4 text-[#B45309]" />
+                <span className="text-[#B45309] text-xs">SLA: {formatDistanceToNow(new Date(alert.slaDeadline), { addSuffix: true })}</span>
               </div>
             )}
           </div>
 
           {/* Work Order */}
           {alert.workOrder && (
-            <div className="bg-[#111111] border border-[#2a2a2a] rounded-xl p-5">
-              <h3 className="text-white font-semibold mb-3">Work Order</h3>
-              <p className="text-white text-sm">{alert.workOrder.title}</p>
-              <span className="text-xs px-2 py-0.5 rounded bg-[#3b82f620] text-[#3b82f6] mt-1 inline-block">
+            <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+              <h3 className="text-[#1C1714] font-semibold mb-3">Work Order</h3>
+              <p className="text-[#1C1714] text-sm">{alert.workOrder.title}</p>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-[#EFF6FF] text-[#1E5FA8] mt-1 inline-block font-medium">
                 {alert.workOrder.status}
               </span>
             </div>

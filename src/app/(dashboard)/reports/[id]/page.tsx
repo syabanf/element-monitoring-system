@@ -4,21 +4,29 @@ import { format } from "date-fns";
 import { FileText, Download, Calendar, User, ArrowLeft, CheckCircle } from "lucide-react";
 
 const REPORT_CATALOG = [
-  { type: "wastewater_compliance", category: "Compliance", label: "Wastewater Compliance", icon: "💧", color: "#8b5cf6" },
-  { type: "iso50001_evidence", category: "Compliance", label: "ISO 50001 Evidence", icon: "⚡", color: "#f59e0b" },
-  { type: "calibration_status", category: "Compliance", label: "Calibration Status", icon: "🔧", color: "#6366f1" },
-  { type: "daily_operations", category: "Operations", label: "Daily Operations", icon: "📋", color: "#3b82f6" },
-  { type: "weekly_variance", category: "Operations", label: "Weekly Variance", icon: "📊", color: "#f59e0b" },
-  { type: "peak_demand_analysis", category: "Operations", label: "Peak Demand Analysis", icon: "⚡", color: "#ef4444" },
-  { type: "water_balance", category: "Operations", label: "Water Balance", icon: "💧", color: "#3b82f6" },
-  { type: "monthly_scorecard", category: "Financial", label: "Monthly Scorecard", icon: "🎯", color: "#e11d48" },
-  { type: "quarterly_board", category: "Financial", label: "Quarterly Board Pack", icon: "📑", color: "#6366f1" },
-  { type: "cost_allocation", category: "Financial", label: "Cost Allocation", icon: "💰", color: "#22c55e" },
-  { type: "energy_benchmark", category: "Financial", label: "Energy Benchmarking", icon: "📈", color: "#f59e0b" },
-  { type: "scope2_emissions", category: "ESG", label: "Scope 2 Emissions", icon: "🌿", color: "#22c55e" },
-  { type: "gas_ldar_incident", category: "Incidents", label: "Gas / LDAR Incident", icon: "💨", color: "#06b6d4" },
-  { type: "worker_safety", category: "Incidents", label: "Worker Safety", icon: "🦺", color: "#ef4444" },
+  { type: "wastewater_compliance", category: "Compliance", label: "Wastewater Compliance", icon: "💧", color: "#6D28D9" },
+  { type: "iso50001_evidence", category: "Compliance", label: "ISO 50001 Evidence", icon: "⚡", color: "#B45309" },
+  { type: "calibration_status", category: "Compliance", label: "Calibration Status", icon: "🔧", color: "#1E5FA8" },
+  { type: "daily_operations", category: "Operations", label: "Daily Operations", icon: "📋", color: "#1E5FA8" },
+  { type: "weekly_variance", category: "Operations", label: "Weekly Variance", icon: "📊", color: "#B45309" },
+  { type: "peak_demand_analysis", category: "Operations", label: "Peak Demand Analysis", icon: "⚡", color: "#B91C1C" },
+  { type: "water_balance", category: "Operations", label: "Water Balance", icon: "💧", color: "#1E5FA8" },
+  { type: "monthly_scorecard", category: "Financial", label: "Monthly Scorecard", icon: "🎯", color: "#B8901A" },
+  { type: "quarterly_board", category: "Financial", label: "Quarterly Board Pack", icon: "📑", color: "#6D28D9" },
+  { type: "cost_allocation", category: "Financial", label: "Cost Allocation", icon: "💰", color: "#166534" },
+  { type: "energy_benchmark", category: "Financial", label: "Energy Benchmarking", icon: "📈", color: "#B45309" },
+  { type: "scope2_emissions", category: "ESG", label: "Scope 2 Emissions", icon: "🌿", color: "#166534" },
+  { type: "gas_ldar_incident", category: "Incidents", label: "Gas / LDAR Incident", icon: "💨", color: "#0E7490" },
+  { type: "worker_safety", category: "Incidents", label: "Worker Safety", icon: "🦺", color: "#B91C1C" },
 ];
+
+const categoryStyle: Record<string, { bg: string; text: string }> = {
+  Compliance: { bg: "#F5F3FF", text: "#6D28D9" },
+  Operations: { bg: "#EFF6FF", text: "#1E5FA8" },
+  Financial:  { bg: "#FEF7E6", text: "#B8901A" },
+  ESG:        { bg: "#F0FDF4", text: "#166534" },
+  Incidents:  { bg: "#FEF2F2", text: "#B91C1C" },
+};
 
 // Simulated preview data per report type
 const REPORT_PREVIEW: Record<string, { headers: string[]; rows: string[][] }> = {
@@ -87,11 +95,12 @@ export default async function ReportDetailPage({
 
   const catalogEntry = REPORT_CATALOG.find(c => c.type === report.reportType);
   const preview = getPreviewData(report.reportType);
+  const cs = categoryStyle[catalogEntry?.category ?? ""] ?? { bg: "#F5F3EE", text: "#9C9285" };
 
   return (
     <div className="p-6 space-y-6 max-w-5xl">
       {/* Back */}
-      <a href="/reports" className="inline-flex items-center gap-1.5 text-[#888888] hover:text-white text-sm transition-colors">
+      <a href="/reports" className="inline-flex items-center gap-1.5 text-[#9C9285] hover:text-[#1C1714] text-sm transition-colors">
         <ArrowLeft className="w-4 h-4" />
         Back to Report Center
       </a>
@@ -99,13 +108,12 @@ export default async function ReportDetailPage({
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
-            style={{ backgroundColor: `${catalogEntry?.color ?? "#888"}15` }}>
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 bg-[#F5F3EE]">
             {catalogEntry?.icon ?? "📄"}
           </div>
           <div>
-            <h1 className="text-white text-xl font-bold">{report.title}</h1>
-            <div className="flex items-center gap-3 mt-1 text-xs text-[#888888] flex-wrap">
+            <h1 className="text-[#1C1714] text-xl font-bold">{report.title}</h1>
+            <div className="flex items-center gap-3 mt-1 text-xs text-[#9C9285] flex-wrap">
               <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{report.period}</span>
               <span className="flex items-center gap-1"><User className="w-3 h-3" />{report.generator.name} ({report.generator.role})</span>
               <span>{format(new Date(report.createdAt), "MMM d, yyyy HH:mm")}</span>
@@ -113,14 +121,14 @@ export default async function ReportDetailPage({
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
-          <span className={`text-xs px-2 py-1 rounded ${report.status === "ready" ? "bg-[#22c55e20] text-[#22c55e]" : "bg-[#f59e0b20] text-[#f59e0b]"}`}>
+          <span className={`text-xs px-2 py-1 rounded-full font-medium ${report.status === "ready" ? "bg-[#F0FDF4] text-[#166534]" : "bg-[#FFFBEB] text-[#B45309]"}`}>
             {report.status}
           </span>
-          <button className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg bg-[#e11d48] hover:bg-[#be123c] text-white transition-colors">
+          <button className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg bg-[#B8901A] hover:bg-[#9A7A14] text-white transition-colors font-medium">
             <Download className="w-3.5 h-3.5" />
             Download CSV
           </button>
-          <button className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg bg-[#111111] border border-[#2a2a2a] hover:border-[#3a3a3a] text-white transition-colors">
+          <button className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg bg-white border border-[#E5DDD0] hover:border-[#D4C8B8] text-[#1C1714] transition-colors">
             <FileText className="w-3.5 h-3.5" />
             Download PDF
           </button>
@@ -135,39 +143,39 @@ export default async function ReportDetailPage({
           { label: "Period", value: report.period },
           { label: "Generated By", value: report.generator.name },
         ].map(({ label, value }) => (
-          <div key={label} className="bg-[#111111] border border-[#2a2a2a] rounded-xl p-4">
-            <p className="text-[#888888] text-xs uppercase tracking-wider mb-1">{label}</p>
-            <p className="text-white font-medium text-sm">{value}</p>
+          <div key={label} className="bg-white border border-[#E5DDD0] rounded-xl p-4 shadow-sm">
+            <p className="text-[#9C9285] text-xs font-semibold uppercase tracking-wider mb-1">{label}</p>
+            <p className="text-[#1C1714] font-medium text-sm">{value}</p>
           </div>
         ))}
       </div>
 
       {/* Data preview */}
-      <div className="bg-[#111111] border border-[#2a2a2a] rounded-xl">
-        <div className="flex items-center justify-between p-5 border-b border-[#2a2a2a]">
+      <div className="bg-white border border-[#E5DDD0] rounded-xl overflow-hidden shadow-sm">
+        <div className="flex items-center justify-between p-5 border-b border-[#EDE8E0]">
           <div className="flex items-center gap-2">
-            <h3 className="text-white font-semibold">Data Preview</h3>
-            <span className="text-[#888888] text-xs">Showing sample rows</span>
+            <h3 className="text-[#1C1714] font-bold">Data Preview</h3>
+            <span className="text-[#9C9285] text-xs">Showing sample rows</span>
           </div>
-          <div className="flex items-center gap-1 text-[#22c55e] text-xs">
+          <div className="flex items-center gap-1 text-[#166534] text-xs">
             <CheckCircle className="w-3 h-3" />
             <span>Ready to export</span>
           </div>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full">
             <thead>
-              <tr className="border-b border-[#2a2a2a]">
+              <tr className="bg-[#F5F3EE] border-b border-[#E5DDD0]">
                 {preview.headers.map(h => (
-                  <th key={h} className="text-left text-[#888888] text-xs uppercase tracking-wider px-5 py-3 font-medium whitespace-nowrap">{h}</th>
+                  <th key={h} className="text-left px-5 py-3 text-xs font-bold text-[#9C9285] uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1a1a1a]">
+            <tbody>
               {preview.rows.map((row, i) => (
-                <tr key={i} className="hover:bg-[#1a1a1a] transition-colors">
+                <tr key={i} className="border-b border-[#EDE8E0] hover:bg-[#F5F3EE] transition-colors last:border-0">
                   {row.map((cell, j) => (
-                    <td key={j} className={`px-5 py-3 text-xs ${j === 0 ? "text-white font-medium" : "text-[#888888]"} ${cell.includes("✓") ? "text-[#22c55e]" : cell.includes("⚠") ? "text-[#f59e0b]" : ""}`}>
+                    <td key={j} className={`px-5 py-3 text-sm ${j === 0 ? "text-[#1C1714] font-medium" : "text-[#5C5248]"} ${cell.includes("✓") ? "text-[#166534] font-medium" : cell.includes("⚠") ? "text-[#B45309] font-medium" : ""}`}>
                       {cell}
                     </td>
                   ))}
@@ -176,16 +184,16 @@ export default async function ReportDetailPage({
             </tbody>
           </table>
         </div>
-        <div className="px-5 py-3 border-t border-[#1a1a1a]">
-          <p className="text-[#888888] text-xs">Full dataset available in CSV / PDF export. Preview shows representative rows only.</p>
+        <div className="px-5 py-3 border-t border-[#EDE8E0] bg-[#F5F3EE]">
+          <p className="text-[#9C9285] text-xs">Full dataset available in CSV / PDF export. Preview shows representative rows only.</p>
         </div>
       </div>
 
       {/* Parameters used */}
       {report.parameters && (
-        <div className="bg-[#111111] border border-[#2a2a2a] rounded-xl p-5">
-          <h3 className="text-white font-semibold mb-3">Report Parameters</h3>
-          <pre className="text-[#888888] text-xs font-mono bg-[#1a1a1a] rounded-lg p-4 overflow-x-auto">
+        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+          <h3 className="text-[#1C1714] font-bold mb-3">Report Parameters</h3>
+          <pre className="text-[#5C5248] text-xs font-mono bg-[#F5F3EE] border border-[#EDE8E0] rounded-lg p-4 overflow-x-auto">
             {JSON.stringify(report.parameters, null, 2)}
           </pre>
         </div>

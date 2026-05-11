@@ -2,17 +2,13 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { Topbar } from "@/components/layout/Topbar";
 import { auth } from "@/lib/auth";
 
-export default async function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
   const userName = session?.user?.name ?? "Admin User";
   const userRole = (session?.user as any)?.role ?? "SUPER_ADMIN";
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0a0a0a]">
+    <div className="flex h-screen overflow-hidden bg-[#F5F3EE]">
       <Sidebar />
       <div className="flex flex-col flex-1 overflow-hidden">
         <Topbar

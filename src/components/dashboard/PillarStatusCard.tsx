@@ -9,47 +9,69 @@ interface PillarStatusCardProps {
   href?: string;
 }
 
-export function PillarStatusCard({ pillar, icon, status, primaryMetric, primaryValue, secondaryMetrics, color, href }: PillarStatusCardProps) {
+export function PillarStatusCard({
+  pillar, icon, status, primaryMetric, primaryValue, secondaryMetrics, color, href,
+}: PillarStatusCardProps) {
   const statusConfig = {
-    NORMAL: { color: "#22c55e", bg: "#22c55e15", label: "NORMAL" },
-    WARNING: { color: "#f59e0b", bg: "#f59e0b15", label: "WARNING" },
-    CRITICAL: { color: "#ef4444", bg: "#ef444415", label: "CRITICAL" },
-    OFFLINE: { color: "#888888", bg: "#88888815", label: "OFFLINE" },
+    NORMAL:   { color: "#166534", bg: "#F0FDF4", border: "#BBF7D0", dot: "#22C55E", label: "Normal" },
+    WARNING:  { color: "#B45309", bg: "#FFFBEB", border: "#FDE68A", dot: "#F59E0B", label: "Warning" },
+    CRITICAL: { color: "#B91C1C", bg: "#FEF2F2", border: "#FECACA", dot: "#EF4444", label: "Critical" },
+    OFFLINE:  { color: "#6B7280", bg: "#F9FAFB", border: "#E5E7EB", dot: "#9CA3AF", label: "Offline" },
   }[status];
 
   const inner = (
-    <div className="bg-[#111111] border border-[#2a2a2a] rounded-xl p-5 space-y-4 hover:border-[#3a3a3a] transition-colors">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${color}20`, color }}>
-            {icon}
-          </div>
-          <span className="text-white font-medium text-sm">{pillar}</span>
-        </div>
-        <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: statusConfig.bg, color: statusConfig.color }}>
-          {statusConfig.label}
-        </span>
-      </div>
-      <div>
-        <p className="text-[#888888] text-xs">{primaryMetric}</p>
-        <p className="text-white text-xl font-bold">{primaryValue}</p>
-      </div>
-      {secondaryMetrics && (
-        <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#2a2a2a]">
-          {secondaryMetrics.map((m) => (
-            <div key={m.label}>
-              <p className="text-[#888888] text-xs">{m.label}</p>
-              <p className="text-white text-sm font-medium">{m.value}</p>
+    <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 space-y-4 hover:shadow-md hover:border-[#D4C8B8] transition-all h-full relative overflow-hidden">
+      {/* Left accent strip */}
+      <div
+        className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl"
+        style={{ backgroundColor: color }}
+      />
+
+      <div className="pl-2">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ backgroundColor: `${color}18`, color }}
+            >
+              {icon}
             </div>
-          ))}
+            <span className="text-[#1C1714] font-semibold text-sm">{pillar}</span>
+          </div>
+          <span
+            className="text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider flex items-center gap-1"
+            style={{ backgroundColor: statusConfig.bg, color: statusConfig.color, border: `1px solid ${statusConfig.border}` }}
+          >
+            <span
+              className="w-1.5 h-1.5 rounded-full inline-block"
+              style={{ backgroundColor: statusConfig.dot }}
+            />
+            {statusConfig.label}
+          </span>
         </div>
-      )}
+
+        {/* Primary metric */}
+        <div className="mt-4">
+          <p className="text-[#9C9285] text-xs font-medium mb-1">{primaryMetric}</p>
+          <p className="text-[#1C1714] text-xl font-bold tracking-tight">{primaryValue}</p>
+        </div>
+
+        {/* Secondary metrics */}
+        {secondaryMetrics && (
+          <div className="grid grid-cols-2 gap-3 pt-3 mt-3 border-t border-[#EDE8E0]">
+            {secondaryMetrics.map((m) => (
+              <div key={m.label}>
+                <p className="text-[#9C9285] text-[10px] font-medium uppercase tracking-wider">{m.label}</p>
+                <p className="text-[#1C1714] text-sm font-semibold mt-0.5">{m.value}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 
-  if (href) {
-    return <a href={href} className="block">{inner}</a>;
-  }
-
+  if (href) return <a href={href} className="block h-full">{inner}</a>;
   return inner;
 }

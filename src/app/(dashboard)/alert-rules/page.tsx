@@ -1,11 +1,11 @@
 import { prisma } from "@/lib/prisma";
 
 const severityColors: Record<string, { bg: string; text: string }> = {
-  CRITICAL: { bg: "#ef444415", text: "#ef4444" },
-  HIGH: { bg: "#f59e0b15", text: "#f59e0b" },
-  MEDIUM: { bg: "#3b82f615", text: "#3b82f6" },
-  LOW: { bg: "#88888815", text: "#888888" },
-  INFO: { bg: "#6366f115", text: "#6366f1" },
+  CRITICAL: { bg: "#FEF2F2", text: "#B91C1C" },
+  HIGH: { bg: "#FFFBEB", text: "#B45309" },
+  MEDIUM: { bg: "#EFF6FF", text: "#1E5FA8" },
+  LOW: { bg: "#F5F3EE", text: "#9C9285" },
+  INFO: { bg: "#EFF6FF", text: "#1E5FA8" },
 };
 
 export default async function AlertRulesPage() {
@@ -27,47 +27,47 @@ export default async function AlertRulesPage() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-white text-2xl font-bold">Alert Rules</h1>
-          <p className="text-[#888888] text-sm mt-0.5">{activeCount} active rules of {rules.length} total</p>
+          <h1 className="text-[#1C1714] text-2xl font-bold">Alert Rules</h1>
+          <p className="text-[#9C9285] text-sm mt-0.5">{activeCount} active rules of {rules.length} total</p>
         </div>
       </div>
 
-      <div className="bg-[#111111] border border-[#2a2a2a] rounded-xl overflow-hidden">
+      <div className="bg-white border border-[#E5DDD0] rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full">
             <thead>
-              <tr className="border-b border-[#2a2a2a]">
+              <tr className="bg-[#F5F3EE] border-b border-[#E5DDD0]">
                 {["Rule Name", "Sensor / Asset", "Metric", "Condition", "Severity", "Type", "Alerts", "Active"].map(h => (
-                  <th key={h} className="text-left text-[#888888] text-xs uppercase tracking-wider px-4 py-3 font-medium whitespace-nowrap">{h}</th>
+                  <th key={h} className="text-left px-5 py-3 text-xs font-bold text-[#9C9285] uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1a1a1a]">
+            <tbody>
               {rules.map((rule) => {
                 const sc = severityColors[rule.severity] ?? severityColors.INFO;
                 return (
-                  <tr key={rule.id} className="hover:bg-[#1a1a1a] transition-colors">
-                    <td className="px-4 py-3">
-                      <p className="text-white font-medium text-xs">{rule.name}</p>
-                      {rule.description && <p className="text-[#888888] text-xs truncate max-w-[180px]">{rule.description}</p>}
+                  <tr key={rule.id} className="border-b border-[#EDE8E0] hover:bg-[#F5F3EE] transition-colors last:border-0">
+                    <td className="px-5 py-4">
+                      <p className="text-[#1C1714] text-sm font-medium">{rule.name}</p>
+                      {rule.description && <p className="text-[#9C9285] text-xs truncate max-w-[180px]">{rule.description}</p>}
                     </td>
-                    <td className="px-4 py-3">
-                      <p className="text-white text-xs">{rule.sensor.name}</p>
-                      <p className="text-[#888888] text-xs">{rule.sensor.asset.name} · {rule.sensor.asset.site.name}</p>
+                    <td className="px-5 py-4">
+                      <p className="text-[#1C1714] text-sm">{rule.sensor.name}</p>
+                      <p className="text-[#9C9285] text-xs">{rule.sensor.asset.name} · {rule.sensor.asset.site.name}</p>
                     </td>
-                    <td className="px-4 py-3 text-[#888888] text-xs">{rule.metricName}</td>
-                    <td className="px-4 py-3 text-white text-xs font-mono">
+                    <td className="px-5 py-4 text-[#5C5248] text-sm">{rule.metricName}</td>
+                    <td className="px-5 py-4 text-[#1C1714] text-sm font-mono font-medium">
                       {rule.metricName} {rule.operator} {rule.threshold}
                     </td>
-                    <td className="px-4 py-3">
-                      <span className="text-xs px-2 py-0.5 rounded" style={{ backgroundColor: sc.bg, color: sc.text }}>
+                    <td className="px-5 py-4">
+                      <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: sc.bg, color: sc.text }}>
                         {rule.severity}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-[#888888] text-xs">{rule.alertType.replace(/_/g, " ")}</td>
-                    <td className="px-4 py-3 text-center text-white">{rule._count.alerts}</td>
-                    <td className="px-4 py-3">
-                      <div className={`w-8 h-4 rounded-full ${rule.isActive ? "bg-[#22c55e]" : "bg-[#2a2a2a]"} transition-colors`} />
+                    <td className="px-5 py-4 text-[#5C5248] text-sm">{rule.alertType.replace(/_/g, " ")}</td>
+                    <td className="px-5 py-4 text-center text-[#1C1714] text-sm font-medium">{rule._count.alerts}</td>
+                    <td className="px-5 py-4">
+                      <div className={`w-8 h-4 rounded-full transition-colors ${rule.isActive ? "bg-[#B8901A]" : "bg-[#E5DDD0]"}`} />
                     </td>
                   </tr>
                 );
