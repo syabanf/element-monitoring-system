@@ -1,23 +1,84 @@
 import { ALL_MOCK, RELATIONS, COUNT_RELATIONS } from "./mock-data";
 
 type WhereClause = Record<string, unknown>;
-type OrderByClause = Record<string, "asc" | "desc"> | Record<string, "asc" | "desc">[];
 type RelDef = [Record<string, unknown>[], string, string];
 
-function matchesWhere(item: Record<string, unknown>, where: WhereClause): boolean {
+// ─── Relation helpers ────────────────────────────────────────────────────────
+
+function relDef(modelName: string, field: string): RelDef | undefined {
+  return (RELATIONS[modelName] ?? {})[field] as RelDef | undefined;
+}
+
+/** Resolve a single belongsTo record (fk === "id") or first hasMany match. */
+function lookupBelongsTo(
+  item: Record<string, unknown>,
+  def: RelDef,
+): Record<string, unknown> | null {
+  const [col, fk, lk] = def;
+  const localVal = item[lk];
+  if (localVal === null || localVal === undefined) return null;
+  return (col.find((r) => r[fk] === localVal) as Record<string, unknown>) ?? null;
+}
+
+/** Resolve all hasMany records (fk !== "id"). */
+function lookupHasMany(
+  item: Record<string, unknown>,
+  def: RelDef,
+): Record<string, unknown>[] {
+  const [col, fk, lk] = def;
+  const localVal = item[lk];
+  return col.filter((r) => r[fk] === localVal) as Record<string, unknown>[];
+}
+
+function isBelongsTo(def: RelDef): boolean {
+  return def[1] === "id";
+}
+
+// ─── Where matching ──────────────────────────────────────────────────────────
+
+function matchesWhere(
+  item: Record<string, unknown>,
+  where: WhereClause,
+  modelName?: string,
+): boolean {
   for (const [key, val] of Object.entries(where)) {
     if (key === "AND") {
-      if (!(val as WhereClause[]).every((w) => matchesWhere(item, w))) return false;
+      if (!(val as WhereClause[]).every((w) => matchesWhere(item, w, modelName))) return false;
       continue;
     }
     if (key === "OR") {
-      if (!(val as WhereClause[]).some((w) => matchesWhere(item, w))) return false;
+      if (!(val as WhereClause[]).some((w) => matchesWhere(item, w, modelName))) return false;
       continue;
     }
     if (key === "NOT") {
-      if (matchesWhere(item, val as WhereClause)) return false;
+      if (matchesWhere(item, val as WhereClause, modelName)) return false;
       continue;
     }
+
+    // Nested relation filter — e.g. where: { asset: { pillar: "ELECTRICITY" } }
+    if (
+      modelName &&
+      val !== null &&
+      typeof val === "object" &&
+      !Array.isArray(val)
+    ) {
+      const rd = relDef(modelName, key);
+      if (rd) {
+        const subWhere = val as WhereClause;
+        if (isBelongsTo(rd)) {
+          const related = lookupBelongsTo(item, rd);
+          if (!related) return false;
+          if (!matchesWhere(related, subWhere, key)) return false;
+        } else {
+          const related = lookupHasMany(item, rd);
+          // hasMany: at least one child must match
+          if (!related.some((r) => matchesWhere(r, subWhere, key))) return false;
+        }
+        continue;
+      }
+    }
+
+    // Operator object: { in, contains, gt, gte, lt, lte, … }
     if (val !== null && typeof val === "object" && !Array.isArray(val)) {
       const ops = val as Record<string, unknown>;
       const field = item[key];
@@ -36,77 +97,117 @@ function matchesWhere(item: Record<string, unknown>, where: WhereClause): boolea
       if ("gte" in ops && !((field as number) >= (ops.gte as number))) return false;
       if ("lt" in ops && !((field as number) < (ops.lt as number))) return false;
       if ("lte" in ops && !((field as number) <= (ops.lte as number))) return false;
-    } else {
-      if (item[key] !== val) return false;
+      continue;
     }
+
+    // Primitive equality
+    if (item[key] !== val) return false;
   }
   return true;
 }
 
+// ─── OrderBy helpers ─────────────────────────────────────────────────────────
+
+/**
+ * Resolve a possibly-nested field path through relations.
+ * e.g. resolveField(sensor, "sensor", { site: { name: "asc" } }) via asset
+ * Called with the orderBy entry: e.g. { site: { name: "asc" } }
+ */
+function resolveOrderValue(
+  item: Record<string, unknown>,
+  modelName: string,
+  orderEntry: Record<string, unknown>,
+): unknown {
+  const [[key, val]] = Object.entries(orderEntry);
+  if (val === "asc" || val === "desc") {
+    // Direct field
+    return item[key];
+  }
+  // Nested — resolve through relation
+  const rd = relDef(modelName, key);
+  if (!rd) return undefined;
+  const related = isBelongsTo(rd) ? lookupBelongsTo(item, rd) : (lookupHasMany(item, rd)[0] ?? null);
+  if (!related) return undefined;
+  return resolveOrderValue(related, key, val as Record<string, unknown>);
+}
+
+function getOrderDir(entry: Record<string, unknown>): "asc" | "desc" {
+  const [[, val]] = Object.entries(entry);
+  if (val === "asc" || val === "desc") return val;
+  return getOrderDir(val as Record<string, unknown>);
+}
+
 function applyOrderBy(
   items: Record<string, unknown>[],
-  orderBy: OrderByClause | undefined,
+  orderBy: unknown,
+  modelName?: string,
 ): Record<string, unknown>[] {
   if (!orderBy) return items;
   const orders = Array.isArray(orderBy) ? orderBy : [orderBy];
   return [...items].sort((a, b) => {
     for (const order of orders) {
-      for (const [field, dir] of Object.entries(order)) {
-        const av = a[field] as string | number | Date;
-        const bv = b[field] as string | number | Date;
-        if (av === bv) continue;
-        const cmp = av < bv ? -1 : 1;
-        return dir === "desc" ? -cmp : cmp;
-      }
+      const dir = getOrderDir(order as Record<string, unknown>);
+      const av = modelName
+        ? resolveOrderValue(a, modelName, order as Record<string, unknown>)
+        : a[(Object.keys(order as object)[0])];
+      const bv = modelName
+        ? resolveOrderValue(b, modelName, order as Record<string, unknown>)
+        : b[(Object.keys(order as object)[0])];
+      if (av === bv) continue;
+      if (av === null || av === undefined) return 1;
+      if (bv === null || bv === undefined) return -1;
+      const cmp = (av as string | number) < (bv as string | number) ? -1 : 1;
+      return dir === "desc" ? -cmp : cmp;
     }
     return 0;
   });
 }
 
+// ─── Count helper ─────────────────────────────────────────────────────────────
+
 function computeCount(
   item: Record<string, unknown>,
   modelName: string,
-  countSelect: Record<string, boolean>,
+  countSelect: Record<string, boolean | unknown>,
 ): Record<string, number> {
   const countRelMap = COUNT_RELATIONS[modelName] ?? {};
-  const relMap = RELATIONS[modelName] ?? {};
   const id = item["id"] as string;
   const counts: Record<string, number> = {};
 
   for (const field of Object.keys(countSelect)) {
     const collection = countRelMap[field] as Record<string, unknown>[] | undefined;
     if (!collection) { counts[field] = 0; continue; }
-    const relDef = relMap[field] as RelDef | undefined;
-    const fk = relDef?.[1];
-    counts[field] = fk && fk !== "id" ? collection.filter((r) => r[fk] === id).length : collection.length;
+    const rd = relDef(modelName, field);
+    const fk = rd?.[1];
+    counts[field] = fk && fk !== "id"
+      ? collection.filter((r) => r[fk] === id).length
+      : collection.length;
   }
   return counts;
 }
 
-// Resolve a `select` that may contain nested relation selects (e.g. site: { select: { name: true } })
+// ─── Select with nested relations ─────────────────────────────────────────────
+
 function resolveSelectWithRelations(
   item: Record<string, unknown>,
   modelName: string,
   select: Record<string, unknown>,
 ): Record<string, unknown> {
   const result: Record<string, unknown> = {};
-  const relMap = RELATIONS[modelName] ?? {};
 
   for (const [key, val] of Object.entries(select)) {
     if (!val) continue;
     if (typeof val === "object" && "select" in (val as object)) {
-      // Nested relation with its own select
-      const relDef = relMap[key] as RelDef | undefined;
-      if (relDef) {
-        const [collection, fk, lk] = relDef;
-        const localVal = item[lk];
-        const matched = collection.filter((r) => r[fk] === localVal);
-        const nestedSelect = (val as { select: Record<string, unknown> }).select;
-        if (fk === "id") {
-          const single = matched[0] ?? null;
-          result[key] = single ? resolveSelectWithRelations(single as Record<string, unknown>, key, nestedSelect) : null;
+      // Nested relation select
+      const rd = relDef(modelName, key);
+      if (rd) {
+        const nestedSel = (val as { select: Record<string, unknown> }).select;
+        if (isBelongsTo(rd)) {
+          const single = lookupBelongsTo(item, rd);
+          result[key] = single ? resolveSelectWithRelations(single, key, nestedSel) : null;
         } else {
-          result[key] = matched.map((r) => resolveSelectWithRelations(r as Record<string, unknown>, key, nestedSelect));
+          const many = lookupHasMany(item, rd);
+          result[key] = many.map((r) => resolveSelectWithRelations(r, key, nestedSel));
         }
       } else {
         result[key] = item[key];
@@ -118,7 +219,8 @@ function resolveSelectWithRelations(
   return result;
 }
 
-// Resolve `include` (which may contain _count, nested select, nested include, take, where)
+// ─── Include resolution ───────────────────────────────────────────────────────
+
 function resolveIncludes(
   item: Record<string, unknown>,
   modelName: string,
@@ -126,12 +228,11 @@ function resolveIncludes(
 ): Record<string, unknown> {
   if (!include) return item;
   const result = { ...item };
-  const relMap = RELATIONS[modelName] ?? {};
 
   for (const [rel, incVal] of Object.entries(include)) {
     if (!incVal) continue;
 
-    // _count is special — compute counts for the listed fields
+    // _count inside include
     if (rel === "_count") {
       const countSelect =
         typeof incVal === "object" && "select" in (incVal as object)
@@ -141,13 +242,10 @@ function resolveIncludes(
       continue;
     }
 
-    const relDef = relMap[rel] as RelDef | undefined;
-    if (!relDef) continue;
-    const [collection, fk, lk] = relDef;
-    const localVal = item[lk];
+    const rd = relDef(modelName, rel);
+    if (!rd) continue;
 
-    // Parse nested options from the include value
-    const isObjInc = typeof incVal === "object";
+    const isObjInc = typeof incVal === "object" && incVal !== null;
     const nestedInclude = isObjInc && "include" in (incVal as object)
       ? (incVal as { include: Record<string, unknown> }).include
       : undefined;
@@ -160,45 +258,54 @@ function resolveIncludes(
     const nestedWhere = isObjInc && "where" in (incVal as object)
       ? (incVal as { where: WhereClause }).where
       : undefined;
-
-    let matched = collection.filter((r) => r[fk] === localVal);
-    if (nestedWhere) matched = matched.filter((r) => matchesWhere(r as Record<string, unknown>, nestedWhere));
-    if (nestedTake !== undefined) matched = matched.slice(0, nestedTake);
+    const nestedOrderBy = isObjInc && "orderBy" in (incVal as object)
+      ? (incVal as { orderBy: unknown }).orderBy
+      : undefined;
 
     const transform = (r: Record<string, unknown>): Record<string, unknown> => {
-      if (nestedInclude) r = resolveIncludes(r, rel, nestedInclude);
+      if (nestedInclude) r = resolveIncludes(r, rel, nestedInclude as Record<string, unknown>);
       if (nestedSelect) r = resolveSelectWithRelations(r, rel, nestedSelect as Record<string, unknown>);
       return r;
     };
 
-    if (fk === "id") {
-      // belongsTo — single record
-      const single = matched[0] ?? null;
-      result[rel] = single ? transform(single as Record<string, unknown>) : null;
+    if (isBelongsTo(rd)) {
+      const single = lookupBelongsTo(item, rd);
+      result[rel] = single ? transform(single) : null;
     } else {
-      // hasMany — array
-      result[rel] = matched.map((r) => transform(r as Record<string, unknown>));
+      let many = lookupHasMany(item, rd);
+      if (nestedWhere) many = many.filter((r) => matchesWhere(r, nestedWhere, rel));
+      if (nestedOrderBy) many = applyOrderBy(many, nestedOrderBy, rel);
+      if (nestedTake !== undefined) many = many.slice(0, nestedTake);
+      result[rel] = many.map(transform);
     }
   }
   return result;
 }
 
+// ─── Model mock factory ───────────────────────────────────────────────────────
+
 function createModelMock(modelName: string) {
   return {
     findMany: async (args?: {
       where?: WhereClause;
-      orderBy?: OrderByClause;
+      orderBy?: unknown;
       take?: number;
       skip?: number;
       include?: Record<string, unknown>;
       select?: Record<string, unknown>;
     }) => {
       const all = (ALL_MOCK[modelName] ?? []) as Record<string, unknown>[];
-      let items = args?.where ? all.filter((i) => matchesWhere(i, args.where!)) : [...all];
-      items = applyOrderBy(items, args?.orderBy);
+      let items = args?.where
+        ? all.filter((i) => matchesWhere(i, args.where!, modelName))
+        : [...all];
+      items = applyOrderBy(items, args?.orderBy, modelName);
       if (args?.skip) items = items.slice(args.skip);
       if (args?.take !== undefined) items = items.slice(0, args.take);
-      return items.map((i) => resolveIncludes(i, modelName, args?.include));
+      return items.map((i) => {
+        let r = resolveIncludes(i, modelName, args?.include);
+        if (args?.select) r = resolveSelectWithRelations(r, modelName, args.select);
+        return r;
+      });
     },
 
     findUnique: async (args: {
@@ -207,28 +314,35 @@ function createModelMock(modelName: string) {
       select?: Record<string, unknown>;
     }) => {
       const all = (ALL_MOCK[modelName] ?? []) as Record<string, unknown>[];
-      const item = all.find((i) => matchesWhere(i, args.where)) ?? null;
+      const item = all.find((i) => matchesWhere(i, args.where, modelName)) ?? null;
       if (!item) return null;
-      return resolveIncludes(item, modelName, args.include);
+      let r = resolveIncludes(item, modelName, args.include);
+      if (args.select) r = resolveSelectWithRelations(r, modelName, args.select);
+      return r;
     },
 
     findFirst: async (args?: {
       where?: WhereClause;
-      orderBy?: OrderByClause;
+      orderBy?: unknown;
       include?: Record<string, unknown>;
+      select?: Record<string, unknown>;
     }) => {
       const all = (ALL_MOCK[modelName] ?? []) as Record<string, unknown>[];
-      const filtered = args?.where ? all.filter((i) => matchesWhere(i, args.where!)) : [...all];
-      const sorted = applyOrderBy(filtered, args?.orderBy);
+      const filtered = args?.where
+        ? all.filter((i) => matchesWhere(i, args.where!, modelName))
+        : [...all];
+      const sorted = applyOrderBy(filtered, args?.orderBy, modelName);
       const item = sorted[0] ?? null;
       if (!item) return null;
-      return resolveIncludes(item, modelName, args?.include);
+      let r = resolveIncludes(item, modelName, args?.include);
+      if (args?.select) r = resolveSelectWithRelations(r, modelName, args.select);
+      return r;
     },
 
     count: async (args?: { where?: WhereClause }) => {
       const all = (ALL_MOCK[modelName] ?? []) as Record<string, unknown>[];
       if (!args?.where) return all.length;
-      return all.filter((i) => matchesWhere(i, args.where!)).length;
+      return all.filter((i) => matchesWhere(i, args.where!, modelName)).length;
     },
 
     create: async (args: { data: Record<string, unknown>; include?: Record<string, unknown> }) => {
@@ -241,7 +355,12 @@ function createModelMock(modelName: string) {
     createMany: async (args: { data: Record<string, unknown>[] }) => {
       const now = new Date();
       for (const data of args.data) {
-        const record = { id: `mock_${modelName}_${Date.now()}_${Math.random()}`, createdAt: now, updatedAt: now, ...data };
+        const record = {
+          id: `mock_${modelName}_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+          createdAt: now,
+          updatedAt: now,
+          ...data,
+        };
         (ALL_MOCK[modelName] as Record<string, unknown>[]).push(record);
       }
       return { count: args.data.length };
@@ -253,8 +372,8 @@ function createModelMock(modelName: string) {
       include?: Record<string, unknown>;
     }) => {
       const all = ALL_MOCK[modelName] as Record<string, unknown>[];
-      const idx = all.findIndex((i) => matchesWhere(i, args.where));
-      if (idx === -1) throw new Error(`Mock: ${modelName} not found`);
+      const idx = all.findIndex((i) => matchesWhere(i, args.where, modelName));
+      if (idx === -1) throw new Error(`Mock ${modelName}: record not found`);
       all[idx] = { ...all[idx], ...args.data, updatedAt: new Date() };
       return resolveIncludes(all[idx], modelName, args.include);
     },
@@ -266,7 +385,7 @@ function createModelMock(modelName: string) {
       include?: Record<string, unknown>;
     }) => {
       const all = ALL_MOCK[modelName] as Record<string, unknown>[];
-      const idx = all.findIndex((i) => matchesWhere(i, args.where));
+      const idx = all.findIndex((i) => matchesWhere(i, args.where, modelName));
       if (idx === -1) {
         const now = new Date();
         const record = { id: `mock_${modelName}_${Date.now()}`, createdAt: now, updatedAt: now, ...args.create };
@@ -279,8 +398,8 @@ function createModelMock(modelName: string) {
 
     delete: async (args: { where: WhereClause }) => {
       const all = ALL_MOCK[modelName] as Record<string, unknown>[];
-      const idx = all.findIndex((i) => matchesWhere(i, args.where));
-      if (idx === -1) throw new Error(`Mock: ${modelName} not found`);
+      const idx = all.findIndex((i) => matchesWhere(i, args.where, modelName));
+      if (idx === -1) throw new Error(`Mock ${modelName}: record not found`);
       const [deleted] = all.splice(idx, 1);
       return deleted;
     },
@@ -288,7 +407,9 @@ function createModelMock(modelName: string) {
     deleteMany: async (args?: { where?: WhereClause }) => {
       const all = ALL_MOCK[modelName] as Record<string, unknown>[];
       const before = all.length;
-      const keep = args?.where ? all.filter((i) => !matchesWhere(i, args.where!)) : [];
+      const keep = args?.where
+        ? all.filter((i) => !matchesWhere(i, args.where!, modelName))
+        : [];
       ALL_MOCK[modelName] = keep;
       return { count: before - keep.length };
     },
@@ -297,7 +418,7 @@ function createModelMock(modelName: string) {
       const all = ALL_MOCK[modelName] as Record<string, unknown>[];
       let count = 0;
       for (let i = 0; i < all.length; i++) {
-        if (!args.where || matchesWhere(all[i], args.where)) {
+        if (!args.where || matchesWhere(all[i], args.where, modelName)) {
           all[i] = { ...all[i], ...args.data, updatedAt: new Date() };
           count++;
         }
@@ -314,7 +435,9 @@ function createModelMock(modelName: string) {
       _max?: Record<string, boolean>;
     }) => {
       const all = (ALL_MOCK[modelName] ?? []) as Record<string, unknown>[];
-      const items = args?.where ? all.filter((i) => matchesWhere(i, args.where!)) : all;
+      const items = args?.where
+        ? all.filter((i) => matchesWhere(i, args.where!, modelName))
+        : all;
       const result: Record<string, unknown> = {};
       if (args?._count) result._count = items.length;
       for (const op of ["_sum", "_avg", "_min", "_max"] as const) {
@@ -335,9 +458,34 @@ function createModelMock(modelName: string) {
       return result;
     },
 
-    groupBy: async () => [],
+    groupBy: async (args?: { by?: string[]; _count?: Record<string, boolean>; where?: WhereClause }) => {
+      const all = (ALL_MOCK[modelName] ?? []) as Record<string, unknown>[];
+      const items = args?.where
+        ? all.filter((i) => matchesWhere(i, args.where!, modelName))
+        : all;
+      if (!args?.by?.length) return [];
+      const groups = new Map<string, Record<string, unknown>[]>();
+      for (const item of items) {
+        const key = args.by.map((f) => String(item[f])).join("|");
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key)!.push(item);
+      }
+      return Array.from(groups.entries()).map(([, group]) => {
+        const result: Record<string, unknown> = {};
+        for (const f of args.by!) result[f] = group[0][f];
+        if (args._count) {
+          result._count = {};
+          for (const f of Object.keys(args._count)) {
+            (result._count as Record<string, number>)[f] = group.length;
+          }
+        }
+        return result;
+      });
+    },
   };
 }
+
+// ─── Export ───────────────────────────────────────────────────────────────────
 
 const MODEL_NAMES = Object.keys(ALL_MOCK);
 

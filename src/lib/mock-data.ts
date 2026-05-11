@@ -219,19 +219,19 @@ export const ALL_MOCK: Record<string, unknown[]> = {
 
 export const RELATIONS: Record<string, Record<string, [unknown[], string, string]>> = {
   site:              { buildings: [MOCK_BUILDINGS, "siteId", "id"], gateways: [MOCK_GATEWAYS, "siteId", "id"], assets: [MOCK_ASSETS, "siteId", "id"] },
-  building:          { zones: [[], "", ""], departments: [MOCK_DEPARTMENTS, "buildingId", "id"], site: [MOCK_SITES, "id", "siteId"] },
+  building:          { zones: [[], "buildingId", "id"], departments: [MOCK_DEPARTMENTS, "buildingId", "id"], site: [MOCK_SITES, "id", "siteId"] },
   department:        { bagians: [MOCK_BAGIANS, "departmentId", "id"], building: [MOCK_BUILDINGS, "id", "buildingId"] },
   bagian:            { ruangans: [MOCK_RUANGANS, "bagianId", "id"], department: [MOCK_DEPARTMENTS, "id", "departmentId"] },
   ruangan:           { installationPoints: [MOCK_INSTALLATION_POINTS, "ruanganId", "id"], bagian: [MOCK_BAGIANS, "id", "bagianId"] },
   installationPoint: { ruangan: [MOCK_RUANGANS, "id", "ruanganId"] },
   gateway:           { sensors: [MOCK_SENSORS, "gatewayId", "id"], site: [MOCK_SITES, "id", "siteId"] },
-  asset:             { sensors: [MOCK_SENSORS, "assetId", "id"], alerts: [MOCK_ALERTS, "assetId", "id"], site: [MOCK_SITES, "id", "siteId"] },
+  asset:             { sensors: [MOCK_SENSORS, "assetId", "id"], alerts: [MOCK_ALERTS, "assetId", "id"], site: [MOCK_SITES, "id", "siteId"], zone: [[], "id", "zoneId"] },
   sensor:            { asset: [MOCK_ASSETS, "id", "assetId"], gateway: [MOCK_GATEWAYS, "id", "gatewayId"], telemetry: [MOCK_TELEMETRY, "sensorId", "id"], alertRules: [MOCK_ALERT_RULES, "sensorId", "id"] },
-  alert:             { asset: [MOCK_ASSETS, "id", "assetId"], rule: [MOCK_ALERT_RULES, "id", "ruleId"], assignee: [MOCK_USERS, "id", "assigneeId"] },
+  alert:             { asset: [MOCK_ASSETS, "id", "assetId"], rule: [MOCK_ALERT_RULES, "id", "ruleId"], assignee: [MOCK_USERS, "id", "assigneeId"], workOrder: [[], "alertId", "id"] },
   report:            { generator: [MOCK_USERS, "id", "generatedBy"] },
   auditLog:          { actor: [MOCK_USERS, "id", "actorId"] },
   user:              { organization: [MOCK_ORGS, "id", "organizationId"] },
-  alertRule:         { sensor: [MOCK_SENSORS, "id", "sensorId"] },
+  alertRule:         { sensor: [MOCK_SENSORS, "id", "sensorId"], alerts: [MOCK_ALERTS, "ruleId", "id"] },
 };
 
 export const COUNT_RELATIONS: Record<string, Record<string, unknown[]>> = {
@@ -244,4 +244,5 @@ export const COUNT_RELATIONS: Record<string, Record<string, unknown[]>> = {
   gateway:    { sensors: MOCK_SENSORS },
   sensor:     { telemetry: MOCK_TELEMETRY, alertRules: MOCK_ALERT_RULES, calibrationRecords: [] },
   alert:      { workOrder: [] },
+  alertRule:  { alerts: MOCK_ALERTS },
 };
