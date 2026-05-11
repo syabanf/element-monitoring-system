@@ -1,0 +1,433 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  SUPER_ADMIN
+  EXECUTIVE
+  ENERGY_MANAGER
+  OPERATIONS_SUPERVISOR
+  TECHNICIAN
+  FINANCE
+  EHS_COMPLIANCE
+  VIEWER
+}
+
+enum PillarType {
+  ELECTRICITY
+  WATER
+  WASTEWATER
+  GAS_AIR
+  ENVIRONMENT
+  THERMAL_HVAC
+  COMPRESSED_AIR
+}
+
+enum AssetStatus {
+  ACTIVE
+  INACTIVE
+  MAINTENANCE
+  DECOMMISSIONED
+}
+
+enum SensorStatus {
+  ONLINE
+  OFFLINE
+  FAULT
+  CALIBRATION_DUE
+}
+
+enum AlertSeverity {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+  INFO
+}
+
+enum AlertStatus {
+  OPEN
+  ACKNOWLEDGED
+  INVESTIGATING
+  RESOLVED
+  CLOSED
+  FALSE_POSITIVE
+}
+
+enum AlertType {
+  STATIC_THRESHOLD
+  DYNAMIC_BASELINE
+  PEAK_DEMAND
+  CONTINUOUS_FLOW
+  SENSOR_OFFLINE
+  CALIBRATION_OVERDUE
+  COMPLIANCE_EXCEEDANCE
+  WORKER_EXPOSURE
+}
+
+enum WorkOrderStatus {
+  OPEN
+  IN_PROGRESS
+  PENDING_PARTS
+  COMPLETED
+  CANCELLED
+}
+
+enum QualityStatus {
+  GOOD
+  UNCERTAIN
+  BAD
+  MISSING
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users User[]
+  sites Site[]
+}
+
+model User {
+  id             String       @id @default(cuid())
+  email          String       @unique
+  name           String
+  passwordHash   String
+  role           Role         @default(VIEWER)
+  organizationId String
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  lastLoginAt    DateTime?
+
+  organization Organization    @relation(fields: [organizationId], references: [id])
+  siteAccess   UserSiteAccess[]
+  alerts       Alert[]         @relation("AlertAssignee")
+  workOrders   WorkOrder[]     @relation("WorkOrderOwner")
+  auditLogs    AuditLog[]
+  reports      Report[]
+}
+
+model UserSiteAccess {
+  id     String @id @default(cuid())
+  userId String
+  siteId String
+
+  user User @relation(fields: [userId], references: [id])
+  site Site @relation(fields: [siteId], references: [id])
+
+  @@unique([userId, siteId])
+}
+
+model Site {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  code           String
+  address        String?
+  city           String?
+  country        String   @default("Indonesia")
+  lat            Float?
+  lng            Float?
+  timezone       String   @default("Asia/Jakarta")
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization    @relation(fields: [organizationId], references: [id])
+  buildings    Building[]
+  gateways     Gateway[]
+  userAccess   UserSiteAccess[]
+  assets       Asset[]
+}
+
+model Building {
+  id          String   @id @default(cuid())
+  siteId      String
+  name        String
+  code        String?
+  floors      Int      @default(1)
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  site        Site         @relation(fields: [siteId], references: [id])
+  zones       Zone[]
+  departments Department[]
+}
+
+model Department {
+  id          String   @id @default(cuid())
+  buildingId  String
+  name        String
+  code        String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  building Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  bagians  Bagian[]
+}
+
+model Bagian {
+  id           String   @id @default(cuid())
+  departmentId String
+  name         String
+  code         String?
+  description  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  department Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  ruangans   Ruangan[]
+}
+
+model Ruangan {
+  id          String   @id @default(cuid())
+  bagianId    String
+  name        String
+  code        String?
+  floor       Int?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  bagian             Bagian              @relation(fields: [bagianId], references: [id], onDelete: Cascade)
+  installationPoints InstallationPoint[]
+}
+
+model InstallationPoint {
+  id          String     @id @default(cuid())
+  ruanganId   String
+  name        String
+  code        String?
+  pillar      PillarType
+  description String?
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  ruangan Ruangan @relation(fields: [ruanganId], references: [id], onDelete: Cascade)
+}
+
+model Zone {
+  id         String     @id @default(cuid())
+  buildingId String
+  name       String
+  code       String?
+  pillar     PillarType
+  createdAt  DateTime   @default(now())
+
+  building Building @relation(fields: [buildingId], references: [id])
+  assets   Asset[]
+}
+
+model Gateway {
+  id              String    @id @default(cuid())
+  siteId          String
+  name            String
+  serialNumber    String    @unique
+  connectionType  String    @default("LoRaWAN")
+  ipAddress       String?
+  firmwareVersion String?
+  status          String    @default("online")
+  lastSeenAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  site    Site     @relation(fields: [siteId], references: [id])
+  sensors Sensor[]
+}
+
+model Asset {
+  id           String      @id @default(cuid())
+  siteId       String
+  zoneId       String?
+  name         String
+  code         String
+  assetType    String
+  pillar       PillarType
+  manufacturer String?
+  model        String?
+  serialNumber String?
+  installDate  DateTime?
+  status       AssetStatus @default(ACTIVE)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  site    Site    @relation(fields: [siteId], references: [id])
+  zone    Zone?   @relation(fields: [zoneId], references: [id])
+  sensors Sensor[]
+  alerts  Alert[]
+}
+
+model Sensor {
+  id            String       @id @default(cuid())
+  assetId       String
+  gatewayId     String?
+  name          String
+  sensorType    String
+  metricName    String
+  unit          String
+  protocol      String       @default("Modbus")
+  minValue      Float?
+  maxValue      Float?
+  status        SensorStatus @default(ONLINE)
+  lastReadingAt DateTime?
+  lastValue     Float?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  asset              Asset              @relation(fields: [assetId], references: [id])
+  gateway            Gateway?           @relation(fields: [gatewayId], references: [id])
+  telemetry          TelemetryReading[]
+  alertRules         AlertRule[]
+  calibrationRecords CalibrationRecord[]
+}
+
+model TelemetryReading {
+  id             String        @id @default(cuid())
+  sensorId       String
+  timestamp      DateTime
+  metricName     String
+  metricValue    Float
+  unit           String
+  qualityStatus  QualityStatus @default(GOOD)
+  sourceProtocol String?
+  gatewayId      String?
+
+  sensor Sensor @relation(fields: [sensorId], references: [id])
+
+  @@index([sensorId, timestamp])
+  @@index([timestamp])
+}
+
+model AlertRule {
+  id          String        @id @default(cuid())
+  sensorId    String
+  name        String
+  alertType   AlertType
+  metricName  String
+  operator    String
+  threshold   Float
+  severity    AlertSeverity
+  isActive    Boolean       @default(true)
+  description String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  sensor Sensor  @relation(fields: [sensorId], references: [id])
+  alerts Alert[]
+}
+
+model Alert {
+  id             String        @id @default(cuid())
+  ruleId         String?
+  assetId        String
+  assigneeId     String?
+  severity       AlertSeverity
+  alertType      AlertType
+  status         AlertStatus   @default(OPEN)
+  title          String
+  description    String?
+  metricName     String?
+  metricValue    Float?
+  threshold      Float?
+  openedAt       DateTime      @default(now())
+  acknowledgedAt DateTime?
+  resolvedAt     DateTime?
+  closedAt       DateTime?
+  rootCause      String?
+  resolution     String?
+  slaDeadline    DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  rule      AlertRule? @relation(fields: [ruleId], references: [id])
+  asset     Asset      @relation(fields: [assetId], references: [id])
+  assignee  User?      @relation("AlertAssignee", fields: [assigneeId], references: [id])
+  workOrder WorkOrder?
+}
+
+model WorkOrder {
+  id          String          @id @default(cuid())
+  alertId     String          @unique
+  ownerId     String?
+  title       String
+  status      WorkOrderStatus @default(OPEN)
+  priority    String          @default("medium")
+  rootCause   String?
+  resolution  String?
+  notes       String?
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  alert Alert     @relation(fields: [alertId], references: [id])
+  owner User?     @relation("WorkOrderOwner", fields: [ownerId], references: [id])
+}
+
+model CalibrationRecord {
+  id             String   @id @default(cuid())
+  sensorId       String
+  calibratedAt   DateTime
+  nextDueAt      DateTime
+  result         String
+  technician     String?
+  certificateUrl String?
+  notes          String?
+  createdAt      DateTime @default(now())
+
+  sensor Sensor @relation(fields: [sensorId], references: [id])
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  generatedBy String
+  reportType  String
+  title       String
+  period      String
+  status      String   @default("ready")
+  fileUrl     String?
+  parameters  Json?
+  createdAt   DateTime @default(now())
+
+  generator User @relation(fields: [generatedBy], references: [id])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  action     String
+  entityType String
+  entityId   String?
+  details    Json?
+  ipAddress  String?
+  userAgent  String?
+  timestamp  DateTime @default(now())
+
+  actor User? @relation(fields: [actorId], references: [id])
+
+  @@index([timestamp])
+  @@index([actorId])
+  @@index([entityType, entityId])
+}
+
+model IntegrationConfig {
+  id        String   @id @default(cuid())
+  name      String
+  type      String
+  isEnabled Boolean  @default(false)
+  config    Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
