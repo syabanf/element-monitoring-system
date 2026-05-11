@@ -82,52 +82,52 @@ export default async function ReportsPage({
     <div className="p-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-[#1C1714] text-2xl font-bold">Report Center</h1>
-        <p className="text-[#9C9285] text-sm mt-0.5">Generate, schedule, and download compliance and operational reports</p>
+        <h1 className="text-[#0D1B35] text-2xl font-bold">Report Center</h1>
+        <p className="text-[#6378A0] text-sm mt-0.5">Generate, schedule, and download compliance and operational reports</p>
       </div>
 
       {/* Stats row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm flex items-center gap-3">
+        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-[#FEF7E6] flex items-center justify-center">
             <FileText className="w-4 h-4 text-[#B8901A]" />
           </div>
           <div>
-            <p className="text-[#1C1714] text-xl font-bold">{totalReports}</p>
-            <p className="text-[#9C9285] text-xs">Total Reports</p>
+            <p className="text-[#0D1B35] text-xl font-bold">{totalReports}</p>
+            <p className="text-[#6378A0] text-xs">Total Reports</p>
           </div>
         </div>
-        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm flex items-center gap-3">
+        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] flex items-center justify-center">
             <TrendingUp className="w-4 h-4 text-[#1E5FA8]" />
           </div>
           <div>
-            <p className="text-[#1C1714] text-xl font-bold">{thisMonthCount}</p>
-            <p className="text-[#9C9285] text-xs">This Month</p>
+            <p className="text-[#0D1B35] text-xl font-bold">{thisMonthCount}</p>
+            <p className="text-[#6378A0] text-xs">This Month</p>
           </div>
         </div>
-        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm flex items-center gap-3">
+        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-[#F0FDF4] flex items-center justify-center">
             <CheckCircle className="w-4 h-4 text-[#166534]" />
           </div>
           <div>
-            <p className="text-[#1C1714] text-xl font-bold">{REPORT_CATALOG.length}</p>
-            <p className="text-[#9C9285] text-xs">Report Types</p>
+            <p className="text-[#0D1B35] text-xl font-bold">{REPORT_CATALOG.length}</p>
+            <p className="text-[#6378A0] text-xs">Report Types</p>
           </div>
         </div>
-        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm flex items-center gap-3">
+        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-[#FFFBEB] flex items-center justify-center">
             <Clock className="w-4 h-4 text-[#B45309]" />
           </div>
           <div>
-            <p className="text-[#1C1714] text-xl font-bold">3</p>
-            <p className="text-[#9C9285] text-xs">Scheduled Reports</p>
+            <p className="text-[#0D1B35] text-xl font-bold">3</p>
+            <p className="text-[#6378A0] text-xs">Scheduled Reports</p>
           </div>
         </div>
       </div>
 
       {/* Category tabs */}
-      <div className="flex items-center gap-1 border-b border-[#E5DDD0]">
+      <div className="flex items-center gap-1 border-b border-[#D9E2F0]">
         {CATEGORIES.map(cat => (
           <a
             key={cat}
@@ -135,12 +135,12 @@ export default async function ReportsPage({
             className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
               activeCategory === cat
                 ? "border-[#B8901A] text-[#B8901A]"
-                : "border-transparent text-[#9C9285] hover:text-[#1C1714]"
+                : "border-transparent text-[#6378A0] hover:text-[#0D1B35]"
             }`}
           >
             {cat}
             {cat !== "All" && (
-              <span className="ml-1.5 text-xs text-[#9C9285]">
+              <span className="ml-1.5 text-xs text-[#6378A0]">
                 ({REPORT_CATALOG.filter(r => r.category === cat).length})
               </span>
             )}
@@ -150,18 +150,18 @@ export default async function ReportsPage({
 
       {/* Generate section */}
       <div>
-        <h2 className="text-[#1C1714] font-bold mb-4">Generate New Report</h2>
+        <h2 className="text-[#0D1B35] font-bold mb-4">Generate New Report</h2>
 
         {activeCategory === "All" ? (
           // Grouped view
           <div className="space-y-6">
             {Object.entries(catalogByCategory).map(([cat, items]) => {
-              const cs = categoryStyle[cat] ?? { bg: "#F5F3EE", text: "#9C9285" };
+              const cs = categoryStyle[cat] ?? { bg: "#F2F5FB", text: "#6378A0" };
               return (
                 <div key={cat}>
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: cs.bg, color: cs.text }}>{cat}</span>
-                    <span className="text-[#9C9285] text-xs">{items.length} report type{items.length > 1 ? "s" : ""}</span>
+                    <span className="text-[#6378A0] text-xs">{items.length} report type{items.length > 1 ? "s" : ""}</span>
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
                     {items.map(rt => (
@@ -182,11 +182,11 @@ export default async function ReportsPage({
       </div>
 
       {/* Recent reports */}
-      <div className="bg-white border border-[#E5DDD0] rounded-xl overflow-hidden shadow-sm">
-        <div className="flex items-center justify-between p-5 border-b border-[#EDE8E0]">
+      <div className="bg-white border border-[#D9E2F0] rounded-xl overflow-hidden shadow-sm">
+        <div className="flex items-center justify-between p-5 border-b border-[#E4EAF5]">
           <div className="flex items-center gap-2">
-            <h2 className="text-[#1C1714] font-bold">Generated Reports</h2>
-            <span className="text-[#9C9285] text-xs bg-[#F5F3EE] border border-[#E5DDD0] rounded px-2 py-0.5">{filteredReports.length}</span>
+            <h2 className="text-[#0D1B35] font-bold">Generated Reports</h2>
+            <span className="text-[#6378A0] text-xs bg-[#F2F5FB] border border-[#D9E2F0] rounded px-2 py-0.5">{filteredReports.length}</span>
           </div>
           {activeCategory !== "All" && (
             <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: categoryStyle[activeCategory]?.bg, color: categoryStyle[activeCategory]?.text }}>
@@ -197,23 +197,23 @@ export default async function ReportsPage({
 
         {filteredReports.length === 0 ? (
           <div className="py-12 text-center">
-            <FileText className="w-10 h-10 text-[#E5DDD0] mx-auto mb-3" />
-            <p className="text-[#9C9285] text-sm">No reports generated yet</p>
-            <p className="text-[#9C9285] text-xs mt-1">Use the cards above to generate your first report</p>
+            <FileText className="w-10 h-10 text-[#D9E2F0] mx-auto mb-3" />
+            <p className="text-[#6378A0] text-sm">No reports generated yet</p>
+            <p className="text-[#6378A0] text-xs mt-1">Use the cards above to generate your first report</p>
           </div>
         ) : (
           <div>
             {filteredReports.map((report) => {
               const catalogEntry = REPORT_CATALOG.find(c => c.type === report.reportType);
-              const cs = categoryStyle[catalogEntry?.category ?? ""] ?? { bg: "#F5F3EE", text: "#9C9285" };
+              const cs = categoryStyle[catalogEntry?.category ?? ""] ?? { bg: "#F2F5FB", text: "#6378A0" };
               return (
-                <div key={report.id} className="flex items-center gap-4 p-4 border-b border-[#EDE8E0] last:border-0 hover:bg-[#F5F3EE] transition-colors">
-                  <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0 bg-[#F5F3EE]">
+                <div key={report.id} className="flex items-center gap-4 p-4 border-b border-[#E4EAF5] last:border-0 hover:bg-[#F2F5FB] transition-colors">
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0 bg-[#F2F5FB]">
                     {catalogEntry?.icon ?? "📄"}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-[#1C1714] font-medium text-sm">{report.title}</p>
+                      <p className="text-[#0D1B35] font-medium text-sm">{report.title}</p>
                       {catalogEntry && (
                         <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ backgroundColor: cs.bg, color: cs.text }}>
                           {catalogEntry.category}
@@ -221,13 +221,13 @@ export default async function ReportsPage({
                       )}
                     </div>
                     <div className="flex items-center gap-3 mt-0.5 flex-wrap">
-                      <span className="text-[#9C9285] text-xs flex items-center gap-1">
+                      <span className="text-[#6378A0] text-xs flex items-center gap-1">
                         <Calendar className="w-3 h-3" />{report.period}
                       </span>
-                      <span className="text-[#9C9285] text-xs flex items-center gap-1">
+                      <span className="text-[#6378A0] text-xs flex items-center gap-1">
                         <User className="w-3 h-3" />{report.generator.name}
                       </span>
-                      <span className="text-[#9C9285] text-xs">{format(new Date(report.createdAt), "MMM d, yyyy HH:mm")}</span>
+                      <span className="text-[#6378A0] text-xs">{format(new Date(report.createdAt), "MMM d, yyyy HH:mm")}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
@@ -235,7 +235,7 @@ export default async function ReportsPage({
                       {report.status}
                     </span>
                     {catalogEntry?.formats.map(fmt => (
-                      <button key={fmt} className={`flex items-center gap-1 text-xs px-2 py-1 rounded-lg border border-[#E5DDD0] hover:border-[#D4C8B8] transition-colors font-medium ${formatBadge[fmt]}`}>
+                      <button key={fmt} className={`flex items-center gap-1 text-xs px-2 py-1 rounded-lg border border-[#D9E2F0] hover:border-[#C6D0E8] transition-colors font-medium ${formatBadge[fmt]}`}>
                         <Download className="w-3 h-3" />
                         {fmt}
                       </button>
@@ -252,9 +252,9 @@ export default async function ReportsPage({
 }
 
 function ReportTypeCard({ rt }: { rt: (typeof REPORT_CATALOG)[number] }) {
-  const cs = categoryStyle[rt.category] ?? { bg: "#F5F3EE", text: "#9C9285" };
+  const cs = categoryStyle[rt.category] ?? { bg: "#F2F5FB", text: "#6378A0" };
   return (
-    <div className="bg-white border border-[#E5DDD0] rounded-xl p-4 space-y-3 hover:shadow-md hover:border-[#D4C8B8] transition-all cursor-pointer group">
+    <div className="bg-white border border-[#D9E2F0] rounded-xl p-4 space-y-3 hover:shadow-md hover:border-[#C6D0E8] transition-all cursor-pointer group">
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="text-2xl leading-none">{rt.icon}</span>
@@ -262,11 +262,11 @@ function ReportTypeCard({ rt }: { rt: (typeof REPORT_CATALOG)[number] }) {
             {rt.category}
           </span>
         </div>
-        <FileText className="w-3.5 h-3.5 text-[#9C9285] group-hover:text-[#B8901A] transition-colors flex-shrink-0 mt-0.5" />
+        <FileText className="w-3.5 h-3.5 text-[#6378A0] group-hover:text-[#B8901A] transition-colors flex-shrink-0 mt-0.5" />
       </div>
       <div>
-        <p className="text-[#1C1714] text-sm font-semibold leading-tight">{rt.label}</p>
-        <p className="text-[#9C9285] text-xs mt-1 leading-relaxed">{rt.description}</p>
+        <p className="text-[#0D1B35] text-sm font-semibold leading-tight">{rt.label}</p>
+        <p className="text-[#6378A0] text-xs mt-1 leading-relaxed">{rt.description}</p>
       </div>
       <div className="flex items-center justify-between pt-1">
         <div className="flex items-center gap-1">
@@ -274,9 +274,9 @@ function ReportTypeCard({ rt }: { rt: (typeof REPORT_CATALOG)[number] }) {
             <span key={fmt} className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ${formatBadge[fmt]}`}>{fmt}</span>
           ))}
         </div>
-        <span className="text-[10px] text-[#9C9285]">{rt.roles}</span>
+        <span className="text-[10px] text-[#6378A0]">{rt.roles}</span>
       </div>
-      <div className="border-t border-[#EDE8E0] pt-2">
+      <div className="border-t border-[#E4EAF5] pt-2">
         <span className="text-[10px] text-[#B8901A] font-semibold group-hover:underline">Generate report →</span>
       </div>
     </div>

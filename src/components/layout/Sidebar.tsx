@@ -2,117 +2,114 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
 import {
-  LayoutDashboard, Activity, Zap, ClipboardCheck,
-  MapPin, Package, Radio, Wifi, Gauge, Bell,
-  FileText, Users, Settings, Shield, BookOpen, Navigation,
+  LayoutDashboard, Zap, Activity, ShieldCheck,
+  MapPin, Package, Radio, Wifi, Bell, BarChart2,
+  Users, Settings, FileText, BookOpen, Cpu, ChevronRight,
 } from "lucide-react";
 
-interface NavItem { label: string; href: string; icon: React.ElementType }
-interface NavSection { title: string; items: NavItem[] }
-
-const navSections: NavSection[] = [
+const NAV = [
   {
-    title: "Overview",
+    section: "OVERVIEW",
     items: [
-      { label: "Executive", href: "/dashboard/executive", icon: LayoutDashboard },
-      { label: "Operations", href: "/dashboard/operations", icon: Activity },
-      { label: "Energy", href: "/dashboard/energy", icon: Zap },
-      { label: "Compliance", href: "/dashboard/compliance", icon: ClipboardCheck },
+      { label: "Executive",   href: "/dashboard/executive",  icon: LayoutDashboard },
+      { label: "Operations",  href: "/dashboard/operations", icon: Activity },
+      { label: "Energy",      href: "/dashboard/energy",     icon: Zap },
+      { label: "Compliance",  href: "/dashboard/compliance", icon: ShieldCheck },
     ],
   },
   {
-    title: "Assets",
+    section: "ASSETS",
     items: [
-      { label: "Sites", href: "/sites", icon: MapPin },
-      { label: "Installation Points", href: "/installation-points", icon: Navigation },
-      { label: "Assets", href: "/assets", icon: Package },
-      { label: "Sensors", href: "/sensors", icon: Radio },
-      { label: "Gateways", href: "/gateways", icon: Wifi },
+      { label: "Sites",               href: "/sites",               icon: MapPin },
+      { label: "Installation Points", href: "/installation-points", icon: Cpu },
+      { label: "Assets",              href: "/assets",              icon: Package },
+      { label: "Sensors",             href: "/sensors",             icon: Radio },
+      { label: "Gateways",            href: "/gateways",            icon: Wifi },
     ],
   },
   {
-    title: "Monitoring",
+    section: "MONITORING",
     items: [
-      { label: "Live Telemetry", href: "/telemetry", icon: Gauge },
-      { label: "Alerts", href: "/alerts", icon: Bell },
+      { label: "Live Telemetry", href: "/telemetry",    icon: BarChart2 },
+      { label: "Alerts",         href: "/alerts",       icon: Bell },
+      { label: "Alert Rules",    href: "/alert-rules",  icon: Settings },
     ],
   },
   {
-    title: "Reports & Admin",
+    section: "REPORTS & ADMIN",
     items: [
-      { label: "Reports", href: "/reports", icon: FileText },
-      { label: "Users", href: "/users", icon: Users },
-      { label: "Alert Rules", href: "/alert-rules", icon: Settings },
-      { label: "Integrations", href: "/integrations", icon: Shield },
-      { label: "Audit Log", href: "/audit-log", icon: BookOpen },
+      { label: "Reports",      href: "/reports",      icon: FileText },
+      { label: "Users",        href: "/users",        icon: Users },
+      { label: "Integrations", href: "/integrations", icon: BookOpen },
+      { label: "Audit Log",    href: "/audit-log",    icon: BookOpen },
     ],
   },
 ];
 
-export function Sidebar() {
+export default function Sidebar() {
   const pathname = usePathname();
 
+  const isActive = (href: string) =>
+    href === "/dashboard/executive"
+      ? pathname === href || pathname === "/"
+      : pathname.startsWith(href);
+
   return (
-    <aside className="flex flex-col w-60 h-screen bg-white border-r border-[#E5DDD0] overflow-y-auto flex-shrink-0 shadow-sm">
+    <aside className="w-[220px] flex-shrink-0 flex flex-col h-screen bg-[#0F1C3F] border-r border-white/[0.06] sticky top-0 overflow-y-auto">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-5 py-4 border-b border-[#E5DDD0]">
-        <div className="w-8 h-8 rounded-lg bg-[#B8901A] flex items-center justify-center flex-shrink-0">
-          <span className="text-white font-black text-xs tracking-widest">E</span>
-        </div>
-        <div className="flex flex-col leading-none">
-          <span className="text-[#1C1714] font-bold text-sm tracking-wider">ELEMENT</span>
-          <span className="text-[#B8901A] text-[9px] font-semibold tracking-[0.15em] uppercase mt-0.5">
-            Monitoring System
-          </span>
+      <div className="px-5 py-5 border-b border-white/[0.06]">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-[#B8901A] flex items-center justify-center shadow-lg shadow-[#B8901A]/25 flex-shrink-0">
+            <span className="text-white font-bold text-sm tracking-tight">E</span>
+          </div>
+          <div>
+            <p className="text-white font-bold text-sm leading-tight tracking-tight">ELEMENT</p>
+            <p className="text-[#B8901A] text-[10px] font-semibold tracking-widest uppercase leading-tight">Monitoring System</p>
+          </div>
         </div>
       </div>
 
-      {/* Navigation */}
+      {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-5 overflow-y-auto">
-        {navSections.map((section) => (
-          <div key={section.title}>
-            <p className="px-3 mb-1.5 text-[9px] font-bold uppercase tracking-widest text-[#9C9285]">
-              {section.title}
-            </p>
-            <ul className="space-y-0.5">
-              {section.items.map((item) => {
-                const Icon = item.icon;
-                const isActive =
-                  pathname === item.href ||
-                  (item.href !== "/" && pathname.startsWith(item.href + "/"));
+        {NAV.map(({ section, items }) => (
+          <div key={section}>
+            <p className="text-white/30 text-[9px] font-bold uppercase tracking-[0.14em] px-2 mb-1.5">{section}</p>
+            <div className="space-y-0.5">
+              {items.map(({ label, href, icon: Icon }) => {
+                const active = isActive(href);
                 return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={cn(
-                        "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all",
-                        isActive
-                          ? "bg-[#FEF7E6] text-[#B8901A] shadow-sm"
-                          : "text-[#5C5248] hover:text-[#1C1714] hover:bg-[#F5F3EE]"
-                      )}
-                    >
-                      <Icon
-                        className={cn("w-4 h-4 flex-shrink-0", isActive ? "text-[#B8901A]" : "text-[#9C9285]")}
-                      />
-                      <span className="truncate">{item.label}</span>
-                      {isActive && (
-                        <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#B8901A] flex-shrink-0" />
-                      )}
-                    </Link>
-                  </li>
+                  <Link
+                    key={href}
+                    href={href}
+                    className={`group relative flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 ${
+                      active
+                        ? "bg-white/[0.10] text-white"
+                        : "text-white/55 hover:text-white hover:bg-white/[0.06]"
+                    }`}
+                  >
+                    {active && (
+                      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[#B8901A] rounded-r-full" />
+                    )}
+                    <Icon
+                      className={`w-[15px] h-[15px] flex-shrink-0 transition-colors ${
+                        active ? "text-[#B8901A]" : "text-white/35 group-hover:text-white/65"
+                      }`}
+                    />
+                    <span className="truncate leading-none">{label}</span>
+                    {active && <ChevronRight className="w-3 h-3 text-white/25 ml-auto flex-shrink-0" />}
+                  </Link>
                 );
               })}
-            </ul>
+            </div>
           </div>
         ))}
       </nav>
 
       {/* Footer */}
-      <div className="px-5 py-3 border-t border-[#E5DDD0] bg-[#F5F3EE]">
-        <p className="text-[10px] text-[#9C9285] font-medium">WIT.ID &copy; {new Date().getFullYear()}</p>
-        <p className="text-[9px] text-[#D4C8B8] mt-0.5">Element Monitoring v1.0</p>
+      <div className="px-5 py-4 border-t border-white/[0.06]">
+        <p className="text-white/25 text-[10px] font-medium">WIT.ID © 2026</p>
+        <p className="text-white/15 text-[9px] mt-0.5">Element Monitoring v1.0</p>
       </div>
     </aside>
   );

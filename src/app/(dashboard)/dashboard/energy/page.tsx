@@ -53,8 +53,8 @@ export default async function EnergyDashboardPage() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[#1C1714] text-2xl font-bold">Energy Dashboard</h1>
-          <p className="text-[#9C9285] text-sm mt-0.5">Electricity consumption analysis · ISO 50001 monitoring active</p>
+          <h1 className="text-[#0D1B35] text-2xl font-bold">Energy Dashboard</h1>
+          <p className="text-[#6378A0] text-sm mt-0.5">Electricity consumption analysis · ISO 50001 monitoring active</p>
         </div>
         <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F0FDF4] border border-[#BBF7D0] rounded-full">
           <TrendingDown className="w-3.5 h-3.5 text-[#166534]" />
@@ -65,16 +65,16 @@ export default async function EnergyDashboardPage() {
       {/* KPI row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {kpis.map(({ label, value, unit, note, noteOk, icon: Icon }) => (
-          <div key={label} className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm hover:shadow-md transition-all">
+          <div key={label} className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm hover:shadow-md transition-all">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-[#9C9285] text-xs font-semibold uppercase tracking-wider">{label}</p>
+              <p className="text-[#6378A0] text-xs font-semibold uppercase tracking-wider">{label}</p>
               <div className="w-8 h-8 rounded-lg bg-[#FEF7E6] flex items-center justify-center">
                 <Icon className="w-4 h-4 text-[#B8901A]" />
               </div>
             </div>
-            <p className="text-[#1C1714] text-2xl font-bold leading-none">
+            <p className="text-[#0D1B35] text-2xl font-bold leading-none">
               {value}
-              {unit && <span className="text-[#9C9285] text-sm font-normal ml-1">{unit}</span>}
+              {unit && <span className="text-[#6378A0] text-sm font-normal ml-1">{unit}</span>}
             </p>
             <p className={`text-xs mt-2 font-medium ${noteOk ? "text-[#166534]" : "text-[#B45309]"}`}>{note}</p>
           </div>
@@ -83,20 +83,20 @@ export default async function EnergyDashboardPage() {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-[#1C1714] font-semibold">Today&apos;s Load Profile</h3>
-              <p className="text-[#9C9285] text-xs">kW by hour · actual vs baseline</p>
+              <h3 className="text-[#0D1B35] font-semibold">Today&apos;s Load Profile</h3>
+              <p className="text-[#6378A0] text-xs">kW by hour · actual vs baseline</p>
             </div>
           </div>
-          <TrendChart data={hourlyData} color="#B8901A" color2="#E5DDD0" label="Actual kW" label2="Baseline kW" height={200} />
+          <TrendChart data={hourlyData} color="#B8901A" color2="#D9E2F0" label="Actual kW" label2="Baseline kW" height={200} />
         </div>
-        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-[#1C1714] font-semibold">Weekly Consumption</h3>
-              <p className="text-[#9C9285] text-xs">kWh by day · this week vs last week</p>
+              <h3 className="text-[#0D1B35] font-semibold">Weekly Consumption</h3>
+              <p className="text-[#6378A0] text-xs">kWh by day · this week vs last week</p>
             </div>
           </div>
           <TrendChart data={weeklyData} color="#B8901A" color2="#1E5FA8" label="This Week" label2="Last Week" height={200} />
@@ -104,9 +104,9 @@ export default async function EnergyDashboardPage() {
       </div>
 
       {/* Sub-meter table */}
-      <div className="bg-white border border-[#E5DDD0] rounded-xl shadow-sm overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#EDE8E0] bg-[#F5F3EE]">
-          <h3 className="text-[#1C1714] font-semibold">Sub-Meter Breakdown</h3>
+      <div className="bg-white border border-[#D9E2F0] rounded-xl shadow-sm overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#E4EAF5] bg-[#F2F5FB]">
+          <h3 className="text-[#0D1B35] font-semibold">Sub-Meter Breakdown</h3>
           <div className="flex items-center gap-1.5 text-[#166534] text-xs font-medium">
             <TrendingDown className="w-3.5 h-3.5" />
             <span>ISO 50001 monitoring active</span>
@@ -115,19 +115,19 @@ export default async function EnergyDashboardPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#EDE8E0]">
+              <tr className="border-b border-[#E4EAF5]">
                 {["Meter / Asset", "Site", "kWh Today", "Peak kW", "Power Factor", "Trend"].map((h, i) => (
-                  <th key={h} className={`text-[#9C9285] text-xs font-bold uppercase tracking-wider px-5 py-3 ${i > 1 ? "text-right" : "text-left"}`}>{h}</th>
+                  <th key={h} className={`text-[#6378A0] text-xs font-bold uppercase tracking-wider px-5 py-3 ${i > 1 ? "text-right" : "text-left"}`}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {meters.map((m) => (
-                <tr key={m.name} className="border-b border-[#EDE8E0] hover:bg-[#F5F3EE] transition-colors last:border-0">
-                  <td className="px-5 py-3.5 text-[#1C1714] font-semibold">{m.name}</td>
-                  <td className="px-5 py-3.5 text-[#9C9285] text-sm">{m.site}</td>
-                  <td className="px-5 py-3.5 text-right text-[#1C1714] font-medium">{m.kWh.toLocaleString()}</td>
-                  <td className="px-5 py-3.5 text-right text-[#1C1714]">{m.demand}</td>
+                <tr key={m.name} className="border-b border-[#E4EAF5] hover:bg-[#F2F5FB] transition-colors last:border-0">
+                  <td className="px-5 py-3.5 text-[#0D1B35] font-semibold">{m.name}</td>
+                  <td className="px-5 py-3.5 text-[#6378A0] text-sm">{m.site}</td>
+                  <td className="px-5 py-3.5 text-right text-[#0D1B35] font-medium">{m.kWh.toLocaleString()}</td>
+                  <td className="px-5 py-3.5 text-right text-[#0D1B35]">{m.demand}</td>
                   <td className="px-5 py-3.5 text-right">
                     <span className={`font-semibold ${m.pf >= 0.90 ? "text-[#166534]" : "text-[#B45309]"}`}>{m.pf}</span>
                   </td>

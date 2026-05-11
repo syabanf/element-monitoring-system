@@ -127,16 +127,16 @@ function Column<T extends { id: string; name: string }>({
   onDelete,
 }: ColumnProps<T>) {
   return (
-    <div className="flex flex-col w-56 flex-shrink-0 border-r border-[#2a2a2a] h-full">
-      <div className="flex items-center justify-between px-3 py-2.5 border-b border-[#2a2a2a] bg-[#111111]">
+    <div className="flex flex-col w-56 flex-shrink-0 border-r border-[#D9E2F0] h-full">
+      <div className="flex items-center justify-between px-3 py-2.5 border-b border-[#D9E2F0] bg-[#F2F5FB]">
         <div className="flex items-center gap-1.5">
-          <Icon className="w-3.5 h-3.5 text-[#888888]" />
-          <span className="text-xs font-semibold text-[#888888] uppercase tracking-wider">{title}</span>
+          <Icon className="w-3.5 h-3.5 text-[#6378A0]" />
+          <span className="text-xs font-semibold text-[#6378A0] uppercase tracking-wider">{title}</span>
         </div>
         <Button
           variant="ghost"
           size="icon"
-          className="w-5 h-5 text-[#888888] hover:text-white hover:bg-[#2a2a2a]"
+          className="w-5 h-5 text-[#6378A0] hover:text-[#0D1B35] hover:bg-[#E4EAF5]"
           disabled={disabled}
           onClick={onAdd}
           title={`Add ${title}`}
@@ -147,23 +147,23 @@ function Column<T extends { id: string; name: string }>({
       <div className="flex-1 overflow-y-auto">
         {loading ? (
           <div className="flex items-center justify-center py-8">
-            <Loader2 className="w-4 h-4 animate-spin text-[#888888]" />
+            <Loader2 className="w-4 h-4 animate-spin text-[#6378A0]" />
           </div>
         ) : items.length === 0 ? (
-          <p className="text-[11px] text-[#888888] text-center py-6 px-3">No {title.toLowerCase()} yet</p>
+          <p className="text-[11px] text-[#6378A0] text-center py-6 px-3">No {title.toLowerCase()} yet</p>
         ) : (
           items.map((item) => (
             <div
               key={item.id}
               onClick={() => onSelect(item.id)}
-              className={`group flex items-center justify-between px-3 py-2 cursor-pointer border-b border-[#1a1a1a] transition-colors ${
+              className={`group flex items-center justify-between px-3 py-2 cursor-pointer border-b border-[#E4EAF5] transition-colors ${
                 selectedId === item.id
-                  ? "bg-[#e11d48]/10 border-l-2 border-l-[#e11d48]"
-                  : "hover:bg-[#1a1a1a]"
+                  ? "bg-[#B8901A]/10 border-l-2 border-l-[#B8901A]"
+                  : "hover:bg-[#F2F5FB]"
               }`}
             >
               <div className="flex-1 min-w-0">
-                <p className={`text-xs font-medium truncate ${selectedId === item.id ? "text-white" : "text-[#cccccc]"}`}>
+                <p className={`text-xs font-medium truncate ${selectedId === item.id ? "text-[#0D1B35]" : "text-[#3D5280]"}`}>
                   {item.name}
                 </p>
                 {renderSub && (
@@ -173,19 +173,19 @@ function Column<T extends { id: string; name: string }>({
               <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 ml-1 flex-shrink-0">
                 <button
                   onClick={(e) => { e.stopPropagation(); onEdit(item); }}
-                  className="p-0.5 rounded text-[#888888] hover:text-white hover:bg-[#2a2a2a]"
+                  className="p-0.5 rounded text-[#6378A0] hover:text-[#0D1B35] hover:bg-[#E4EAF5]"
                 >
                   <Pencil className="w-2.5 h-2.5" />
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); onDelete(item); }}
-                  className="p-0.5 rounded text-[#888888] hover:text-[#e11d48] hover:bg-[#2a2a2a]"
+                  className="p-0.5 rounded text-[#6378A0] hover:text-[#B91C1C] hover:bg-[#E4EAF5]"
                 >
                   <Trash2 className="w-2.5 h-2.5" />
                 </button>
               </div>
               {selectedId === item.id && (
-                <ChevronRight className="w-3 h-3 text-[#e11d48] flex-shrink-0 ml-0.5" />
+                <ChevronRight className="w-3 h-3 text-[#B8901A] flex-shrink-0 ml-0.5" />
               )}
             </div>
           ))
@@ -467,33 +467,33 @@ export default function InstallationPointsPage() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#0a0a0a]">
+    <div className="flex flex-col h-full bg-[#F2F5FB]">
       {/* Header */}
-      <div className="px-6 py-5 border-b border-[#2a2a2a] bg-[#0a0a0a]">
+      <div className="px-6 py-5 border-b border-[#D9E2F0] bg-white">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-white font-semibold text-lg">Installation Points</h1>
-            <p className="text-[#888888] text-sm mt-0.5">
+            <h1 className="text-[#0D1B35] font-semibold text-lg">Installation Points</h1>
+            <p className="text-[#6378A0] text-sm mt-0.5">
               Kelola hierarki lokasi: Gedung → Department → Bagian → Ruangan → Installation Point
             </p>
           </div>
           {/* Breadcrumb */}
           {(selectedSite || selectedBuilding || selectedDept || selectedBagian || selectedRuangan) && (
-            <div className="flex items-center gap-1 text-xs text-[#888888]">
-              {selectedSite && <span className="text-white">{selectedSite.name}</span>}
-              {selectedBuilding && <><ChevronRight className="w-3 h-3" /><span className="text-white">{selectedBuilding.name}</span></>}
-              {selectedDept && <><ChevronRight className="w-3 h-3" /><span className="text-white">{selectedDept.name}</span></>}
-              {selectedBagian && <><ChevronRight className="w-3 h-3" /><span className="text-white">{selectedBagian.name}</span></>}
-              {selectedRuangan && <><ChevronRight className="w-3 h-3" /><span className="text-[#e11d48] font-medium">{selectedRuangan.name}</span></>}
+            <div className="flex items-center gap-1 text-xs text-[#6378A0]">
+              {selectedSite && <span className="text-[#0D1B35]">{selectedSite.name}</span>}
+              {selectedBuilding && <><ChevronRight className="w-3 h-3" /><span className="text-[#0D1B35]">{selectedBuilding.name}</span></>}
+              {selectedDept && <><ChevronRight className="w-3 h-3" /><span className="text-[#0D1B35]">{selectedDept.name}</span></>}
+              {selectedBagian && <><ChevronRight className="w-3 h-3" /><span className="text-[#0D1B35]">{selectedBagian.name}</span></>}
+              {selectedRuangan && <><ChevronRight className="w-3 h-3" /><span className="text-[#B8901A] font-medium">{selectedRuangan.name}</span></>}
             </div>
           )}
         </div>
 
         {/* Site selector */}
         <div className="mt-4 flex items-center gap-3">
-          <label className="text-xs text-[#888888] font-medium whitespace-nowrap">Pilih Site:</label>
+          <label className="text-xs text-[#6378A0] font-medium whitespace-nowrap">Pilih Site:</label>
           {loadingSites ? (
-            <Loader2 className="w-4 h-4 animate-spin text-[#888888]" />
+            <Loader2 className="w-4 h-4 animate-spin text-[#6378A0]" />
           ) : (
             <div className="flex gap-2 flex-wrap">
               {sites.map((s) => (
@@ -502,8 +502,8 @@ export default function InstallationPointsPage() {
                   onClick={() => setSelectedSiteId(s.id === selectedSiteId ? null : s.id)}
                   className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
                     selectedSiteId === s.id
-                      ? "bg-[#e11d48] border-[#e11d48] text-white"
-                      : "border-[#2a2a2a] text-[#888888] hover:border-[#888888] hover:text-white"
+                      ? "bg-[#0F1C3F] border-[#0F1C3F] text-white"
+                      : "border-[#D9E2F0] text-[#6378A0] hover:border-[#0F1C3F] hover:text-[#0D1B35]"
                   }`}
                 >
                   {s.name}
@@ -525,7 +525,7 @@ export default function InstallationPointsPage() {
           loading={loadingBuildings}
           disabled={!selectedSiteId}
           renderSub={(b) => (
-            <span className="text-[10px] text-[#888888]">{b._count.departments} dept · {b.floors} lt</span>
+            <span className="text-[10px] text-[#6378A0]">{b._count.departments} dept · {b.floors} lt</span>
           )}
           onSelect={(id) => setSelectedBuildingId(id === selectedBuildingId ? null : id)}
           onAdd={() => openAdd("building")}
@@ -542,7 +542,7 @@ export default function InstallationPointsPage() {
           loading={loadingDepts}
           disabled={!selectedBuildingId}
           renderSub={(d) => (
-            <span className="text-[10px] text-[#888888]">{d._count.bagians} bagian</span>
+            <span className="text-[10px] text-[#6378A0]">{d._count.bagians} bagian</span>
           )}
           onSelect={(id) => setSelectedDeptId(id === selectedDeptId ? null : id)}
           onAdd={() => openAdd("department")}
@@ -559,7 +559,7 @@ export default function InstallationPointsPage() {
           loading={loadingBagians}
           disabled={!selectedDeptId}
           renderSub={(b) => (
-            <span className="text-[10px] text-[#888888]">{b._count.ruangans} ruangan</span>
+            <span className="text-[10px] text-[#6378A0]">{b._count.ruangans} ruangan</span>
           )}
           onSelect={(id) => setSelectedBagianId(id === selectedBagianId ? null : id)}
           onAdd={() => openAdd("bagian")}
@@ -576,7 +576,7 @@ export default function InstallationPointsPage() {
           loading={loadingRuangans}
           disabled={!selectedBagianId}
           renderSub={(r) => (
-            <span className="text-[10px] text-[#888888]">
+            <span className="text-[10px] text-[#6378A0]">
               {r._count.installationPoints} IP{r.floor != null ? ` · Lt ${r.floor}` : ""}
             </span>
           )}
@@ -588,14 +588,14 @@ export default function InstallationPointsPage() {
 
         {/* Installation Points panel */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#2a2a2a] bg-[#111111]">
+          <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#D9E2F0] bg-white">
             <div className="flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-[#888888]" />
-              <span className="text-xs font-semibold text-[#888888] uppercase tracking-wider">Installation Points</span>
+              <MapPin className="w-3.5 h-3.5 text-[#6378A0]" />
+              <span className="text-xs font-semibold text-[#6378A0] uppercase tracking-wider">Installation Points</span>
             </div>
             <Button
               size="sm"
-              className="h-7 text-xs bg-[#e11d48] hover:bg-[#be123c] text-white"
+              className="h-7 text-xs bg-[#0F1C3F] hover:bg-[#162040] text-white"
               disabled={!selectedRuanganId}
               onClick={() => openAdd("point")}
             >
@@ -607,21 +607,21 @@ export default function InstallationPointsPage() {
           <div className="flex-1 overflow-y-auto p-4">
             {!selectedRuanganId ? (
               <div className="flex flex-col items-center justify-center h-full text-center">
-                <MapPin className="w-8 h-8 text-[#2a2a2a] mb-3" />
-                <p className="text-sm text-[#888888]">Pilih ruangan untuk melihat installation points</p>
-                <p className="text-xs text-[#888888] mt-1">Navigasi melalui kolom di sebelah kiri</p>
+                <MapPin className="w-8 h-8 text-[#D9E2F0] mb-3" />
+                <p className="text-sm text-[#6378A0]">Pilih ruangan untuk melihat installation points</p>
+                <p className="text-xs text-[#6378A0] mt-1">Navigasi melalui kolom di sebelah kiri</p>
               </div>
             ) : loadingPoints ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-5 h-5 animate-spin text-[#888888]" />
+                <Loader2 className="w-5 h-5 animate-spin text-[#6378A0]" />
               </div>
             ) : points.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center">
-                <MapPin className="w-8 h-8 text-[#2a2a2a] mb-3" />
-                <p className="text-sm text-[#888888]">Belum ada installation point</p>
+                <MapPin className="w-8 h-8 text-[#D9E2F0] mb-3" />
+                <p className="text-sm text-[#6378A0]">Belum ada installation point</p>
                 <Button
                   size="sm"
-                  className="mt-3 bg-[#e11d48] hover:bg-[#be123c] text-white text-xs"
+                  className="mt-3 bg-[#0F1C3F] hover:bg-[#162040] text-white text-xs"
                   onClick={() => openAdd("point")}
                 >
                   <Plus className="w-3 h-3 mr-1" /> Add First Point
@@ -634,7 +634,7 @@ export default function InstallationPointsPage() {
                   return (
                     <div
                       key={pt.id}
-                      className="bg-[#111111] border border-[#2a2a2a] rounded-lg p-4 flex items-start justify-between gap-3 hover:border-[#3a3a3a] transition-colors"
+                      className="bg-white border border-[#D9E2F0] rounded-lg p-4 flex items-start justify-between gap-3 hover:border-[#B8901A]/40 hover:shadow-sm transition-colors"
                     >
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
@@ -642,14 +642,14 @@ export default function InstallationPointsPage() {
                             className="w-2 h-2 rounded-full flex-shrink-0"
                             style={{ backgroundColor: pillarConfig?.color ?? "#888888" }}
                           />
-                          <p className="text-sm font-medium text-white truncate">{pt.name}</p>
+                          <p className="text-sm font-medium text-[#0D1B35] truncate">{pt.name}</p>
                           {!pt.isActive && (
-                            <Badge className="text-[9px] px-1 py-0 h-3.5 bg-[#888888]/20 text-[#888888] border-[#888888]/30">
+                            <Badge className="text-[9px] px-1 py-0 h-3.5 bg-[#6378A0]/10 text-[#6378A0] border-[#6378A0]/20">
                               Inactive
                             </Badge>
                           )}
                         </div>
-                        {pt.code && <p className="text-[11px] text-[#888888] mb-1">Code: {pt.code}</p>}
+                        {pt.code && <p className="text-[11px] text-[#6378A0] mb-1">Code: {pt.code}</p>}
                         <Badge
                           className="text-[10px] px-1.5 py-0 h-4"
                           style={{
@@ -661,19 +661,19 @@ export default function InstallationPointsPage() {
                           {pillarConfig?.label ?? pt.pillar}
                         </Badge>
                         {pt.description && (
-                          <p className="text-[11px] text-[#888888] mt-1.5 line-clamp-2">{pt.description}</p>
+                          <p className="text-[11px] text-[#6378A0] mt-1.5 line-clamp-2">{pt.description}</p>
                         )}
                       </div>
                       <div className="flex gap-1 flex-shrink-0">
                         <button
                           onClick={() => openEdit("point", pt as unknown as Record<string, unknown>)}
-                          className="p-1.5 rounded text-[#888888] hover:text-white hover:bg-[#2a2a2a]"
+                          className="p-1.5 rounded text-[#6378A0] hover:text-[#0D1B35] hover:bg-[#F2F5FB]"
                         >
                           <Pencil className="w-3 h-3" />
                         </button>
                         <button
                           onClick={() => openDelete("point", pt)}
-                          className="p-1.5 rounded text-[#888888] hover:text-[#e11d48] hover:bg-[#2a2a2a]"
+                          className="p-1.5 rounded text-[#6378A0] hover:text-[#B91C1C] hover:bg-[#F2F5FB]"
                         >
                           <Trash2 className="w-3 h-3" />
                         </button>
@@ -689,57 +689,57 @@ export default function InstallationPointsPage() {
 
       {/* CRUD Modal */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="bg-[#111111] border-[#2a2a2a] text-white max-w-md">
+        <DialogContent className="bg-white border-[#D9E2F0] text-[#0D1B35] max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-white">
+            <DialogTitle className="text-[#0D1B35]">
               {modalMode === "add" ? "Tambah" : "Edit"} {modalTitles[modalTarget]}
             </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">
-              <Label className="text-xs text-[#888888]">Nama *</Label>
+              <Label className="text-xs text-[#6378A0]">Nama *</Label>
               <Input
                 value={fName}
                 onChange={(e) => setFName(e.target.value)}
                 placeholder={`Nama ${modalTitles[modalTarget]}`}
-                className="bg-[#1a1a1a] border-[#2a2a2a] text-white placeholder:text-[#888888] focus:border-[#e11d48]"
+                className="bg-[#F2F5FB] border-[#D9E2F0] text-[#0D1B35] placeholder:text-[#6378A0] focus:border-[#B8901A]"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs text-[#888888]">Kode</Label>
+              <Label className="text-xs text-[#6378A0]">Kode</Label>
               <Input
                 value={fCode}
                 onChange={(e) => setFCode(e.target.value)}
                 placeholder="e.g. GDG-01"
-                className="bg-[#1a1a1a] border-[#2a2a2a] text-white placeholder:text-[#888888] focus:border-[#e11d48]"
+                className="bg-[#F2F5FB] border-[#D9E2F0] text-[#0D1B35] placeholder:text-[#6378A0] focus:border-[#B8901A]"
               />
             </div>
 
             {modalTarget === "building" && (
               <div className="space-y-1.5">
-                <Label className="text-xs text-[#888888]">Jumlah Lantai</Label>
+                <Label className="text-xs text-[#6378A0]">Jumlah Lantai</Label>
                 <Input
                   type="number"
                   min={1}
                   value={fFloors}
                   onChange={(e) => setFFloors(e.target.value)}
-                  className="bg-[#1a1a1a] border-[#2a2a2a] text-white focus:border-[#e11d48]"
+                  className="bg-[#F2F5FB] border-[#D9E2F0] text-[#0D1B35] focus:border-[#B8901A]"
                 />
               </div>
             )}
 
             {modalTarget === "ruangan" && (
               <div className="space-y-1.5">
-                <Label className="text-xs text-[#888888]">Lantai</Label>
+                <Label className="text-xs text-[#6378A0]">Lantai</Label>
                 <Input
                   type="number"
                   min={1}
                   value={fFloor}
                   onChange={(e) => setFFloor(e.target.value)}
                   placeholder="e.g. 3"
-                  className="bg-[#1a1a1a] border-[#2a2a2a] text-white placeholder:text-[#888888] focus:border-[#e11d48]"
+                  className="bg-[#F2F5FB] border-[#D9E2F0] text-[#0D1B35] placeholder:text-[#6378A0] focus:border-[#B8901A]"
                 />
               </div>
             )}
@@ -747,14 +747,14 @@ export default function InstallationPointsPage() {
             {modalTarget === "point" && (
               <>
                 <div className="space-y-1.5">
-                  <Label className="text-xs text-[#888888]">Pillar *</Label>
+                  <Label className="text-xs text-[#6378A0]">Pillar *</Label>
                   <Select value={fPillar} onValueChange={(v) => { if (v !== null) setFPillar(v); }}>
-                    <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a] text-white focus:border-[#e11d48]">
+                    <SelectTrigger className="bg-[#F2F5FB] border-[#D9E2F0] text-[#0D1B35] focus:border-[#B8901A]">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a]">
+                    <SelectContent className="bg-white border-[#D9E2F0]">
                       {PILLARS.map((p) => (
-                        <SelectItem key={p.value} value={p.value} className="text-white focus:bg-[#2a2a2a]">
+                        <SelectItem key={p.value} value={p.value} className="text-[#0D1B35] focus:bg-[#F2F5FB]">
                           <div className="flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
                             {p.label}
@@ -766,14 +766,14 @@ export default function InstallationPointsPage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label className="text-xs text-[#888888]">Status</Label>
+                  <Label className="text-xs text-[#6378A0]">Status</Label>
                   <Select value={fIsActive} onValueChange={(v) => { if (v !== null) setFIsActive(v); }}>
-                    <SelectTrigger className="bg-[#1a1a1a] border-[#2a2a2a] text-white focus:border-[#e11d48]">
+                    <SelectTrigger className="bg-[#F2F5FB] border-[#D9E2F0] text-[#0D1B35] focus:border-[#B8901A]">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a]">
-                      <SelectItem value="true" className="text-white focus:bg-[#2a2a2a]">Active</SelectItem>
-                      <SelectItem value="false" className="text-white focus:bg-[#2a2a2a]">Inactive</SelectItem>
+                    <SelectContent className="bg-white border-[#D9E2F0]">
+                      <SelectItem value="true" className="text-[#0D1B35] focus:bg-[#F2F5FB]">Active</SelectItem>
+                      <SelectItem value="false" className="text-[#0D1B35] focus:bg-[#F2F5FB]">Inactive</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -781,13 +781,13 @@ export default function InstallationPointsPage() {
             )}
 
             <div className="space-y-1.5">
-              <Label className="text-xs text-[#888888]">Deskripsi</Label>
+              <Label className="text-xs text-[#6378A0]">Deskripsi</Label>
               <Textarea
                 value={fDescription}
                 onChange={(e) => setFDescription(e.target.value)}
                 placeholder="Deskripsi singkat (opsional)"
                 rows={3}
-                className="bg-[#1a1a1a] border-[#2a2a2a] text-white placeholder:text-[#888888] focus:border-[#e11d48] resize-none"
+                className="bg-[#F2F5FB] border-[#D9E2F0] text-[#0D1B35] placeholder:text-[#6378A0] focus:border-[#B8901A] resize-none"
               />
             </div>
           </div>
@@ -796,14 +796,14 @@ export default function InstallationPointsPage() {
             <Button
               variant="ghost"
               onClick={() => setModalOpen(false)}
-              className="text-[#888888] hover:text-white"
+              className="text-[#6378A0] hover:text-[#0D1B35]"
             >
               Batal
             </Button>
             <Button
               onClick={handleSave}
               disabled={!fName.trim() || modalSaving}
-              className="bg-[#e11d48] hover:bg-[#be123c] text-white"
+              className="bg-[#0F1C3F] hover:bg-[#162040] text-white"
             >
               {modalSaving && <Loader2 className="w-3 h-3 mr-1.5 animate-spin" />}
               {modalMode === "add" ? "Tambah" : "Simpan"}
@@ -814,25 +814,25 @@ export default function InstallationPointsPage() {
 
       {/* Delete confirm */}
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <DialogContent className="bg-[#111111] border-[#2a2a2a] text-white max-w-sm">
+        <DialogContent className="bg-white border-[#D9E2F0] text-[#0D1B35] max-w-sm">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-white">
+            <DialogTitle className="flex items-center gap-2 text-[#0D1B35]">
               <AlertTriangle className="w-4 h-4 text-[#f59e0b]" />
               Hapus {deletingItem ? modalTitles[deletingItem.target] : ""}
             </DialogTitle>
           </DialogHeader>
-          <p className="text-sm text-[#888888]">
-            Hapus <span className="text-white font-medium">&quot;{deletingItem?.name}&quot;</span>?
+          <p className="text-sm text-[#6378A0]">
+            Hapus <span className="text-[#0D1B35] font-medium">&quot;{deletingItem?.name}&quot;</span>?
             Semua data di bawahnya juga akan terhapus.
           </p>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setDeleteOpen(false)} className="text-[#888888] hover:text-white">
+            <Button variant="ghost" onClick={() => setDeleteOpen(false)} className="text-[#6378A0] hover:text-[#0D1B35]">
               <X className="w-3 h-3 mr-1" /> Batal
             </Button>
             <Button
               onClick={handleDelete}
               disabled={deleteLoading}
-              className="bg-[#e11d48] hover:bg-[#be123c] text-white"
+              className="bg-[#0F1C3F] hover:bg-[#162040] text-white"
             >
               {deleteLoading && <Loader2 className="w-3 h-3 mr-1.5 animate-spin" />}
               Hapus

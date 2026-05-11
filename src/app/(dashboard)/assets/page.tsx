@@ -28,7 +28,7 @@ const pillarColors: Record<string, { bg: string; text: string; dot: string }> = 
 };
 const statusConfig: Record<string, { bg: string; text: string }> = {
   ACTIVE:          { bg: "#F0FDF4", text: "#166534" },
-  INACTIVE:        { bg: "#F5F3EE", text: "#9C9285" },
+  INACTIVE:        { bg: "#F2F5FB", text: "#6378A0" },
   MAINTENANCE:     { bg: "#FFFBEB", text: "#B45309" },
   DECOMMISSIONED:  { bg: "#FEF2F2", text: "#B91C1C" },
 };
@@ -78,9 +78,9 @@ export default function AssetsPage() {
     setDeleting(false); setDelId(null); load();
   };
 
-  const inputCls = "w-full border border-[#E5DDD0] rounded-lg px-3 py-2 text-sm text-[#1C1714] focus:outline-none focus:ring-2 focus:ring-[#B8901A]/30 focus:border-[#B8901A] bg-white";
+  const inputCls = "w-full border border-[#D9E2F0] rounded-lg px-3 py-2 text-sm text-[#0D1B35] focus:outline-none focus:ring-2 focus:ring-[#B8901A]/30 focus:border-[#B8901A] bg-white";
   const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
-    <div className="space-y-1.5"><label className="text-xs font-semibold text-[#9C9285] uppercase tracking-wider">{label}</label>{children}</div>
+    <div className="space-y-1.5"><label className="text-xs font-semibold text-[#6378A0] uppercase tracking-wider">{label}</label>{children}</div>
   );
 
   return (
@@ -91,18 +91,18 @@ export default function AssetsPage() {
             <Box className="w-5 h-5 text-[#B8901A]" />
           </div>
           <div>
-            <h1 className="text-[#1C1714] text-2xl font-bold">Asset Registry</h1>
-            <p className="text-[#9C9285] text-sm">{assets.length} assets · {assets.filter(a => a.status === "ACTIVE").length} active</p>
+            <h1 className="text-[#0D1B35] text-2xl font-bold">Asset Registry</h1>
+            <p className="text-[#6378A0] text-sm">{assets.length} assets · {assets.filter(a => a.status === "ACTIVE").length} active</p>
           </div>
         </div>
-        <button onClick={openCreate} className="flex items-center gap-2 px-4 py-2.5 bg-[#1C1714] text-white text-sm font-semibold rounded-xl hover:bg-[#2D2420] transition-colors shadow-sm">
+        <button onClick={openCreate} className="flex items-center gap-2 px-4 py-2.5 bg-[#0D1B35] text-white text-sm font-semibold rounded-xl hover:bg-[#162040] transition-colors shadow-sm">
           <Plus className="w-4 h-4" />New Asset
         </button>
       </div>
 
       {/* Pillar filter chips */}
       <div className="flex flex-wrap gap-2">
-        <button onClick={() => setFilterPillar("")} className={`text-xs px-3 py-1.5 rounded-full font-medium border transition-colors ${!filterPillar ? "bg-[#1C1714] text-white border-[#1C1714]" : "bg-white text-[#5C5248] border-[#E5DDD0] hover:border-[#B8901A]"}`}>All</button>
+        <button onClick={() => setFilterPillar("")} className={`text-xs px-3 py-1.5 rounded-full font-medium border transition-colors ${!filterPillar ? "bg-[#0D1B35] text-white border-[#0D1B35]" : "bg-white text-[#3D5280] border-[#D9E2F0] hover:border-[#B8901A]"}`}>All</button>
         {PILLARS.map(p => {
           const pc = pillarColors[p];
           const active = filterPillar === p;
@@ -119,48 +119,48 @@ export default function AssetsPage() {
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9C9285]" />
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search assets…" className="w-full pl-9 pr-4 py-2.5 border border-[#E5DDD0] rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#B8901A]/30 focus:border-[#B8901A] text-[#1C1714] placeholder:text-[#9C9285]" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6378A0]" />
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search assets…" className="w-full pl-9 pr-4 py-2.5 border border-[#D9E2F0] rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#B8901A]/30 focus:border-[#B8901A] text-[#0D1B35] placeholder:text-[#6378A0]" />
       </div>
 
-      <div className="bg-white border border-[#E5DDD0] rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-[#D9E2F0] rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-[#F5F3EE] border-b border-[#E5DDD0]">
+              <tr className="bg-[#F2F5FB] border-b border-[#D9E2F0]">
                 {["Asset","Site","Pillar","Type","Sensors","Alerts","Status",""].map(h => (
-                  <th key={h} className="text-left px-5 py-3 text-xs font-bold text-[#9C9285] uppercase tracking-wider whitespace-nowrap">{h}</th>
+                  <th key={h} className="text-left px-5 py-3 text-xs font-bold text-[#6378A0] uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={8} className="px-5 py-12 text-center text-[#9C9285]">Loading…</td></tr>
+                <tr><td colSpan={8} className="px-5 py-12 text-center text-[#6378A0]">Loading…</td></tr>
               ) : filtered.map(a => {
                 const sc = statusConfig[a.status] ?? statusConfig.INACTIVE;
-                const pc = pillarColors[a.pillar] ?? { bg: "#F5F3EE", text: "#9C9285", dot: "#9C9285" };
+                const pc = pillarColors[a.pillar] ?? { bg: "#F2F5FB", text: "#6378A0", dot: "#6378A0" };
                 return (
-                  <tr key={a.id} className="border-b border-[#EDE8E0] hover:bg-[#F5F3EE] transition-colors last:border-0">
+                  <tr key={a.id} className="border-b border-[#E4EAF5] hover:bg-[#F2F5FB] transition-colors last:border-0">
                     <td className="px-5 py-3.5">
-                      <p className="text-[#1C1714] text-sm font-semibold">{a.name}</p>
-                      <p className="text-[#9C9285] text-xs font-mono">{a.code}</p>
+                      <p className="text-[#0D1B35] text-sm font-semibold">{a.name}</p>
+                      <p className="text-[#6378A0] text-xs font-mono">{a.code}</p>
                     </td>
-                    <td className="px-5 py-3.5 text-[#5C5248] text-sm">{a.site.name}</td>
+                    <td className="px-5 py-3.5 text-[#3D5280] text-sm">{a.site.name}</td>
                     <td className="px-5 py-3.5">
                       <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: pc.bg, color: pc.text }}>{a.pillar.replace(/_/g," ")}</span>
                     </td>
-                    <td className="px-5 py-3.5 text-[#5C5248] text-sm">{a.assetType}</td>
-                    <td className="px-5 py-3.5 text-center text-[#1C1714] text-sm font-medium">{a._count.sensors}</td>
+                    <td className="px-5 py-3.5 text-[#3D5280] text-sm">{a.assetType}</td>
+                    <td className="px-5 py-3.5 text-center text-[#0D1B35] text-sm font-medium">{a._count.sensors}</td>
                     <td className="px-5 py-3.5 text-center">
-                      {a._count.alerts > 0 ? <span className="text-[#B91C1C] font-bold text-sm">{a._count.alerts}</span> : <span className="text-[#9C9285] text-sm">—</span>}
+                      {a._count.alerts > 0 ? <span className="text-[#B91C1C] font-bold text-sm">{a._count.alerts}</span> : <span className="text-[#6378A0] text-sm">—</span>}
                     </td>
                     <td className="px-5 py-3.5">
                       <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ backgroundColor: sc.bg, color: sc.text }}>{a.status}</span>
                     </td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-1.5 justify-end">
-                        <button onClick={() => openEdit(a)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[#FEF7E6] text-[#9C9285] hover:text-[#B8901A] transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => setDelId(a.id)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[#FEF2F2] text-[#9C9285] hover:text-[#B91C1C] transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => openEdit(a)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[#FEF7E6] text-[#6378A0] hover:text-[#B8901A] transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => setDelId(a.id)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[#FEF2F2] text-[#6378A0] hover:text-[#B91C1C] transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
                     </td>
                   </tr>
@@ -200,8 +200,8 @@ export default function AssetsPage() {
           </div>
           <Field label="Serial Number"><input className={inputCls} value={form.serialNumber ?? ""} onChange={e => setForm(f => ({...f, serialNumber: e.target.value}))} placeholder="Serial number" /></Field>
           <div className="flex gap-2 justify-end pt-2">
-            <button onClick={() => setModal(null)} className="px-4 py-2 rounded-lg border border-[#E5DDD0] text-[#5C5248] text-sm font-medium hover:bg-[#F5F3EE] transition-colors">Cancel</button>
-            <button onClick={save} disabled={saving} className="px-4 py-2 rounded-lg bg-[#1C1714] text-white text-sm font-semibold hover:bg-[#2D2420] disabled:opacity-50 transition-colors">{saving ? "Saving…" : modal === "edit" ? "Save Changes" : "Create Asset"}</button>
+            <button onClick={() => setModal(null)} className="px-4 py-2 rounded-lg border border-[#D9E2F0] text-[#3D5280] text-sm font-medium hover:bg-[#F2F5FB] transition-colors">Cancel</button>
+            <button onClick={save} disabled={saving} className="px-4 py-2 rounded-lg bg-[#0D1B35] text-white text-sm font-semibold hover:bg-[#162040] disabled:opacity-50 transition-colors">{saving ? "Saving…" : modal === "edit" ? "Save Changes" : "Create Asset"}</button>
           </div>
         </div>
       </CrudModal>

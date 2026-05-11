@@ -20,7 +20,7 @@ export function PillarStatusCard({
   }[status];
 
   const inner = (
-    <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 space-y-4 hover:shadow-md hover:border-[#D4C8B8] transition-all h-full relative overflow-hidden">
+    <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 space-y-4 hover:shadow-md hover:border-[#C6D0E8] transition-all h-full relative overflow-hidden">
       {/* Left accent strip */}
       <div
         className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl"
@@ -37,7 +37,7 @@ export function PillarStatusCard({
             >
               {icon}
             </div>
-            <span className="text-[#1C1714] font-semibold text-sm">{pillar}</span>
+            <span className="text-[#0D1B35] font-semibold text-sm">{pillar}</span>
           </div>
           <span
             className="text-[10px] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider flex items-center gap-1"
@@ -53,17 +53,17 @@ export function PillarStatusCard({
 
         {/* Primary metric */}
         <div className="mt-4">
-          <p className="text-[#9C9285] text-xs font-medium mb-1">{primaryMetric}</p>
-          <p className="text-[#1C1714] text-xl font-bold tracking-tight">{primaryValue}</p>
+          <p className="text-[#6378A0] text-xs font-medium mb-1">{primaryMetric}</p>
+          <p className="text-[#0D1B35] text-xl font-bold tracking-tight">{primaryValue}</p>
         </div>
 
         {/* Secondary metrics */}
         {secondaryMetrics && (
-          <div className="grid grid-cols-2 gap-3 pt-3 mt-3 border-t border-[#EDE8E0]">
+          <div className="grid grid-cols-2 gap-3 pt-3 mt-3 border-t border-[#E4EAF5]">
             {secondaryMetrics.map((m) => (
               <div key={m.label}>
-                <p className="text-[#9C9285] text-[10px] font-medium uppercase tracking-wider">{m.label}</p>
-                <p className="text-[#1C1714] text-sm font-semibold mt-0.5">{m.value}</p>
+                <p className="text-[#6378A0] text-[10px] font-medium uppercase tracking-wider">{m.label}</p>
+                <p className="text-[#0D1B35] text-sm font-semibold mt-0.5">{m.value}</p>
               </div>
             ))}
           </div>

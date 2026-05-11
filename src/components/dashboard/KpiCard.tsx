@@ -24,7 +24,7 @@ export function KpiCard({ title, value, unit, trend, status = "ok", icon, subtit
   }[status];
 
   return (
-    <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 space-y-3 hover:shadow-md hover:border-[#D4C8B8] transition-all group relative overflow-hidden">
+    <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 space-y-3 hover:shadow-md hover:border-[#C6D0E8] transition-all group relative overflow-hidden">
       {/* Gold top accent line */}
       <div
         className="absolute top-0 left-0 right-0 h-0.5 rounded-t-xl"
@@ -32,7 +32,7 @@ export function KpiCard({ title, value, unit, trend, status = "ok", icon, subtit
       />
 
       <div className="flex items-start justify-between">
-        <p className="text-[#9C9285] text-xs font-semibold uppercase tracking-wider leading-tight pr-2">{title}</p>
+        <p className="text-[#6378A0] text-xs font-semibold uppercase tracking-wider leading-tight pr-2">{title}</p>
         {icon && (
           <div className="w-8 h-8 rounded-lg bg-[#FEF7E6] flex items-center justify-center text-[#B8901A] flex-shrink-0">
             {icon}
@@ -41,14 +41,14 @@ export function KpiCard({ title, value, unit, trend, status = "ok", icon, subtit
       </div>
 
       <div className="flex items-end gap-1.5">
-        <span className="text-[#1C1714] text-2xl font-bold leading-none tracking-tight">
+        <span className="text-[#0D1B35] text-2xl font-bold leading-none tracking-tight">
           {typeof value === "number" ? value.toLocaleString() : value}
         </span>
-        {unit && <span className="text-[#9C9285] text-sm pb-0.5 font-medium">{unit}</span>}
+        {unit && <span className="text-[#6378A0] text-sm pb-0.5 font-medium">{unit}</span>}
       </div>
 
-      <div className="flex items-center justify-between pt-1 border-t border-[#EDE8E0]">
-        {subtitle && <p className="text-[#9C9285] text-xs">{subtitle}</p>}
+      <div className="flex items-center justify-between pt-1 border-t border-[#E4EAF5]">
+        {subtitle && <p className="text-[#6378A0] text-xs">{subtitle}</p>}
         <div className="flex items-center gap-2 ml-auto">
           {trend !== undefined && (
             <span

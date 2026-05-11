@@ -178,8 +178,8 @@ const severityStyle: Record<string, { bg: string; text: string; border: string }
   CRITICAL: { bg: "#FEF2F2", text: "#B91C1C", border: "#FECACA" },
   HIGH:     { bg: "#FFFBEB", text: "#B45309", border: "#FDE68A" },
   MEDIUM:   { bg: "#EFF6FF", text: "#1E5FA8", border: "#BFDBFE" },
-  LOW:      { bg: "#F5F3EE", text: "#5C5248", border: "#E5DDD0" },
-  INFO:     { bg: "#F5F3EE", text: "#5C5248", border: "#E5DDD0" },
+  LOW:      { bg: "#F2F5FB", text: "#3D5280", border: "#D9E2F0" },
+  INFO:     { bg: "#F2F5FB", text: "#3D5280", border: "#D9E2F0" },
 };
 
 function seededRand(seed: number, base: number, variance: number) {
@@ -228,7 +228,7 @@ export default async function PillarDrilldownPage({ params }: { params: Promise<
     <div className="p-6 space-y-6">
       {/* Back + Header */}
       <div className="space-y-3">
-        <a href="/dashboard/executive" className="inline-flex items-center gap-1.5 text-[#9C9285] hover:text-[#1C1714] text-sm transition-colors font-medium">
+        <a href="/dashboard/executive" className="inline-flex items-center gap-1.5 text-[#6378A0] hover:text-[#0D1B35] text-sm transition-colors font-medium">
           <ArrowLeft className="w-4 h-4" /> Back to Executive Dashboard
         </a>
         <div className="flex items-center justify-between flex-wrap gap-3">
@@ -237,13 +237,13 @@ export default async function PillarDrilldownPage({ params }: { params: Promise<
               {config.icon}
             </div>
             <div>
-              <h1 className="text-[#1C1714] text-2xl font-bold">{config.title}</h1>
-              <p className="text-[#9C9285] text-sm mt-0.5">{config.description}</p>
+              <h1 className="text-[#0D1B35] text-2xl font-bold">{config.title}</h1>
+              <p className="text-[#6378A0] text-sm mt-0.5">{config.description}</p>
             </div>
           </div>
           <div className="flex items-center gap-2 text-xs flex-wrap">
-            <span className="bg-white border border-[#E5DDD0] rounded-lg px-3 py-1.5 text-[#5C5248] font-medium">{assets.length} assets</span>
-            <span className="bg-white border border-[#E5DDD0] rounded-lg px-3 py-1.5 text-[#5C5248] font-medium">{onlineSensors}/{totalSensors} sensors online</span>
+            <span className="bg-white border border-[#D9E2F0] rounded-lg px-3 py-1.5 text-[#3D5280] font-medium">{assets.length} assets</span>
+            <span className="bg-white border border-[#D9E2F0] rounded-lg px-3 py-1.5 text-[#3D5280] font-medium">{onlineSensors}/{totalSensors} sensors online</span>
             {activeAlerts > 0 && (
               <span className="bg-[#FEF2F2] border border-[#FECACA] rounded-lg px-3 py-1.5 text-[#B91C1C] font-semibold">
                 {activeAlerts} active alert{activeAlerts > 1 ? "s" : ""}
@@ -258,15 +258,15 @@ export default async function PillarDrilldownPage({ params }: { params: Promise<
         {config.kpis.map((kpi) => {
           const s = statusStyle[kpi.status ?? "ok"];
           return (
-            <div key={kpi.label} className="bg-white border border-[#E5DDD0] rounded-xl p-4 shadow-sm hover:shadow-md transition-all relative overflow-hidden">
+            <div key={kpi.label} className="bg-white border border-[#D9E2F0] rounded-xl p-4 shadow-sm hover:shadow-md transition-all relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-xl" style={{ backgroundColor: s.dot }} />
-              <p className="text-[#9C9285] text-[10px] font-semibold uppercase tracking-wider leading-tight mb-2">{kpi.label}</p>
+              <p className="text-[#6378A0] text-[10px] font-semibold uppercase tracking-wider leading-tight mb-2">{kpi.label}</p>
               <div className="flex items-end gap-1">
-                <span className="text-[#1C1714] text-xl font-bold">{kpi.value}</span>
-                {kpi.unit && <span className="text-[#9C9285] text-xs pb-0.5">{kpi.unit}</span>}
+                <span className="text-[#0D1B35] text-xl font-bold">{kpi.value}</span>
+                {kpi.unit && <span className="text-[#6378A0] text-xs pb-0.5">{kpi.unit}</span>}
               </div>
               {kpi.trend !== undefined && (
-                <p className={`text-xs font-semibold mt-1 ${kpi.trend > 0 ? "text-[#B91C1C]" : kpi.trend < 0 ? "text-[#166534]" : "text-[#9C9285]"}`}>
+                <p className={`text-xs font-semibold mt-1 ${kpi.trend > 0 ? "text-[#B91C1C]" : kpi.trend < 0 ? "text-[#166534]" : "text-[#6378A0]"}`}>
                   {kpi.trend > 0 ? "↑" : kpi.trend < 0 ? "↓" : "→"} {Math.abs(kpi.trend)}%
                 </p>
               )}
@@ -277,32 +277,32 @@ export default async function PillarDrilldownPage({ params }: { params: Promise<
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Trend chart */}
-        <div className="lg:col-span-2 bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+        <div className="lg:col-span-2 bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-[#1C1714] font-semibold">14-Day Trend</h3>
-              <p className="text-[#9C9285] text-xs">Normalized index — actual vs. baseline</p>
+              <h3 className="text-[#0D1B35] font-semibold">14-Day Trend</h3>
+              <p className="text-[#6378A0] text-xs">Normalized index — actual vs. baseline</p>
             </div>
           </div>
-          <TrendChart data={trendData} color={config.color} color2="#E5DDD0" label="Actual" label2="Baseline" height={200} />
+          <TrendChart data={trendData} color={config.color} color2="#D9E2F0" label="Actual" label2="Baseline" height={200} />
         </div>
 
         {/* Live Parameters */}
-        <div className="bg-white border border-[#E5DDD0] rounded-xl shadow-sm overflow-hidden">
-          <div className="px-4 py-3.5 border-b border-[#EDE8E0] bg-[#F5F3EE]">
-            <h3 className="text-[#1C1714] font-semibold">Live Parameters</h3>
+        <div className="bg-white border border-[#D9E2F0] rounded-xl shadow-sm overflow-hidden">
+          <div className="px-4 py-3.5 border-b border-[#E4EAF5] bg-[#F2F5FB]">
+            <h3 className="text-[#0D1B35] font-semibold">Live Parameters</h3>
           </div>
           <div>
             {config.parameters.map((p) => {
               const s = statusStyle[p.status];
               return (
-                <div key={p.label} className="flex items-center justify-between px-4 py-3 border-b border-[#EDE8E0] last:border-0 hover:bg-[#F5F3EE] transition-colors">
+                <div key={p.label} className="flex items-center justify-between px-4 py-3 border-b border-[#E4EAF5] last:border-0 hover:bg-[#F2F5FB] transition-colors">
                   <div>
-                    <p className="text-[#1C1714] text-xs font-semibold">{p.label}</p>
-                    {p.limit && <p className="text-[#9C9285] text-[10px] mt-0.5">Limit: {p.limit}</p>}
+                    <p className="text-[#0D1B35] text-xs font-semibold">{p.label}</p>
+                    {p.limit && <p className="text-[#6378A0] text-[10px] mt-0.5">Limit: {p.limit}</p>}
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[#1C1714] text-xs font-bold font-mono">{p.value}</span>
+                    <span className="text-[#0D1B35] text-xs font-bold font-mono">{p.value}</span>
                     <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: s.dot }} />
                   </div>
                 </div>
@@ -319,35 +319,35 @@ export default async function PillarDrilldownPage({ params }: { params: Promise<
             <AlertTriangle className="w-4 h-4" />
           </div>
           <div>
-            <p className="text-[#1C1714] text-sm font-semibold mb-1">Compliance & Operations Note</p>
-            <p className="text-[#5C5248] text-sm">{config.complianceNote}</p>
+            <p className="text-[#0D1B35] text-sm font-semibold mb-1">Compliance & Operations Note</p>
+            <p className="text-[#3D5280] text-sm">{config.complianceNote}</p>
           </div>
         </div>
       </div>
 
       {/* Assets + Recent Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="bg-white border border-[#E5DDD0] rounded-xl shadow-sm overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-[#EDE8E0] bg-[#F5F3EE]">
-            <h3 className="text-[#1C1714] font-semibold">Assets ({assets.length})</h3>
+        <div className="bg-white border border-[#D9E2F0] rounded-xl shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[#E4EAF5] bg-[#F2F5FB]">
+            <h3 className="text-[#0D1B35] font-semibold">Assets ({assets.length})</h3>
             <a href="/assets" className="text-[#B8901A] text-xs font-semibold hover:underline">View all →</a>
           </div>
           <div className="max-h-72 overflow-y-auto">
             {assets.length === 0 ? (
-              <div className="py-8 text-center text-[#9C9285] text-sm">No assets found for this pillar</div>
+              <div className="py-8 text-center text-[#6378A0] text-sm">No assets found for this pillar</div>
             ) : (
               assets.slice(0, 10).map((asset) => {
                 const onlineCount = asset.sensors.filter((s) => s.status === "ONLINE").length;
                 const dotColor = onlineCount === asset.sensors.length ? "#22C55E" : onlineCount > 0 ? "#F59E0B" : "#EF4444";
                 return (
-                  <div key={asset.id} className="flex items-center gap-3 px-5 py-3.5 border-b border-[#EDE8E0] hover:bg-[#F5F3EE] transition-colors last:border-0">
+                  <div key={asset.id} className="flex items-center gap-3 px-5 py-3.5 border-b border-[#E4EAF5] hover:bg-[#F2F5FB] transition-colors last:border-0">
                     <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: dotColor }} />
                     <div className="flex-1 min-w-0">
-                      <p className="text-[#1C1714] text-sm font-semibold truncate">{asset.name}</p>
-                      <p className="text-[#9C9285] text-xs">{asset.site.name} · {asset.sensors.length} sensor{asset.sensors.length !== 1 ? "s" : ""}</p>
+                      <p className="text-[#0D1B35] text-sm font-semibold truncate">{asset.name}</p>
+                      <p className="text-[#6378A0] text-xs">{asset.site.name} · {asset.sensors.length} sensor{asset.sensors.length !== 1 ? "s" : ""}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-[#9C9285] text-xs">{onlineCount}/{asset.sensors.length}</p>
+                      <p className="text-[#6378A0] text-xs">{onlineCount}/{asset.sensors.length}</p>
                       {(asset._count as { alerts: number }).alerts > 0 && (
                         <p className="text-[#B91C1C] text-xs font-semibold">{(asset._count as { alerts: number }).alerts} alert</p>
                       )}
@@ -359,9 +359,9 @@ export default async function PillarDrilldownPage({ params }: { params: Promise<
           </div>
         </div>
 
-        <div className="bg-white border border-[#E5DDD0] rounded-xl shadow-sm overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-[#EDE8E0] bg-[#F5F3EE]">
-            <h3 className="text-[#1C1714] font-semibold">Recent Alerts</h3>
+        <div className="bg-white border border-[#D9E2F0] rounded-xl shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[#E4EAF5] bg-[#F2F5FB]">
+            <h3 className="text-[#0D1B35] font-semibold">Recent Alerts</h3>
             <a href="/alerts" className="text-[#B8901A] text-xs font-semibold hover:underline">View all →</a>
           </div>
           {allAlerts.length === 0 ? (
@@ -369,20 +369,20 @@ export default async function PillarDrilldownPage({ params }: { params: Promise<
               <div className="w-12 h-12 rounded-full bg-[#F0FDF4] flex items-center justify-center mb-2">
                 <CheckCircle className="w-6 h-6 text-[#22C55E]" />
               </div>
-              <p className="text-[#1C1714] text-sm font-semibold">No alerts</p>
-              <p className="text-[#9C9285] text-xs mt-0.5">This pillar is operating normally</p>
+              <p className="text-[#0D1B35] text-sm font-semibold">No alerts</p>
+              <p className="text-[#6378A0] text-xs mt-0.5">This pillar is operating normally</p>
             </div>
           ) : (
             allAlerts.map((alert) => {
               const sc = severityStyle[alert.severity] ?? severityStyle.LOW;
               return (
-                <a key={alert.id} href={`/alerts/${alert.id}`} className="flex items-center gap-3 px-5 py-3.5 border-b border-[#EDE8E0] hover:bg-[#F5F3EE] transition-colors last:border-0 block">
+                <a key={alert.id} href={`/alerts/${alert.id}`} className="flex items-center gap-3 px-5 py-3.5 border-b border-[#E4EAF5] hover:bg-[#F2F5FB] transition-colors last:border-0 block">
                   <span className="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider flex-shrink-0 border" style={{ backgroundColor: sc.bg, color: sc.text, borderColor: sc.border }}>
                     {alert.severity}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[#1C1714] text-sm font-semibold truncate">{alert.title}</p>
-                    <p className="text-[#9C9285] text-xs">{alert.asset.site.name} · {formatDistanceToNow(new Date(alert.openedAt), { addSuffix: true })}</p>
+                    <p className="text-[#0D1B35] text-sm font-semibold truncate">{alert.title}</p>
+                    <p className="text-[#6378A0] text-xs">{alert.asset.site.name} · {formatDistanceToNow(new Date(alert.openedAt), { addSuffix: true })}</p>
                   </div>
                 </a>
               );
@@ -393,17 +393,17 @@ export default async function PillarDrilldownPage({ params }: { params: Promise<
 
       {/* Live sensor table */}
       {assets.flatMap((a) => a.sensors).length > 0 && (
-        <div className="bg-white border border-[#E5DDD0] rounded-xl shadow-sm overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-[#EDE8E0] bg-[#F5F3EE]">
-            <h3 className="text-[#1C1714] font-semibold">Sensor Readings</h3>
+        <div className="bg-white border border-[#D9E2F0] rounded-xl shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[#E4EAF5] bg-[#F2F5FB]">
+            <h3 className="text-[#0D1B35] font-semibold">Sensor Readings</h3>
             <a href="/telemetry" className="text-[#B8901A] text-xs font-semibold hover:underline">Live telemetry →</a>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-[#EDE8E0]">
+                <tr className="border-b border-[#E4EAF5]">
                   {["Sensor", "Asset", "Metric", "Last Value", "Last Read", "Status"].map((h) => (
-                    <th key={h} className="text-left text-[#9C9285] text-xs font-bold uppercase tracking-wider px-5 py-3 whitespace-nowrap">{h}</th>
+                    <th key={h} className="text-left text-[#6378A0] text-xs font-bold uppercase tracking-wider px-5 py-3 whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -411,14 +411,14 @@ export default async function PillarDrilldownPage({ params }: { params: Promise<
                 {assets.flatMap((a) => a.sensors.map((s) => ({ ...s, assetName: a.name }))).slice(0, 15).map((sensor) => {
                   const isOnline = sensor.status === "ONLINE";
                   return (
-                    <tr key={sensor.id} className="border-b border-[#EDE8E0] hover:bg-[#F5F3EE] transition-colors last:border-0">
-                      <td className="px-5 py-3 text-[#1C1714] text-sm font-semibold">{sensor.name}</td>
-                      <td className="px-5 py-3 text-[#9C9285] text-sm">{sensor.assetName}</td>
-                      <td className="px-5 py-3 text-[#9C9285] text-sm">{sensor.metricName}</td>
+                    <tr key={sensor.id} className="border-b border-[#E4EAF5] hover:bg-[#F2F5FB] transition-colors last:border-0">
+                      <td className="px-5 py-3 text-[#0D1B35] text-sm font-semibold">{sensor.name}</td>
+                      <td className="px-5 py-3 text-[#6378A0] text-sm">{sensor.assetName}</td>
+                      <td className="px-5 py-3 text-[#6378A0] text-sm">{sensor.metricName}</td>
                       <td className="px-5 py-3 font-mono text-sm font-bold" style={{ color: config.color }}>
                         {sensor.lastValue !== null ? `${sensor.lastValue?.toFixed(2)} ${sensor.unit}` : "—"}
                       </td>
-                      <td className="px-5 py-3 text-[#9C9285] text-sm">
+                      <td className="px-5 py-3 text-[#6378A0] text-sm">
                         {sensor.lastReadingAt ? formatDistanceToNow(new Date(sensor.lastReadingAt), { addSuffix: true }) : "—"}
                       </td>
                       <td className="px-5 py-3">

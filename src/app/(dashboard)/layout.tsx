@@ -1,4 +1,4 @@
-import { Sidebar } from "@/components/layout/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import { Topbar } from "@/components/layout/Topbar";
 import { auth } from "@/lib/auth";
 
@@ -8,7 +8,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const userRole = (session?.user as any)?.role ?? "SUPER_ADMIN";
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#F5F3EE]">
+    <div className="flex h-screen overflow-hidden bg-[#F2F5FB]">
       <Sidebar />
       <div className="flex flex-col flex-1 overflow-hidden">
         <Topbar

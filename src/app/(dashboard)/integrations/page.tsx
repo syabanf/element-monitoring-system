@@ -38,8 +38,8 @@ export default async function IntegrationsPage() {
           <Plug className="w-5 h-5 text-[#B8901A]" />
         </div>
         <div>
-          <h1 className="text-[#1C1714] text-2xl font-bold">Integrations</h1>
-          <p className="text-[#9C9285] text-sm mt-0.5">Connect to external systems and notification channels</p>
+          <h1 className="text-[#0D1B35] text-2xl font-bold">Integrations</h1>
+          <p className="text-[#6378A0] text-sm mt-0.5">Connect to external systems and notification channels</p>
         </div>
       </div>
 
@@ -48,29 +48,29 @@ export default async function IntegrationsPage() {
         const items = INTEGRATION_CATALOG.filter(i => i.category === category);
         return (
           <div key={category}>
-            <h2 className="text-[#1C1714] font-bold mb-3">{category}</h2>
+            <h2 className="text-[#0D1B35] font-bold mb-3">{category}</h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
               {items.map((item) => {
                 const config = configMap.get(item.type);
                 const isEnabled = config?.isEnabled ?? false;
                 return (
-                  <div key={item.type} className="bg-white border border-[#E5DDD0] rounded-xl p-4 space-y-3 hover:shadow-md hover:border-[#D4C8B8] transition-all">
+                  <div key={item.type} className="bg-white border border-[#D9E2F0] rounded-xl p-4 space-y-3 hover:shadow-md hover:border-[#C6D0E8] transition-all">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
                         <span className="text-2xl">{integrationIcons[item.type] ?? "🔌"}</span>
                         <div>
-                          <p className="text-[#1C1714] font-semibold text-sm">{item.name}</p>
-                          <p className="text-[#9C9285] text-xs">{item.description}</p>
+                          <p className="text-[#0D1B35] font-semibold text-sm">{item.name}</p>
+                          <p className="text-[#6378A0] text-xs">{item.description}</p>
                         </div>
                       </div>
                       {isEnabled ? (
                         <CheckCircle className="w-4 h-4 text-[#166534] flex-shrink-0 mt-0.5" />
                       ) : (
-                        <XCircle className="w-4 h-4 text-[#E5DDD0] flex-shrink-0 mt-0.5" />
+                        <XCircle className="w-4 h-4 text-[#D9E2F0] flex-shrink-0 mt-0.5" />
                       )}
                     </div>
-                    <div className="flex items-center justify-between border-t border-[#EDE8E0] pt-3">
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${isEnabled ? "bg-[#F0FDF4] text-[#166534]" : "bg-[#F5F3EE] text-[#9C9285]"}`}>
+                    <div className="flex items-center justify-between border-t border-[#E4EAF5] pt-3">
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${isEnabled ? "bg-[#F0FDF4] text-[#166534]" : "bg-[#F2F5FB] text-[#6378A0]"}`}>
                         {isEnabled ? "Connected" : "Not configured"}
                       </span>
                       <button className="text-xs text-[#B8901A] hover:text-[#9A7A14] font-semibold hover:underline transition-colors">

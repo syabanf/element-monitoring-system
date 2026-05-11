@@ -32,15 +32,15 @@ export function TrendChart({
             </linearGradient>
           )}
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="#EDE8E0" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#E4EAF5" vertical={false} />
         <XAxis
           dataKey="label"
-          tick={{ fill: "#9C9285", fontSize: 10 }}
-          axisLine={{ stroke: "#E5DDD0" }}
+          tick={{ fill: "#6378A0", fontSize: 10 }}
+          axisLine={{ stroke: "#D9E2F0" }}
           tickLine={false}
         />
         <YAxis
-          tick={{ fill: "#9C9285", fontSize: 10 }}
+          tick={{ fill: "#6378A0", fontSize: 10 }}
           axisLine={false}
           tickLine={false}
           width={36}
@@ -48,14 +48,14 @@ export function TrendChart({
         <Tooltip
           contentStyle={{
             backgroundColor: "#FFFFFF",
-            border: "1px solid #E5DDD0",
+            border: "1px solid #D9E2F0",
             borderRadius: "10px",
-            color: "#1C1714",
+            color: "#0D1B35",
             boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
             fontSize: 12,
           }}
-          labelStyle={{ color: "#5C5248", fontWeight: 600 }}
-          itemStyle={{ color: "#1C1714" }}
+          labelStyle={{ color: "#3D5280", fontWeight: 600 }}
+          itemStyle={{ color: "#0D1B35" }}
         />
         <Area
           type="monotone"

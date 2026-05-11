@@ -49,7 +49,7 @@ export function SensorHealthRing({ online, offline, fault, calibrationDue }: Sen
             <Tooltip
               contentStyle={{
                 backgroundColor: "#FFFFFF",
-                border: "1px solid #E5DDD0",
+                border: "1px solid #D9E2F0",
                 borderRadius: "8px",
                 fontSize: 12,
                 boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
@@ -60,8 +60,8 @@ export function SensorHealthRing({ online, offline, fault, calibrationDue }: Sen
         </ResponsiveContainer>
         {/* Center label */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <span className="text-2xl font-bold text-[#1C1714]">{uptimePct}%</span>
-          <span className="text-[10px] text-[#9C9285] font-medium">uptime</span>
+          <span className="text-2xl font-bold text-[#0D1B35]">{uptimePct}%</span>
+          <span className="text-[10px] text-[#6378A0] font-medium">uptime</span>
         </div>
       </div>
 
@@ -74,17 +74,17 @@ export function SensorHealthRing({ online, offline, fault, calibrationDue }: Sen
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: seg.color }} />
-                  <span className="text-xs text-[#5C5248]">{seg.label}</span>
+                  <span className="text-xs text-[#3D5280]">{seg.label}</span>
                 </div>
-                <span className="text-xs font-bold text-[#1C1714]">{val}</span>
+                <span className="text-xs font-bold text-[#0D1B35]">{val}</span>
               </div>
-              <div className="w-full h-1.5 bg-[#EDE8E0] rounded-full overflow-hidden">
+              <div className="w-full h-1.5 bg-[#E4EAF5] rounded-full overflow-hidden">
                 <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: seg.color }} />
               </div>
             </div>
           );
         })}
-        <p className="text-[#9C9285] text-[10px] pt-1">{total} sensors total</p>
+        <p className="text-[#6378A0] text-[10px] pt-1">{total} sensors total</p>
       </div>
     </div>
   );

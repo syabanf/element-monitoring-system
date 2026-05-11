@@ -89,8 +89,8 @@ export default async function ExecutiveDashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[#1C1714] text-2xl font-bold">Executive Dashboard</h1>
-          <p className="text-[#9C9285] text-sm mt-0.5">
+          <h1 className="text-[#0D1B35] text-2xl font-bold">Executive Dashboard</h1>
+          <p className="text-[#6378A0] text-sm mt-0.5">
             Portfolio-level operational intelligence ·{" "}
             {new Date().toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
           </p>
@@ -121,7 +121,7 @@ export default async function ExecutiveDashboardPage() {
 
       {/* KPI Row 1 — Operational */}
       <div>
-        <p className="text-[#9C9285] text-[10px] uppercase tracking-widest font-bold mb-3">Operational KPIs</p>
+        <p className="text-[#6378A0] text-[10px] uppercase tracking-widest font-bold mb-3">Operational KPIs</p>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <a href="/sites" className="block"><KpiCard title="Active Sites" value={totalSites} icon={<MapPin className="w-4 h-4" />} subtitle="All operational" /></a>
           <a href="/assets" className="block"><KpiCard title="Monitored Assets" value={totalAssets} icon={<Gauge className="w-4 h-4" />} subtitle={`${onlineSensors}/${totalSensors} sensors online`} /></a>
@@ -132,7 +132,7 @@ export default async function ExecutiveDashboardPage() {
 
       {/* KPI Row 2 — Financial & Environmental */}
       <div>
-        <p className="text-[#9C9285] text-[10px] uppercase tracking-widest font-bold mb-3">Financial & Environmental</p>
+        <p className="text-[#6378A0] text-[10px] uppercase tracking-widest font-bold mb-3">Financial & Environmental</p>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <a href="/dashboard/energy" className="block"><KpiCard title="Energy Cost Today" value="IDR 24.8M" trend={-1.8} icon={<DollarSign className="w-4 h-4" />} subtitle="vs yesterday" /></a>
           <a href="/dashboard/pillar/water" className="block"><KpiCard title="Water Cost Today" value="IDR 3.2M" trend={0.4} icon={<Droplets className="w-4 h-4" />} subtitle="vs yesterday" /></a>
@@ -144,8 +144,8 @@ export default async function ExecutiveDashboardPage() {
       {/* Utility Pillars */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <p className="text-[#9C9285] text-[10px] uppercase tracking-widest font-bold">Utility Pillars</p>
-          <span className="text-[#9C9285] text-xs">Click a pillar to drill down →</span>
+          <p className="text-[#6378A0] text-[10px] uppercase tracking-widest font-bold">Utility Pillars</p>
+          <span className="text-[#6378A0] text-xs">Click a pillar to drill down →</span>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <PillarStatusCard href="/dashboard/pillar/electricity" pillar="Electricity" icon={<Zap className="w-4 h-4" />} status="NORMAL" primaryMetric="Today's Consumption" primaryValue="142,500 kWh" secondaryMetrics={[{ label: "Peak Demand", value: "2,847 kW" }, { label: "Power Factor", value: "0.87" }]} color="#B45309" />
@@ -159,11 +159,11 @@ export default async function ExecutiveDashboardPage() {
       </div>
 
       {/* Resource Utilization */}
-      <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+      <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h2 className="text-[#1C1714] font-semibold">Resource Utilization</h2>
-            <p className="text-[#9C9285] text-xs mt-0.5">% of capacity / operational limit</p>
+            <h2 className="text-[#0D1B35] font-semibold">Resource Utilization</h2>
+            <p className="text-[#6378A0] text-xs mt-0.5">% of capacity / operational limit</p>
           </div>
         </div>
         <div className="space-y-4">
@@ -175,12 +175,12 @@ export default async function ExecutiveDashboardPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-sm">{u.icon}</span>
-                    <span className="text-[#1C1714] text-sm font-semibold">{u.pillar}</span>
-                    <span className="text-[#9C9285] text-xs">{u.label}</span>
+                    <span className="text-[#0D1B35] text-sm font-semibold">{u.pillar}</span>
+                    <span className="text-[#6378A0] text-xs">{u.label}</span>
                   </div>
                   <span className="font-bold text-sm" style={{ color: barColor }}>{pct}%</span>
                 </div>
-                <div className="w-full h-2 bg-[#EDE8E0] rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-[#E4EAF5] rounded-full overflow-hidden">
                   <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: barColor }} />
                 </div>
               </div>
@@ -191,22 +191,22 @@ export default async function ExecutiveDashboardPage() {
 
       {/* Charts + Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+        <div className="lg:col-span-2 bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-[#1C1714] font-semibold">Energy Consumption Trend</h3>
-              <p className="text-[#9C9285] text-xs">kWh actual vs. last period · 14 days</p>
+              <h3 className="text-[#0D1B35] font-semibold">Energy Consumption Trend</h3>
+              <p className="text-[#6378A0] text-xs">kWh actual vs. last period · 14 days</p>
             </div>
             <div className="flex items-center gap-1 text-[#166534] text-xs font-semibold">
               <TrendingDown className="w-3 h-3" />
               <span>−3.2% vs last period</span>
             </div>
           </div>
-          <TrendChart data={energyTrend} color="#B8901A" color2="#E5DDD0" label="This Period" label2="Last Period" height={180} />
+          <TrendChart data={energyTrend} color="#B8901A" color2="#D9E2F0" label="This Period" label2="Last Period" height={180} />
         </div>
-        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-[#1C1714] font-semibold">Active Alerts</h3>
+            <h3 className="text-[#0D1B35] font-semibold">Active Alerts</h3>
             <a href="/alerts" className="text-[#B8901A] text-xs font-semibold hover:underline">View all →</a>
           </div>
           {recentAlerts.length === 0 ? (
@@ -214,8 +214,8 @@ export default async function ExecutiveDashboardPage() {
               <div className="w-12 h-12 rounded-full bg-[#F0FDF4] flex items-center justify-center mb-2">
                 <CheckCircle className="w-6 h-6 text-[#22C55E]" />
               </div>
-              <p className="text-[#1C1714] text-sm font-semibold">All clear</p>
-              <p className="text-[#9C9285] text-xs mt-0.5">No open alerts</p>
+              <p className="text-[#0D1B35] text-sm font-semibold">All clear</p>
+              <p className="text-[#6378A0] text-xs mt-0.5">No open alerts</p>
             </div>
           ) : (
             <div className="space-y-0">
@@ -229,22 +229,22 @@ export default async function ExecutiveDashboardPage() {
 
       {/* Cost + Carbon + Site Ranking */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-[#1C1714] font-semibold">Daily Cost Trend</h3>
-              <p className="text-[#9C9285] text-xs">IDR thousands · 14 days</p>
+              <h3 className="text-[#0D1B35] font-semibold">Daily Cost Trend</h3>
+              <p className="text-[#6378A0] text-xs">IDR thousands · 14 days</p>
             </div>
-            <DollarSign className="w-4 h-4 text-[#9C9285]" />
+            <DollarSign className="w-4 h-4 text-[#6378A0]" />
           </div>
           <TrendChart data={costTrend} color="#B8901A" label="IDR K" height={140} />
         </div>
 
-        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-[#1C1714] font-semibold">Carbon Estimate</h3>
-              <p className="text-[#9C9285] text-xs">Scope 2 · tCO₂e</p>
+              <h3 className="text-[#0D1B35] font-semibold">Carbon Estimate</h3>
+              <p className="text-[#6378A0] text-xs">Scope 2 · tCO₂e</p>
             </div>
             <a href="/dashboard/compliance" className="text-[#B8901A] text-xs font-semibold hover:underline">Details →</a>
           </div>
@@ -255,13 +255,13 @@ export default async function ExecutiveDashboardPage() {
               { label: "YTD",        value: "8,204 tCO₂e", big: false },
             ].map(({ label, value, big }) => (
               <div key={label} className="flex items-center justify-between">
-                <span className="text-[#9C9285] text-sm">{label}</span>
-                <span className={big ? "font-bold text-lg text-[#1C1714]" : "font-semibold text-[#1C1714] text-sm"}>{value}</span>
+                <span className="text-[#6378A0] text-sm">{label}</span>
+                <span className={big ? "font-bold text-lg text-[#0D1B35]" : "font-semibold text-[#0D1B35] text-sm"}>{value}</span>
               </div>
             ))}
-            <div className="h-px bg-[#EDE8E0]" />
+            <div className="h-px bg-[#E4EAF5]" />
             <div className="flex items-center justify-between">
-              <span className="text-[#9C9285] text-sm">vs. Target</span>
+              <span className="text-[#6378A0] text-sm">vs. Target</span>
               <span className="text-[#B45309] text-sm font-semibold flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" /> 4.2% over
               </span>
@@ -269,9 +269,9 @@ export default async function ExecutiveDashboardPage() {
           </div>
         </div>
 
-        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-[#1C1714] font-semibold">Site Ranking</h3>
+            <h3 className="text-[#0D1B35] font-semibold">Site Ranking</h3>
             <a href="/sites" className="text-[#B8901A] text-xs font-semibold hover:underline">View all →</a>
           </div>
           <div className="space-y-2">
@@ -283,15 +283,15 @@ export default async function ExecutiveDashboardPage() {
               const topPillar = Object.entries(pillarCount).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "—";
               const dotColor = i === 0 ? "#22C55E" : i === siteData.length - 1 ? "#B45309" : "#B8901A";
               return (
-                <a href={`/sites/${site.id}`} key={site.id} className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[#F5F3EE] transition-colors">
-                  <span className="text-[#9C9285] text-sm w-5 font-bold font-mono">{i + 1}</span>
+                <a href={`/sites/${site.id}`} key={site.id} className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-[#F2F5FB] transition-colors">
+                  <span className="text-[#6378A0] text-sm w-5 font-bold font-mono">{i + 1}</span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[#1C1714] text-sm font-semibold truncate">{site.name}</p>
-                    <p className="text-[#9C9285] text-xs">{(site._count as { assets: number }).assets} assets · {topPillar.replace(/_/g, " ").toLowerCase()}</p>
+                    <p className="text-[#0D1B35] text-sm font-semibold truncate">{site.name}</p>
+                    <p className="text-[#6378A0] text-xs">{(site._count as { assets: number }).assets} assets · {topPillar.replace(/_/g, " ").toLowerCase()}</p>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: dotColor }} />
-                    <ArrowUpRight className="w-3.5 h-3.5 text-[#9C9285]" />
+                    <ArrowUpRight className="w-3.5 h-3.5 text-[#6378A0]" />
                   </div>
                 </a>
               );
@@ -302,28 +302,28 @@ export default async function ExecutiveDashboardPage() {
 
       {/* Sensor Health + Site Coverage */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h3 className="text-[#1C1714] font-semibold">Sensor Health Overview</h3>
-              <p className="text-[#9C9285] text-xs mt-0.5">Fleet-wide status breakdown</p>
+              <h3 className="text-[#0D1B35] font-semibold">Sensor Health Overview</h3>
+              <p className="text-[#6378A0] text-xs mt-0.5">Fleet-wide status breakdown</p>
             </div>
             <a href="/sensors" className="text-[#B8901A] text-xs font-semibold hover:underline">View sensors →</a>
           </div>
           <SensorHealthRing online={onlineSensors} offline={offlineSensors} fault={faultSensors} calibrationDue={calDueSensors} />
         </div>
-        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
+        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-[#1C1714] font-semibold">Site Asset Coverage</h3>
-              <p className="text-[#9C9285] text-xs mt-0.5">Assets & estimated sensors per site</p>
+              <h3 className="text-[#0D1B35] font-semibold">Site Asset Coverage</h3>
+              <p className="text-[#6378A0] text-xs mt-0.5">Assets & estimated sensors per site</p>
             </div>
             <a href="/sites" className="text-[#B8901A] text-xs font-semibold hover:underline">View sites →</a>
           </div>
           <SiteBarChart data={siteChartData} />
           <div className="flex items-center gap-4 mt-3">
-            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-[#B8901A]" /><span className="text-[#9C9285] text-xs">Assets</span></div>
-            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-[#E5DDD0]" /><span className="text-[#9C9285] text-xs">Sensors (est.)</span></div>
+            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-[#B8901A]" /><span className="text-[#6378A0] text-xs">Assets</span></div>
+            <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-[#D9E2F0]" /><span className="text-[#6378A0] text-xs">Sensors (est.)</span></div>
           </div>
         </div>
       </div>

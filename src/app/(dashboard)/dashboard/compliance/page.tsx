@@ -34,8 +34,8 @@ export default async function ComplianceDashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[#1C1714] text-2xl font-bold">Compliance Dashboard</h1>
-          <p className="text-[#9C9285] text-sm mt-0.5">Regulatory, safety, and ESG compliance status</p>
+          <h1 className="text-[#0D1B35] text-2xl font-bold">Compliance Dashboard</h1>
+          <p className="text-[#6378A0] text-sm mt-0.5">Regulatory, safety, and ESG compliance status</p>
         </div>
         <div className="flex items-center gap-2 bg-[#FEF7E6] border border-[#F5E6B5] rounded-xl px-4 py-2">
           <ShieldCheck className="w-4 h-4 text-[#B8901A]" />
@@ -46,38 +46,38 @@ export default async function ComplianceDashboardPage() {
       {/* Summary cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white border border-[#BBF7D0] rounded-xl p-5 shadow-sm">
-          <p className="text-[#9C9285] text-xs font-semibold uppercase tracking-wider mb-1">Compliant</p>
+          <p className="text-[#6378A0] text-xs font-semibold uppercase tracking-wider mb-1">Compliant</p>
           <p className="text-[#166534] text-2xl font-bold">{compliantCount}</p>
-          <p className="text-[#9C9285] text-xs mt-1">of {complianceItems.length} requirements</p>
+          <p className="text-[#6378A0] text-xs mt-1">of {complianceItems.length} requirements</p>
         </div>
         <div className="bg-white border border-[#FDE68A] rounded-xl p-5 shadow-sm">
-          <p className="text-[#9C9285] text-xs font-semibold uppercase tracking-wider mb-1">Warning</p>
+          <p className="text-[#6378A0] text-xs font-semibold uppercase tracking-wider mb-1">Warning</p>
           <p className="text-[#B45309] text-2xl font-bold">{warningCount}</p>
-          <p className="text-[#9C9285] text-xs mt-1">Needs attention</p>
+          <p className="text-[#6378A0] text-xs mt-1">Needs attention</p>
         </div>
-        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
-          <p className="text-[#9C9285] text-xs font-semibold uppercase tracking-wider mb-1">Calibration Due</p>
-          <p className="text-[#1C1714] text-2xl font-bold">{calibrationOverdue}</p>
-          <p className="text-[#9C9285] text-xs mt-1">sensors overdue</p>
+        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
+          <p className="text-[#6378A0] text-xs font-semibold uppercase tracking-wider mb-1">Calibration Due</p>
+          <p className="text-[#0D1B35] text-2xl font-bold">{calibrationOverdue}</p>
+          <p className="text-[#6378A0] text-xs mt-1">sensors overdue</p>
         </div>
-        <div className="bg-white border border-[#E5DDD0] rounded-xl p-5 shadow-sm">
-          <p className="text-[#9C9285] text-xs font-semibold uppercase tracking-wider mb-1">Recent Reports</p>
-          <p className="text-[#1C1714] text-2xl font-bold">{reports.length}</p>
-          <p className="text-[#9C9285] text-xs mt-1">generated</p>
+        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
+          <p className="text-[#6378A0] text-xs font-semibold uppercase tracking-wider mb-1">Recent Reports</p>
+          <p className="text-[#0D1B35] text-2xl font-bold">{reports.length}</p>
+          <p className="text-[#6378A0] text-xs mt-1">generated</p>
         </div>
       </div>
 
       {/* Compliance Table */}
-      <div className="bg-white border border-[#E5DDD0] rounded-xl shadow-sm overflow-hidden">
-        <div className="px-5 py-4 border-b border-[#EDE8E0] bg-[#F5F3EE]">
-          <h2 className="text-[#1C1714] font-semibold">Compliance Requirements</h2>
+      <div className="bg-white border border-[#D9E2F0] rounded-xl shadow-sm overflow-hidden">
+        <div className="px-5 py-4 border-b border-[#E4EAF5] bg-[#F2F5FB]">
+          <h2 className="text-[#0D1B35] font-semibold">Compliance Requirements</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-[#EDE8E0]">
+              <tr className="border-b border-[#E4EAF5]">
                 {["Requirement", "Status", "Last Verified", "Next Due", "Evidence"].map((h) => (
-                  <th key={h} className="text-left text-[#9C9285] text-xs font-bold uppercase tracking-wider px-5 py-3">{h}</th>
+                  <th key={h} className="text-left text-[#6378A0] text-xs font-bold uppercase tracking-wider px-5 py-3">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -85,8 +85,8 @@ export default async function ComplianceDashboardPage() {
               {complianceItems.map((item) => {
                 const cfg = statusConfig[item.status] ?? statusConfig.NON_COMPLIANT;
                 return (
-                  <tr key={item.name} className="border-b border-[#EDE8E0] hover:bg-[#F5F3EE] transition-colors last:border-0">
-                    <td className="px-5 py-3.5 text-[#1C1714] font-semibold text-sm">{item.name}</td>
+                  <tr key={item.name} className="border-b border-[#E4EAF5] hover:bg-[#F2F5FB] transition-colors last:border-0">
+                    <td className="px-5 py-3.5 text-[#0D1B35] font-semibold text-sm">{item.name}</td>
                     <td className="px-5 py-3.5">
                       <span
                         className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border"
@@ -96,9 +96,9 @@ export default async function ComplianceDashboardPage() {
                         {cfg.label}
                       </span>
                     </td>
-                    <td className="px-5 py-3.5 text-[#9C9285] text-sm">{item.lastAudit}</td>
-                    <td className="px-5 py-3.5 text-[#9C9285] text-sm">{item.nextAudit}</td>
-                    <td className="px-5 py-3.5 text-[#5C5248] text-sm">{item.evidence}</td>
+                    <td className="px-5 py-3.5 text-[#6378A0] text-sm">{item.lastAudit}</td>
+                    <td className="px-5 py-3.5 text-[#6378A0] text-sm">{item.nextAudit}</td>
+                    <td className="px-5 py-3.5 text-[#3D5280] text-sm">{item.evidence}</td>
                   </tr>
                 );
               })}
