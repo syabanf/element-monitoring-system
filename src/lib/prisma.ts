@@ -5,8 +5,12 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-function createClient() {
-  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+function createClient(): PrismaClient {
+  if (!process.env.DATABASE_URL) {
+    const { createMockPrisma } = require("./mock-prisma") as { createMockPrisma: () => unknown };
+    return createMockPrisma() as unknown as PrismaClient;
+  }
+  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
   return new PrismaClient({
     adapter,
     log: process.env.NODE_ENV === "development" ? ["error"] : [],
