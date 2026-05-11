@@ -1,15 +1,11 @@
 import "dotenv/config";
 import { PrismaClient, Role, PillarType, AssetStatus, SensorStatus, AlertSeverity, AlertStatus, AlertType, WorkOrderStatus, QualityStatus } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
 import { subDays, subHours, addDays } from "date-fns";
 
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: process.env["DATABASE_URL"],
-    },
-  },
-} as ConstructorParameters<typeof PrismaClient>[0]);
+const adapter = new PrismaPg({ connectionString: process.env["DATABASE_URL"]! });
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log("🌱 Starting seed...");
