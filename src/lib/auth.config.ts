@@ -25,4 +25,5 @@ export const authConfig: NextAuthConfig = {
     },
   },
   secret: process.env.NEXTAUTH_SECRET ?? "dev-secret-change-in-production",
+  trustHost: true,
 };
