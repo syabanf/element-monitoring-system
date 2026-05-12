@@ -352,6 +352,9 @@ export default function ReportsPage() {
                         {fmt}
                       </button>
                     ))}
+                    <a href={`/reports/${report.id}`} className="text-[#B8901A] text-sm font-medium hover:text-[#9A7A14] hover:underline whitespace-nowrap">
+                      View →
+                    </a>
                   </div>
                 </div>
               );
