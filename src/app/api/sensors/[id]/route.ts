@@ -2,6 +2,22 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const session = await auth();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { id } = await params;
+  const sensor = await prisma.sensor.findUnique({
+    where: { id },
+    include: {
+      asset: { include: { site: { select: { name: true } } } },
+      gateway: { select: { id: true, name: true, status: true } },
+      alertRules: { select: { id: true, name: true, operator: true, threshold: true, severity: true, isActive: true } },
+    },
+  });
+  if (!sensor) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  return NextResponse.json(sensor);
+}
+
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

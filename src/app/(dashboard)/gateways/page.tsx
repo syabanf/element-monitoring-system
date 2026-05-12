@@ -164,7 +164,10 @@ export default function GatewaysPage() {
                   <Radio className="w-3 h-3 text-[#6378A0]" />
                   <span className="text-[#3D5280] font-medium">{gw._count.sensors} sensors</span>
                 </div>
-                {gw.lastSeenAt && <span className="text-[#6378A0]">Last seen {new Date(gw.lastSeenAt).toLocaleTimeString()}</span>}
+                <div className="flex items-center gap-3">
+                  {gw.lastSeenAt && <span className="text-[#6378A0]">Last seen {new Date(gw.lastSeenAt).toLocaleTimeString()}</span>}
+                  <a href={`/gateways/${gw.id}`} className="text-[#B8901A] font-medium hover:underline whitespace-nowrap">View →</a>
+                </div>
               </div>
             </div>
           ))}

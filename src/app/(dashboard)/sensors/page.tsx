@@ -179,6 +179,7 @@ export default function SensorsPage() {
                     </td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-1.5 justify-end">
+                        <a href={`/sensors/${s.id}`} className="text-[#B8901A] text-sm font-medium hover:underline whitespace-nowrap">View →</a>
                         <button onClick={() => openEdit(s)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[#FEF7E6] text-[#6378A0] hover:text-[#B8901A] transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
                         <button onClick={() => setDelId(s.id)} className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[#FEF2F2] text-[#6378A0] hover:text-[#B91C1C] transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>

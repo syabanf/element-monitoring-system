@@ -103,16 +103,16 @@ export default function AlertRulesPage() {
           <table className="w-full">
             <thead>
               <tr className="bg-[#F2F5FB] border-b border-[#D9E2F0]">
-                {["Rule Name", "Sensor / Asset", "Metric", "Condition", "Severity", "Type", "Alerts", "Active"].map(h => (
+                {["Rule Name", "Sensor / Asset", "Metric", "Condition", "Severity", "Type", "Alerts", "Active", ""].map(h => (
                   <th key={h} className="text-left px-5 py-3 text-xs font-bold text-[#6378A0] uppercase tracking-wider whitespace-nowrap">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={8} className="px-5 py-12 text-center text-[#6378A0]">Loading…</td></tr>
+                <tr><td colSpan={9} className="px-5 py-12 text-center text-[#6378A0]">Loading…</td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={8} className="px-5 py-12 text-center text-[#6378A0]">No rules found</td></tr>
+                <tr><td colSpan={9} className="px-5 py-12 text-center text-[#6378A0]">No rules found</td></tr>
               ) : filtered.map((rule) => {
                 const sc = severityColors[rule.severity] ?? severityColors.INFO;
                 return (
@@ -138,6 +138,9 @@ export default function AlertRulesPage() {
                     <td className="px-5 py-4 text-center text-[#0D1B35] text-sm font-medium">{rule._count.alerts}</td>
                     <td className="px-5 py-4">
                       <div className={`w-8 h-4 rounded-full transition-colors ${rule.isActive ? "bg-[#B8901A]" : "bg-[#D9E2F0]"}`} />
+                    </td>
+                    <td className="px-5 py-4">
+                      <a href={`/alert-rules/${rule.id}`} className="text-[#B8901A] text-sm font-medium hover:underline whitespace-nowrap">View →</a>
                     </td>
                   </tr>
                 );
