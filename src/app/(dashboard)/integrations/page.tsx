@@ -1,17 +1,24 @@
 import { prisma } from "@/lib/prisma";
-import { Plug, CheckCircle, XCircle } from "lucide-react";
+import type { LucideProps } from "lucide-react";
+import {
+  Plug, CheckCircle, XCircle,
+  MessageSquare, Bell, Building2, Tag, Wrench,
+  Mail, Smartphone, BarChart2, AlertTriangle, Link,
+} from "lucide-react";
 
-const integrationIcons: Record<string, string> = {
-  microsoft_teams: "💬",
-  slack: "🔔",
-  sap_pm: "🏭",
-  servicenow: "🎫",
-  ibm_maximo: "🔧",
-  email: "📧",
-  sms: "📱",
-  power_bi: "📊",
-  pagerduty: "🚨",
-  webhook: "🔗",
+type IconComponent = React.FC<LucideProps>;
+
+const integrationIcons: Record<string, IconComponent> = {
+  microsoft_teams: MessageSquare,
+  slack:           Bell,
+  sap_pm:          Building2,
+  servicenow:      Tag,
+  ibm_maximo:      Wrench,
+  email:           Mail,
+  sms:             Smartphone,
+  power_bi:        BarChart2,
+  pagerduty:       AlertTriangle,
+  webhook:         Link,
 };
 
 const INTEGRATION_CATALOG = [
@@ -57,7 +64,7 @@ export default async function IntegrationsPage() {
                   <div key={item.type} className="bg-white border border-[#D9E2F0] rounded-xl p-4 space-y-3 hover:shadow-md hover:border-[#C6D0E8] transition-all">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <span className="text-2xl">{integrationIcons[item.type] ?? "🔌"}</span>
+                        {(() => { const Icon = integrationIcons[item.type] ?? Plug; return <Icon className="w-6 h-6 text-[#3D5280]" />; })()}
                         <div>
                           <p className="text-[#0D1B35] font-semibold text-sm">{item.name}</p>
                           <p className="text-[#6378A0] text-xs">{item.description}</p>

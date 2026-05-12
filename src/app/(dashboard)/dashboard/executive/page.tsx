@@ -1,10 +1,13 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import type { LucideProps } from "lucide-react";
 import {
   Zap, Droplets, Wind, Thermometer, FlaskConical, Gauge, Activity,
   AlertTriangle, TrendingUp, TrendingDown, DollarSign, Leaf, MapPin,
-  CheckCircle, ArrowUpRight,
+  CheckCircle, ArrowUpRight, Wrench,
 } from "lucide-react";
+
+type IconComponent = React.FC<LucideProps>;
 import { KpiCard } from "@/components/dashboard/KpiCard";
 import { PillarStatusCard } from "@/components/dashboard/PillarStatusCard";
 import { AlertSummaryRow } from "@/components/dashboard/AlertSummaryRow";
@@ -24,13 +27,13 @@ function generateTrendData(base: number, variance: number, days = 14) {
   }));
 }
 
-const utilizationData = [
-  { pillar: "Electricity",    icon: "⚡", value: 71, label: "2,847 / 4,000 kW",       color: "#B45309" },
-  { pillar: "Water",          icon: "💧", value: 56, label: "8,420 / 15,000 m³",      color: "#1E5FA8" },
-  { pillar: "Wastewater",     icon: "🧪", value: 78, label: "180 / 230 mg/L COD",     color: "#7C3AED" },
-  { pillar: "Gas / Air",      icon: "💨", value: 21, label: "2.1% / 10% LEL",         color: "#166534" },
-  { pillar: "HVAC",           icon: "🌡️", value: 84, label: "Efficiency 84%",          color: "#B8901A" },
-  { pillar: "Compressed Air", icon: "🔧", value: 72, label: "7.2 / 10 bar",           color: "#0E7490" },
+const utilizationData: Array<{ pillar: string; icon: IconComponent; value: number; label: string; color: string }> = [
+  { pillar: "Electricity",    icon: Zap,          value: 71, label: "2,847 / 4,000 kW",       color: "#B45309" },
+  { pillar: "Water",          icon: Droplets,     value: 56, label: "8,420 / 15,000 m³",      color: "#1E5FA8" },
+  { pillar: "Wastewater",     icon: FlaskConical, value: 78, label: "180 / 230 mg/L COD",     color: "#7C3AED" },
+  { pillar: "Gas / Air",      icon: Wind,         value: 21, label: "2.1% / 10% LEL",         color: "#166534" },
+  { pillar: "HVAC",           icon: Thermometer,  value: 84, label: "Efficiency 84%",          color: "#B8901A" },
+  { pillar: "Compressed Air", icon: Wrench,       value: 72, label: "7.2 / 10 bar",           color: "#0E7490" },
 ];
 
 export default async function ExecutiveDashboardPage() {
@@ -174,7 +177,7 @@ export default async function ExecutiveDashboardPage() {
               <div key={u.pillar} className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm">{u.icon}</span>
+                    <u.icon className="w-4 h-4 flex-shrink-0" style={{ color: u.color }} />
                     <span className="text-[#0D1B35] text-sm font-semibold">{u.pillar}</span>
                     <span className="text-[#6378A0] text-xs">{u.label}</span>
                   </div>

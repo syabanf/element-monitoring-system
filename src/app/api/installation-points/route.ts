@@ -8,11 +8,18 @@ export async function GET(req: NextRequest) {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const ruanganId = req.nextUrl.searchParams.get("ruanganId");
-  if (!ruanganId) return NextResponse.json({ error: "ruanganId required" }, { status: 400 });
 
   const points = await prisma.installationPoint.findMany({
-    where: { ruanganId },
+    where: ruanganId ? { ruanganId } : undefined,
     orderBy: { name: "asc" },
+    include: {
+      ruangan: {
+        select: {
+          name: true,
+          bagian: { select: { name: true, department: { select: { name: true, building: { select: { name: true, site: { select: { name: true } } } } } } } },
+        },
+      },
+    },
   });
 
   return NextResponse.json(points);

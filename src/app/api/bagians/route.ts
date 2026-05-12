@@ -7,12 +7,14 @@ export async function GET(req: NextRequest) {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const departmentId = req.nextUrl.searchParams.get("departmentId");
-  if (!departmentId) return NextResponse.json({ error: "departmentId required" }, { status: 400 });
 
   const bagians = await prisma.bagian.findMany({
-    where: { departmentId },
+    where: departmentId ? { departmentId } : undefined,
     orderBy: { name: "asc" },
-    include: { _count: { select: { ruangans: true } } },
+    include: {
+      _count: { select: { ruangans: true } },
+      department: { select: { name: true, building: { select: { name: true, site: { select: { name: true } } } } } },
+    },
   });
 
   return NextResponse.json(bagians);

@@ -1,23 +1,30 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
-import { FileText, Download, Calendar, User, ArrowLeft, CheckCircle } from "lucide-react";
+import type { LucideProps } from "lucide-react";
+import {
+  FileText, Download, Calendar, User, ArrowLeft, CheckCircle, AlertTriangle,
+  Droplets, Zap, Wrench, ClipboardList, BarChart2, Target,
+  BookOpen, DollarSign, TrendingUp, Leaf, Wind, ShieldCheck,
+} from "lucide-react";
 
-const REPORT_CATALOG = [
-  { type: "wastewater_compliance", category: "Compliance", label: "Wastewater Compliance", icon: "💧", color: "#6D28D9" },
-  { type: "iso50001_evidence", category: "Compliance", label: "ISO 50001 Evidence", icon: "⚡", color: "#B45309" },
-  { type: "calibration_status", category: "Compliance", label: "Calibration Status", icon: "🔧", color: "#1E5FA8" },
-  { type: "daily_operations", category: "Operations", label: "Daily Operations", icon: "📋", color: "#1E5FA8" },
-  { type: "weekly_variance", category: "Operations", label: "Weekly Variance", icon: "📊", color: "#B45309" },
-  { type: "peak_demand_analysis", category: "Operations", label: "Peak Demand Analysis", icon: "⚡", color: "#B91C1C" },
-  { type: "water_balance", category: "Operations", label: "Water Balance", icon: "💧", color: "#1E5FA8" },
-  { type: "monthly_scorecard", category: "Financial", label: "Monthly Scorecard", icon: "🎯", color: "#B8901A" },
-  { type: "quarterly_board", category: "Financial", label: "Quarterly Board Pack", icon: "📑", color: "#6D28D9" },
-  { type: "cost_allocation", category: "Financial", label: "Cost Allocation", icon: "💰", color: "#166534" },
-  { type: "energy_benchmark", category: "Financial", label: "Energy Benchmarking", icon: "📈", color: "#B45309" },
-  { type: "scope2_emissions", category: "ESG", label: "Scope 2 Emissions", icon: "🌿", color: "#166534" },
-  { type: "gas_ldar_incident", category: "Incidents", label: "Gas / LDAR Incident", icon: "💨", color: "#0E7490" },
-  { type: "worker_safety", category: "Incidents", label: "Worker Safety", icon: "🦺", color: "#B91C1C" },
+type IconComponent = React.FC<LucideProps>;
+
+const REPORT_CATALOG: Array<{ type: string; category: string; label: string; icon: IconComponent; color: string }> = [
+  { type: "wastewater_compliance", category: "Compliance", label: "Wastewater Compliance", icon: Droplets,    color: "#6D28D9" },
+  { type: "iso50001_evidence",     category: "Compliance", label: "ISO 50001 Evidence",     icon: Zap,         color: "#B45309" },
+  { type: "calibration_status",    category: "Compliance", label: "Calibration Status",     icon: Wrench,      color: "#1E5FA8" },
+  { type: "daily_operations",      category: "Operations", label: "Daily Operations",        icon: ClipboardList, color: "#1E5FA8" },
+  { type: "weekly_variance",       category: "Operations", label: "Weekly Variance",         icon: BarChart2,   color: "#B45309" },
+  { type: "peak_demand_analysis",  category: "Operations", label: "Peak Demand Analysis",    icon: Zap,         color: "#B91C1C" },
+  { type: "water_balance",         category: "Operations", label: "Water Balance",           icon: Droplets,    color: "#1E5FA8" },
+  { type: "monthly_scorecard",     category: "Financial",  label: "Monthly Scorecard",       icon: Target,      color: "#B8901A" },
+  { type: "quarterly_board",       category: "Financial",  label: "Quarterly Board Pack",    icon: BookOpen,    color: "#6D28D9" },
+  { type: "cost_allocation",       category: "Financial",  label: "Cost Allocation",         icon: DollarSign,  color: "#166534" },
+  { type: "energy_benchmark",      category: "Financial",  label: "Energy Benchmarking",     icon: TrendingUp,  color: "#B45309" },
+  { type: "scope2_emissions",      category: "ESG",        label: "Scope 2 Emissions",       icon: Leaf,        color: "#166534" },
+  { type: "gas_ldar_incident",     category: "Incidents",  label: "Gas / LDAR Incident",     icon: Wind,        color: "#0E7490" },
+  { type: "worker_safety",         category: "Incidents",  label: "Worker Safety",           icon: ShieldCheck, color: "#B91C1C" },
 ];
 
 const categoryStyle: Record<string, { bg: string; text: string }> = {
@@ -33,20 +40,20 @@ const REPORT_PREVIEW: Record<string, { headers: string[]; rows: string[][] }> = 
   wastewater_compliance: {
     headers: ["Date", "pH", "COD (mg/L)", "TSS (mg/L)", "Flow (m³/h)", "Status"],
     rows: [
-      ["2026-05-11", "7.8", "180", "42", "48.2", "⚠ NEAR LIMIT"],
-      ["2026-05-10", "7.6", "172", "38", "46.1", "✓ COMPLIANT"],
-      ["2026-05-09", "7.4", "165", "35", "45.8", "✓ COMPLIANT"],
-      ["2026-05-08", "7.9", "188", "40", "47.3", "⚠ NEAR LIMIT"],
-      ["2026-05-07", "7.3", "158", "32", "44.9", "✓ COMPLIANT"],
+      ["2026-05-11", "7.8", "180", "42", "48.2", "NEAR LIMIT"],
+      ["2026-05-10", "7.6", "172", "38", "46.1", "COMPLIANT"],
+      ["2026-05-09", "7.4", "165", "35", "45.8", "COMPLIANT"],
+      ["2026-05-08", "7.9", "188", "40", "47.3", "NEAR LIMIT"],
+      ["2026-05-07", "7.3", "158", "32", "44.9", "COMPLIANT"],
     ],
   },
   daily_operations: {
     headers: ["Site", "Assets", "Online Sensors", "Open Alerts", "kWh Today", "Status"],
     rows: [
-      ["Jakarta Industrial Park", "24", "48/50", "2", "52,840", "✓ OK"],
-      ["Surabaya Plant", "20", "38/40", "1", "41,200", "✓ OK"],
-      ["Bandung Factory", "18", "35/36", "0", "28,460", "✓ OK"],
-      ["Semarang Facility", "18", "36/36", "2", "20,000", "⚠ ALERTS"],
+      ["Jakarta Industrial Park", "24", "48/50", "2", "52,840", "OK"],
+      ["Surabaya Plant", "20", "38/40", "1", "41,200", "OK"],
+      ["Bandung Factory", "18", "35/36", "0", "28,460", "OK"],
+      ["Semarang Facility", "18", "36/36", "2", "20,000", "ALERTS"],
     ],
   },
   scope2_emissions: {
@@ -61,11 +68,11 @@ const REPORT_PREVIEW: Record<string, { headers: string[]; rows: string[][] }> = 
   monthly_scorecard: {
     headers: ["KPI", "Target", "Actual", "Variance", "Status"],
     rows: [
-      ["Energy Cost", "IDR 720M", "IDR 694M", "−3.6%", "✓ BETTER"],
-      ["Water Consumption", "240,000 m³", "252,000 m³", "+5.0%", "⚠ OVER"],
-      ["Carbon tCO₂e", "1,760 t", "1,842 t", "+4.7%", "⚠ OVER"],
-      ["Open Alerts MTD", "< 50", "38", "−24%", "✓ BETTER"],
-      ["Sensor Uptime", "> 95%", "97.2%", "+2.2%", "✓ BETTER"],
+      ["Energy Cost", "IDR 720M", "IDR 694M", "−3.6%", "BETTER"],
+      ["Water Consumption", "240,000 m³", "252,000 m³", "+5.0%", "OVER"],
+      ["Carbon tCO₂e", "1,760 t", "1,842 t", "+4.7%", "OVER"],
+      ["Open Alerts MTD", "< 50", "38", "−24%", "BETTER"],
+      ["Sensor Uptime", "> 95%", "97.2%", "+2.2%", "BETTER"],
     ],
   },
 };
@@ -108,8 +115,8 @@ export default async function ReportDetailPage({
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 bg-[#F2F5FB]">
-            {catalogEntry?.icon ?? "📄"}
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 bg-[#F2F5FB]">
+            {(() => { const Icon = catalogEntry?.icon ?? FileText; return <Icon className="w-6 h-6 text-[#6378A0]" style={{ color: catalogEntry?.color }}/>; })()}
           </div>
           <div>
             <h1 className="text-[#0D1B35] text-xl font-bold">{report.title}</h1>
@@ -175,8 +182,16 @@ export default async function ReportDetailPage({
               {preview.rows.map((row, i) => (
                 <tr key={i} className="border-b border-[#E4EAF5] hover:bg-[#F2F5FB] transition-colors last:border-0">
                   {row.map((cell, j) => (
-                    <td key={j} className={`px-5 py-3 text-sm ${j === 0 ? "text-[#0D1B35] font-medium" : "text-[#3D5280]"} ${cell.includes("✓") ? "text-[#166534] font-medium" : cell.includes("⚠") ? "text-[#B45309] font-medium" : ""}`}>
-                      {cell}
+                    <td key={j} className={`px-5 py-3 text-sm ${j === 0 ? "text-[#0D1B35] font-medium" : "text-[#3D5280]"}`}>
+                      {j === row.length - 1 && ["COMPLIANT","OK","BETTER"].some(w => cell.includes(w)) ? (
+                        <span className="inline-flex items-center gap-1 text-[#166534] font-semibold">
+                          <CheckCircle className="w-3.5 h-3.5" />{cell}
+                        </span>
+                      ) : j === row.length - 1 && ["NEAR LIMIT","OVER","ALERTS"].some(w => cell.includes(w)) ? (
+                        <span className="inline-flex items-center gap-1 text-[#B45309] font-semibold">
+                          <AlertTriangle className="w-3.5 h-3.5" />{cell}
+                        </span>
+                      ) : cell}
                     </td>
                   ))}
                 </tr>

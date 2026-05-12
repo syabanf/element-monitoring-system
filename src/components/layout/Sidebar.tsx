@@ -5,44 +5,52 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Zap, Activity, ShieldCheck,
   MapPin, Package, Radio, Wifi, Bell, BarChart2,
-  Users, Settings, FileText, BookOpen, Cpu, ChevronRight,
+  Users, Settings, FileText, Cpu, ChevronRight,
+  Building2, Layers, Plug, ScrollText, DoorOpen,
 } from "lucide-react";
 
 const NAV = [
   {
     section: "OVERVIEW",
     items: [
-      { label: "Executive",   href: "/dashboard/executive",  icon: LayoutDashboard },
-      { label: "Operations",  href: "/dashboard/operations", icon: Activity },
-      { label: "Energy",      href: "/dashboard/energy",     icon: Zap },
-      { label: "Compliance",  href: "/dashboard/compliance", icon: ShieldCheck },
+      { label: "Executive",  href: "/dashboard/executive",  icon: LayoutDashboard },
+      { label: "Operations", href: "/dashboard/operations", icon: Activity },
+      { label: "Energy",     href: "/dashboard/energy",     icon: Zap },
+      { label: "Compliance", href: "/dashboard/compliance", icon: ShieldCheck },
     ],
   },
   {
-    section: "ASSETS",
+    section: "LOCATIONS",
     items: [
-      { label: "Sites",               href: "/sites",               icon: MapPin },
-      { label: "Installation Points", href: "/installation-points", icon: Cpu },
-      { label: "Assets",              href: "/assets",              icon: Package },
-      { label: "Sensors",             href: "/sensors",             icon: Radio },
-      { label: "Gateways",            href: "/gateways",            icon: Wifi },
+      { label: "Sites",          href: "/sites",               icon: MapPin },
+      { label: "Departments",    href: "/departments",         icon: Building2 },
+      { label: "Bagians",        href: "/bagians",             icon: Layers },
+      { label: "Install. Points",href: "/installation-points", icon: Cpu },
+    ],
+  },
+  {
+    section: "EQUIPMENT",
+    items: [
+      { label: "Assets",   href: "/assets",   icon: Package },
+      { label: "Sensors",  href: "/sensors",  icon: Radio },
+      { label: "Gateways", href: "/gateways", icon: Wifi },
     ],
   },
   {
     section: "MONITORING",
     items: [
-      { label: "Live Telemetry", href: "/telemetry",    icon: BarChart2 },
-      { label: "Alerts",         href: "/alerts",       icon: Bell },
-      { label: "Alert Rules",    href: "/alert-rules",  icon: Settings },
+      { label: "Live Telemetry", href: "/telemetry",   icon: BarChart2 },
+      { label: "Alerts",         href: "/alerts",      icon: Bell },
+      { label: "Alert Rules",    href: "/alert-rules", icon: Settings },
     ],
   },
   {
-    section: "REPORTS & ADMIN",
+    section: "ADMIN",
     items: [
       { label: "Reports",      href: "/reports",      icon: FileText },
       { label: "Users",        href: "/users",        icon: Users },
-      { label: "Integrations", href: "/integrations", icon: BookOpen },
-      { label: "Audit Log",    href: "/audit-log",    icon: BookOpen },
+      { label: "Integrations", href: "/integrations", icon: Plug },
+      { label: "Audit Log",    href: "/audit-log",    icon: ScrollText },
     ],
   },
 ];

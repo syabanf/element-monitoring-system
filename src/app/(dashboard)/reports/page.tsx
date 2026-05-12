@@ -1,23 +1,33 @@
 import { prisma } from "@/lib/prisma";
-import { FileText, Download, Calendar, User, TrendingUp, CheckCircle, Clock } from "lucide-react";
+import type { LucideProps } from "lucide-react";
+import {
+  FileText, Download, Calendar, User, TrendingUp, CheckCircle, Clock,
+  Droplets, Zap, Wrench, ClipboardList, BarChart2, Target,
+  BookOpen, DollarSign, Leaf, Wind, ShieldCheck,
+} from "lucide-react";
+
+type IconComponent = React.FC<LucideProps>;
 import { format } from "date-fns";
 
-const REPORT_CATALOG = [
-  { type: "wastewater_compliance", category: "Compliance", label: "Wastewater Compliance", description: "pH, COD, TSS, effluent data for BAPEDAL submission", formats: ["PDF", "CSV"], icon: "💧", color: "#6D28D9", roles: "EHS / Compliance" },
-  { type: "iso50001_evidence", category: "Compliance", label: "ISO 50001 Evidence", description: "Energy management evidence pack for audit", formats: ["PDF", "XLSX"], icon: "⚡", color: "#B45309", roles: "Energy Manager" },
-  { type: "calibration_status", category: "Compliance", label: "Calibration Status Report", description: "Sensor calibration schedule, overdue list, certificates", formats: ["PDF", "XLSX"], icon: "🔧", color: "#1E5FA8", roles: "Technician" },
-  { type: "daily_operations", category: "Operations", label: "Daily Operations Report", description: "Asset status, alerts, consumption summary for shift handover", formats: ["PDF", "CSV"], icon: "📋", color: "#1E5FA8", roles: "Operations Supervisor" },
-  { type: "weekly_variance", category: "Operations", label: "Weekly Variance Report", description: "Consumption vs baseline, deviations, anomaly summary", formats: ["PDF", "XLSX", "CSV"], icon: "📊", color: "#B45309", roles: "Energy Manager" },
-  { type: "peak_demand_analysis", category: "Operations", label: "Peak Demand Analysis", description: "Peak demand events, tariff exposure, load shedding opportunities", formats: ["PDF", "XLSX"], icon: "⚡", color: "#B91C1C", roles: "Energy Manager" },
-  { type: "water_balance", category: "Operations", label: "Water Balance Report", description: "Water input, consumption, discharge, NRW reconciliation", formats: ["PDF", "XLSX"], icon: "💧", color: "#1E5FA8", roles: "Operations Supervisor" },
-  { type: "monthly_scorecard", category: "Financial", label: "Monthly Executive Scorecard", description: "KPIs, cost, carbon, site rankings for management review", formats: ["PDF", "XLSX"], icon: "🎯", color: "#B8901A", roles: "Executive" },
-  { type: "quarterly_board", category: "Financial", label: "Quarterly Board Pack", description: "Executive summary with ROI analysis for board review", formats: ["PDF"], icon: "📑", color: "#6D28D9", roles: "Executive" },
-  { type: "cost_allocation", category: "Financial", label: "Cost Allocation Report", description: "Energy/water/gas cost split by department and cost center", formats: ["XLSX", "CSV"], icon: "💰", color: "#166534", roles: "Finance" },
-  { type: "energy_benchmark", category: "Financial", label: "Energy Benchmarking", description: "Site-vs-site energy intensity (kWh/m², kWh/unit)", formats: ["PDF", "XLSX"], icon: "📈", color: "#B45309", roles: "Energy Manager" },
-  { type: "scope2_emissions", category: "ESG", label: "Scope 2 Emissions Report", description: "CDP-format GHG disclosure with location & market-based methods", formats: ["PDF", "XLSX", "CSV"], icon: "🌿", color: "#166534", roles: "EHS / Compliance" },
-  { type: "gas_ldar_incident", category: "Incidents", label: "Gas / LDAR Incident Report", description: "Leak detection and repair log, fugitive emissions evidence", formats: ["PDF", "CSV"], icon: "💨", color: "#0E7490", roles: "EHS / Compliance" },
-  { type: "worker_safety", category: "Incidents", label: "Worker Safety Report", description: "Gas exposure events, OSHA 1910.146 confined space log", formats: ["PDF"], icon: "🦺", color: "#B91C1C", roles: "EHS / Compliance" },
-] as const;
+const REPORT_CATALOG: Array<{
+  type: string; category: string; label: string; description: string;
+  formats: string[]; icon: IconComponent; color: string; roles: string;
+}> = [
+  { type: "wastewater_compliance", category: "Compliance", label: "Wastewater Compliance",     description: "pH, COD, TSS, effluent data for BAPEDAL submission",            formats: ["PDF", "CSV"],        icon: Droplets,    color: "#6D28D9", roles: "EHS / Compliance" },
+  { type: "iso50001_evidence",     category: "Compliance", label: "ISO 50001 Evidence",         description: "Energy management evidence pack for audit",                     formats: ["PDF", "XLSX"],       icon: Zap,         color: "#B45309", roles: "Energy Manager" },
+  { type: "calibration_status",    category: "Compliance", label: "Calibration Status Report",  description: "Sensor calibration schedule, overdue list, certificates",       formats: ["PDF", "XLSX"],       icon: Wrench,      color: "#1E5FA8", roles: "Technician" },
+  { type: "daily_operations",      category: "Operations", label: "Daily Operations Report",    description: "Asset status, alerts, consumption summary for shift handover", formats: ["PDF", "CSV"],        icon: ClipboardList, color: "#1E5FA8", roles: "Operations Supervisor" },
+  { type: "weekly_variance",       category: "Operations", label: "Weekly Variance Report",     description: "Consumption vs baseline, deviations, anomaly summary",          formats: ["PDF", "XLSX", "CSV"], icon: BarChart2,  color: "#B45309", roles: "Energy Manager" },
+  { type: "peak_demand_analysis",  category: "Operations", label: "Peak Demand Analysis",       description: "Peak demand events, tariff exposure, load shedding opportunities", formats: ["PDF", "XLSX"],    icon: Zap,         color: "#B91C1C", roles: "Energy Manager" },
+  { type: "water_balance",         category: "Operations", label: "Water Balance Report",       description: "Water input, consumption, discharge, NRW reconciliation",       formats: ["PDF", "XLSX"],       icon: Droplets,    color: "#1E5FA8", roles: "Operations Supervisor" },
+  { type: "monthly_scorecard",     category: "Financial",  label: "Monthly Executive Scorecard",description: "KPIs, cost, carbon, site rankings for management review",       formats: ["PDF", "XLSX"],       icon: Target,      color: "#B8901A", roles: "Executive" },
+  { type: "quarterly_board",       category: "Financial",  label: "Quarterly Board Pack",       description: "Executive summary with ROI analysis for board review",          formats: ["PDF"],               icon: BookOpen,    color: "#6D28D9", roles: "Executive" },
+  { type: "cost_allocation",       category: "Financial",  label: "Cost Allocation Report",     description: "Energy/water/gas cost split by department and cost center",     formats: ["XLSX", "CSV"],       icon: DollarSign,  color: "#166534", roles: "Finance" },
+  { type: "energy_benchmark",      category: "Financial",  label: "Energy Benchmarking",        description: "Site-vs-site energy intensity (kWh/m², kWh/unit)",              formats: ["PDF", "XLSX"],       icon: TrendingUp,  color: "#B45309", roles: "Energy Manager" },
+  { type: "scope2_emissions",      category: "ESG",        label: "Scope 2 Emissions Report",   description: "CDP-format GHG disclosure with location & market-based methods",formats: ["PDF", "XLSX", "CSV"], icon: Leaf,       color: "#166534", roles: "EHS / Compliance" },
+  { type: "gas_ldar_incident",     category: "Incidents",  label: "Gas / LDAR Incident Report", description: "Leak detection and repair log, fugitive emissions evidence",    formats: ["PDF", "CSV"],        icon: Wind,        color: "#0E7490", roles: "EHS / Compliance" },
+  { type: "worker_safety",         category: "Incidents",  label: "Worker Safety Report",       description: "Gas exposure events, OSHA 1910.146 confined space log",         formats: ["PDF"],               icon: ShieldCheck, color: "#B91C1C", roles: "EHS / Compliance" },
+];
 
 type Category = "All" | "Compliance" | "Operations" | "Financial" | "ESG" | "Incidents";
 const CATEGORIES: Category[] = ["All", "Compliance", "Operations", "Financial", "ESG", "Incidents"];
@@ -208,8 +218,8 @@ export default async function ReportsPage({
               const cs = categoryStyle[catalogEntry?.category ?? ""] ?? { bg: "#F2F5FB", text: "#6378A0" };
               return (
                 <div key={report.id} className="flex items-center gap-4 p-4 border-b border-[#E4EAF5] last:border-0 hover:bg-[#F2F5FB] transition-colors">
-                  <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0 bg-[#F2F5FB]">
-                    {catalogEntry?.icon ?? "📄"}
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-[#F2F5FB]">
+                    {(() => { const Icon = catalogEntry?.icon ?? FileText; return <Icon className="w-5 h-5 text-[#6378A0]" />; })()}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -253,11 +263,14 @@ export default async function ReportsPage({
 
 function ReportTypeCard({ rt }: { rt: (typeof REPORT_CATALOG)[number] }) {
   const cs = categoryStyle[rt.category] ?? { bg: "#F2F5FB", text: "#6378A0" };
+  const Icon = rt.icon;
   return (
     <div className="bg-white border border-[#D9E2F0] rounded-xl p-4 space-y-3 hover:shadow-md hover:border-[#C6D0E8] transition-all cursor-pointer group">
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="text-2xl leading-none">{rt.icon}</span>
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: cs.bg }}>
+            <Icon className="w-4 h-4" style={{ color: rt.color }} />
+          </div>
           <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: cs.bg, color: cs.text }}>
             {rt.category}
           </span>

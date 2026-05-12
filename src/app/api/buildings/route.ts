@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
   const buildings = await prisma.building.findMany({
     where,
     orderBy: { name: "asc" },
-    include: { _count: { select: { departments: true } } },
+    include: { _count: { select: { departments: true } }, site: { select: { name: true } } },
   });
 
   return NextResponse.json(buildings);
