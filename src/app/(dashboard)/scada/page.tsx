@@ -14,6 +14,17 @@ const PILLAR_CFG: Record<string, { color: string; label: string }> = {
   COMPRESSED_AIR: { color: "#0E7490", label: "Compressed Air" },
 };
 
+// Seeded deterministic trend — 16 points around lastValue
+function makeTrend(sensorId: string, lastValue: number | null, minVal: number | null, maxVal: number | null): number[] {
+  if (lastValue === null) return [];
+  const spread = ((maxVal ?? lastValue * 2) - (minVal ?? 0)) * 0.15 || Math.abs(lastValue) * 0.1 || 1;
+  const seed = sensorId.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  return Array.from({ length: 16 }, (_, i) => {
+    const x = Math.sin(seed * 0.3 + i * 1.7) * 0.5 + Math.sin(seed * 0.7 + i * 0.9) * 0.5;
+    return +(lastValue + x * spread).toFixed(3);
+  });
+}
+
 export default async function ScadaPage() {
   await auth();
 
@@ -54,6 +65,7 @@ export default async function ScadaPage() {
       minValue: s.minValue, maxValue: s.maxValue,
       assetName: s.asset.name, assetCode: s.asset.code,
       pillar, pillarColor, siteName,
+      trend: makeTrend(s.id, s.lastValue, s.minValue, s.maxValue),
     });
   }
 
