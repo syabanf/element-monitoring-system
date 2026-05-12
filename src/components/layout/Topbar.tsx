@@ -1,13 +1,11 @@
 "use client";
 
-import { Bell, ChevronDown, Circle } from "lucide-react";
+import { Bell, ChevronDown, Wifi } from "lucide-react";
 import { signOut } from "next-auth/react";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface TopbarProps {
   title: string;
@@ -31,68 +29,113 @@ export function Topbar({
     .replace(/\b\w/g, (c) => c.toUpperCase());
 
   return (
-    <header className="h-14 flex items-center justify-between px-6 bg-white border-b border-[#D9E2F0] flex-shrink-0 shadow-sm shadow-[#D9E2F0]/40">
-      {/* Page title */}
-      <h1 className="text-[#0D1B35] font-semibold text-base tracking-tight">{title}</h1>
+    <header className="flex-shrink-0 relative">
+      {/* Gold gradient top line */}
+      <div
+        className="absolute top-0 left-0 right-0 h-[2px]"
+        style={{ background: "linear-gradient(90deg, #B8901A 0%, #D4A82A 40%, transparent 100%)" }}
+      />
 
-      {/* Right side */}
-      <div className="flex items-center gap-2">
-        {/* System status pill */}
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#F2F5FB] border border-[#D9E2F0]">
-          <Circle
-            className={systemHealthy ? "fill-[#166534] text-[#166534]" : "fill-[#B91C1C] text-[#B91C1C]"}
-            style={{ width: 7, height: 7 }}
-          />
-          <span className="text-[11px] text-[#3D5280] font-semibold">
-            {systemHealthy ? "All Systems Normal" : "System Alert"}
-          </span>
+      <div
+        className="h-14 flex items-center justify-between px-6"
+        style={{
+          background: "rgba(255,255,255,0.92)",
+          backdropFilter: "blur(12px)",
+          borderBottom: "1px solid rgba(13,27,53,0.07)",
+          boxShadow: "0 1px 12px rgba(13,27,53,0.06)",
+        }}
+      >
+        {/* Left — app title */}
+        <div className="flex items-center gap-3">
+          <h1 className="text-[#0D1B35] font-bold text-sm tracking-tight">{title}</h1>
         </div>
 
-        {/* Bell */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative text-[#6378A0] hover:text-[#0D1B35] hover:bg-[#F2F5FB] w-9 h-9"
-          aria-label="Notifications"
-        >
-          <Bell className="w-4 h-4" />
-          {notificationCount > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#B8901A] text-[9px] font-bold text-white">
-              {notificationCount > 99 ? "99+" : notificationCount}
-            </span>
-          )}
-        </Button>
-
-        <div className="w-px h-5 bg-[#D9E2F0]" />
-
-        {/* User dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-2 px-2 py-1.5 rounded-lg text-[#3D5280] hover:text-[#0D1B35] hover:bg-[#F2F5FB] transition-colors outline-none">
-            <Avatar className="w-7 h-7 border-2 border-[#B8901A]/30">
-              <AvatarFallback className="bg-[#FFF8E6] text-[#B8901A] text-xs font-bold">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col items-start leading-none">
-              <span className="text-xs font-semibold text-[#0D1B35]">{userName}</span>
-              <span className="text-[9px] text-[#B8901A] font-semibold mt-0.5">{roleLabel}</span>
-            </div>
-            <ChevronDown className="w-3 h-3 ml-0.5 text-[#6378A0]" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48 bg-white border-[#D9E2F0] shadow-lg rounded-xl">
-            <DropdownMenuLabel className="text-[#6378A0] text-xs">My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator className="bg-[#D9E2F0]" />
-            <DropdownMenuItem className="text-[#0D1B35] hover:bg-[#F2F5FB] cursor-pointer text-sm rounded-lg">Profile</DropdownMenuItem>
-            <DropdownMenuItem className="text-[#0D1B35] hover:bg-[#F2F5FB] cursor-pointer text-sm rounded-lg">Preferences</DropdownMenuItem>
-            <DropdownMenuSeparator className="bg-[#D9E2F0]" />
-            <DropdownMenuItem
-              className="text-[#B91C1C] hover:bg-[#FEF2F2] cursor-pointer text-sm font-medium rounded-lg"
-              onClick={() => signOut({ callbackUrl: "/login" })}
+        {/* Right */}
+        <div className="flex items-center gap-1.5">
+          {/* Live status */}
+          <div
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full"
+            style={{
+              background: systemHealthy ? "rgba(22,163,74,0.08)" : "rgba(220,38,38,0.08)",
+              border: `1px solid ${systemHealthy ? "rgba(22,163,74,0.2)" : "rgba(220,38,38,0.2)"}`,
+            }}
+          >
+            <Wifi
+              className="w-3 h-3"
+              style={{ color: systemHealthy ? "#16A34A" : "#DC2626" }}
+            />
+            <span
+              className="text-[11px] font-semibold"
+              style={{ color: systemHealthy ? "#16A34A" : "#DC2626" }}
             >
-              Sign Out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              {systemHealthy ? "All Systems Normal" : "System Alert"}
+            </span>
+          </div>
+
+          {/* Bell */}
+          <button
+            className="relative w-9 h-9 flex items-center justify-center rounded-xl transition-all hover:bg-[#F0F4FA]"
+            aria-label="Notifications"
+          >
+            <Bell className="w-[17px] h-[17px] text-[#6378A0]" />
+            {notificationCount > 0 && (
+              <span
+                className="absolute top-1 right-1 flex h-[14px] min-w-[14px] items-center justify-center rounded-full text-[9px] font-black text-white px-0.5"
+                style={{ background: "linear-gradient(135deg, #D4A82A 0%, #B8901A 100%)" }}
+              >
+                {notificationCount > 9 ? "9+" : notificationCount}
+              </span>
+            )}
+          </button>
+
+          {/* Divider */}
+          <div className="w-px h-6 mx-1" style={{ background: "rgba(13,27,53,0.09)" }} />
+
+          {/* User dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl transition-all outline-none hover:bg-[#F0F4FA] group">
+              {/* Avatar */}
+              <div
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black text-white flex-shrink-0"
+                style={{
+                  background: "linear-gradient(135deg, #B8901A 0%, #D4A82A 100%)",
+                  boxShadow: "0 2px 8px rgba(184,144,26,0.35)",
+                }}
+              >
+                {initials}
+              </div>
+              <div className="flex flex-col items-start leading-none gap-0.5">
+                <span className="text-[12px] font-bold text-[#0D1B35]">{userName}</span>
+                <span className="text-[9px] font-semibold" style={{ color: "#B8901A" }}>{roleLabel}</span>
+              </div>
+              <ChevronDown className="w-3 h-3 text-[#6378A0] group-hover:text-[#0D1B35] transition-colors" />
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent
+              align="end"
+              className="w-48 border-[#E2E8F4] rounded-2xl overflow-hidden p-1"
+              style={{ boxShadow: "0 8px 32px rgba(13,27,53,0.12), 0 2px 8px rgba(13,27,53,0.06)" }}
+            >
+              <DropdownMenuLabel className="text-[10px] font-bold text-[#98A8C0] uppercase tracking-wider px-3 py-2">
+                My Account
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-[#E2E8F4] mx-1" />
+              <DropdownMenuItem className="text-[#0D1B35] text-sm rounded-xl px-3 py-2 cursor-pointer focus:bg-[#F0F4FA]">
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-[#0D1B35] text-sm rounded-xl px-3 py-2 cursor-pointer focus:bg-[#F0F4FA]">
+                Preferences
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-[#E2E8F4] mx-1" />
+              <DropdownMenuItem
+                className="text-[#DC2626] text-sm font-semibold rounded-xl px-3 py-2 cursor-pointer focus:bg-[#FEF2F2]"
+                onClick={() => signOut({ callbackUrl: "/login" })}
+              >
+                Sign Out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </header>
   );

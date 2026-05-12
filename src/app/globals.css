@@ -4,34 +4,50 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ── UBS Gold Design System ────────────────────────────────────── */
+/* ── Design Tokens ──────────────────────────────────────────────── */
 :root {
-  --background:        #F2F5FB;
-  --foreground:        #0D1B35;
-  --card:              #FFFFFF;
-  --card-foreground:   #0D1B35;
-  --border:            #D9E2F0;
-  --input:             #FFFFFF;
-  --ring:              #B8901A;
+  --bg:                #F0F4FA;
+  --bg-subtle:         #EBF0F8;
+  --surface:           #FFFFFF;
+  --surface-raised:    #FFFFFF;
 
-  --sidebar:           #0F1C3F;
-  --sidebar-border:    rgba(255,255,255,0.08);
+  --border:            #E2E8F4;
+  --border-strong:     #C8D4E8;
 
-  --muted-foreground:  #6378A0;
-  --secondary-text:    #3D5280;
+  --text-primary:      #0D1B35;
+  --text-secondary:    #3D5280;
+  --text-muted:        #6378A0;
+  --text-faint:        #98A8C0;
 
-  --primary:           #B8901A;
+  --gold:              #B8901A;
+  --gold-light:        #D4A82A;
+  --gold-dim:          #F5E6B5;
+  --gold-bg:           #FEF7E6;
+
+  --navy:              #0D1630;
+  --navy-mid:          #142040;
+  --navy-light:        #1E2F55;
+
+  --success:           #16A34A;
+  --success-bg:        #F0FDF4;
+  --warning:           #D97706;
+  --warning-bg:        #FFFBEB;
+  --danger:            #DC2626;
+  --danger-bg:         #FEF2F2;
+  --info:              #2563EB;
+  --info-bg:           #EFF6FF;
+
+  /* shadcn compat */
+  --background:        var(--bg);
+  --foreground:        var(--text-primary);
+  --card:              var(--surface);
+  --card-foreground:   var(--text-primary);
+  --border-color:      var(--border);
+  --input:             var(--surface);
+  --ring:              var(--gold);
+  --primary:           var(--gold);
   --primary-foreground:#FFFFFF;
-
-  --success:     #166534;
-  --success-bg:  #F0FDF4;
-  --warning:     #B45309;
-  --warning-bg:  #FFFBEB;
-  --danger:      #B91C1C;
-  --danger-bg:   #FEF2F2;
-  --info:        #1E5FA8;
-  --info-bg:     #EFF6FF;
-
+  --muted-foreground:  var(--text-muted);
   --radius: 0.75rem;
 }
 
@@ -41,7 +57,7 @@
   --color-background:       var(--background);
   --color-foreground:       var(--foreground);
   --color-card:             var(--card);
-  --color-border:           var(--border);
+  --color-border:           var(--border-color);
   --color-primary:          var(--primary);
   --color-muted-foreground: var(--muted-foreground);
   --color-ring:             var(--ring);
@@ -51,19 +67,48 @@
   --radius-xl:  calc(var(--radius) + 8px);
 }
 
+/* ── Base ───────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { height: 100%; }
 
 body {
   font-family: var(--font-sans, "Plus Jakarta Sans"), system-ui, sans-serif;
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg);
+  color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "cv02","cv03","cv04","cv11";
 }
 
-::-webkit-scrollbar { width: 5px; height: 5px; }
+/* ── Scrollbar ──────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #C6D0E8; border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: #B8901A; }
+
+/* ── Selection ──────────────────────────────────────────────────── */
+::selection { background: #B8901A33; color: #0D1B35; }
+
+/* ── Utility: gradient text ─────────────────────────────────────── */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #B8901A 0%, #E4B84A 50%, #B8901A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.text-gradient-navy {
+  background: linear-gradient(135deg, #0D1B35 0%, #1E3A6E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Utility: glow shadows ──────────────────────────────────────── */
+.shadow-gold { box-shadow: 0 4px 24px rgba(184,144,26,0.18), 0 1px 4px rgba(184,144,26,0.10); }
+.shadow-navy { box-shadow: 0 4px 24px rgba(13,27,53,0.15), 0 1px 4px rgba(13,27,53,0.08); }
+.shadow-card { box-shadow: 0 1px 3px rgba(13,27,53,0.06), 0 4px 16px rgba(13,27,53,0.06); }
+.shadow-card-hover { box-shadow: 0 2px 8px rgba(13,27,53,0.08), 0 8px 32px rgba(13,27,53,0.10); }
+
+/* ── Animated gradient ring ─────────────────────────────────────── */
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+.animate-spin-slow { animation: spin-slow 8s linear infinite; }

@@ -162,7 +162,7 @@ export default async function ExecutiveDashboardPage() {
       </div>
 
       {/* Resource Utilization */}
-      <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
+      <div className="rounded-2xl p-5" style={{ background: "#fff", boxShadow: "0 1px 3px rgba(13,27,53,0.05), 0 4px 16px rgba(13,27,53,0.06)", border: "1px solid rgba(13,27,53,0.06)" }}>
         <div className="flex items-center justify-between mb-5">
           <div>
             <h2 className="text-[#0D1B35] font-semibold">Resource Utilization</h2>
@@ -207,7 +207,7 @@ export default async function ExecutiveDashboardPage() {
           </div>
           <TrendChart data={energyTrend} color="#B8901A" color2="#D9E2F0" label="This Period" label2="Last Period" height={180} />
         </div>
-        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
+        <div className="rounded-2xl p-5" style={{ background: "#fff", boxShadow: "0 1px 3px rgba(13,27,53,0.05), 0 4px 16px rgba(13,27,53,0.06)", border: "1px solid rgba(13,27,53,0.06)" }}>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-[#0D1B35] font-semibold">Active Alerts</h3>
             <a href="/alerts" className="text-[#B8901A] text-xs font-semibold hover:underline">View all →</a>
@@ -232,7 +232,7 @@ export default async function ExecutiveDashboardPage() {
 
       {/* Cost + Carbon + Site Ranking */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
+        <div className="rounded-2xl p-5" style={{ background: "#fff", boxShadow: "0 1px 3px rgba(13,27,53,0.05), 0 4px 16px rgba(13,27,53,0.06)", border: "1px solid rgba(13,27,53,0.06)" }}>
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-[#0D1B35] font-semibold">Daily Cost Trend</h3>
@@ -243,7 +243,7 @@ export default async function ExecutiveDashboardPage() {
           <TrendChart data={costTrend} color="#B8901A" label="IDR K" height={140} />
         </div>
 
-        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
+        <div className="rounded-2xl p-5" style={{ background: "#fff", boxShadow: "0 1px 3px rgba(13,27,53,0.05), 0 4px 16px rgba(13,27,53,0.06)", border: "1px solid rgba(13,27,53,0.06)" }}>
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-[#0D1B35] font-semibold">Carbon Estimate</h3>
@@ -272,7 +272,7 @@ export default async function ExecutiveDashboardPage() {
           </div>
         </div>
 
-        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
+        <div className="rounded-2xl p-5" style={{ background: "#fff", boxShadow: "0 1px 3px rgba(13,27,53,0.05), 0 4px 16px rgba(13,27,53,0.06)", border: "1px solid rgba(13,27,53,0.06)" }}>
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-[#0D1B35] font-semibold">Site Ranking</h3>
             <a href="/sites" className="text-[#B8901A] text-xs font-semibold hover:underline">View all →</a>
@@ -305,7 +305,7 @@ export default async function ExecutiveDashboardPage() {
 
       {/* Sensor Health + Site Coverage */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
+        <div className="rounded-2xl p-5" style={{ background: "#fff", boxShadow: "0 1px 3px rgba(13,27,53,0.05), 0 4px 16px rgba(13,27,53,0.06)", border: "1px solid rgba(13,27,53,0.06)" }}>
           <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="text-[#0D1B35] font-semibold">Sensor Health Overview</h3>
@@ -315,7 +315,7 @@ export default async function ExecutiveDashboardPage() {
           </div>
           <SensorHealthRing online={onlineSensors} offline={offlineSensors} fault={faultSensors} calibrationDue={calDueSensors} />
         </div>
-        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
+        <div className="rounded-2xl p-5" style={{ background: "#fff", boxShadow: "0 1px 3px rgba(13,27,53,0.05), 0 4px 16px rgba(13,27,53,0.06)", border: "1px solid rgba(13,27,53,0.06)" }}>
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-[#0D1B35] font-semibold">Site Asset Coverage</h3>

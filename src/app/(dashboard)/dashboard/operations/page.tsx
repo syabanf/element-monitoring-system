@@ -78,14 +78,23 @@ export default async function OperationsDashboardPage() {
       {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map(({ label, value, icon: Icon, color, bg, border }) => (
-          <div key={label} className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+          <div
+            key={label}
+            className="relative overflow-hidden rounded-2xl p-5 transition-all duration-200"
+            style={{
+              background: "#FFFFFF",
+              boxShadow: "0 1px 3px rgba(13,27,53,0.05), 0 4px 16px rgba(13,27,53,0.06)",
+              border: "1px solid rgba(13,27,53,0.06)",
+            }}
+          >
+            <div className="absolute top-0 left-0 right-0 h-[3px] rounded-t-2xl" style={{ backgroundColor: color }} />
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: bg, border: `1px solid ${border}` }}>
                 <Icon className="w-5 h-5" style={{ color }} />
               </div>
               <div>
-                <p className="text-[#6378A0] text-xs font-medium">{label}</p>
-                <p className="text-[#0D1B35] text-2xl font-bold leading-none mt-0.5">{value}</p>
+                <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: "#98A8C0" }}>{label}</p>
+                <p className="text-3xl font-black leading-none mt-1" style={{ color: "#0D1B35" }}>{value}</p>
               </div>
             </div>
           </div>
@@ -94,17 +103,17 @@ export default async function OperationsDashboardPage() {
 
       {/* Sensor Health + Site Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
+        <div className="rounded-2xl p-5" style={{ background: "#fff", boxShadow: "0 1px 3px rgba(13,27,53,0.05), 0 4px 16px rgba(13,27,53,0.06)", border: "1px solid rgba(13,27,53,0.06)" }}>
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h3 className="text-[#0D1B35] font-semibold">Sensor Health</h3>
-              <p className="text-[#6378A0] text-xs mt-0.5">Real-time status breakdown</p>
+              <h3 className="text-[#0D1B35] font-bold">Sensor Health</h3>
+              <p className="text-[#98A8C0] text-xs mt-0.5">Real-time status breakdown</p>
             </div>
-            <a href="/sensors" className="text-[#B8901A] text-xs font-semibold hover:underline">View all →</a>
+            <a href="/sensors" className="text-[#B8901A] text-xs font-bold hover:underline">View all →</a>
           </div>
           <SensorHealthRing online={onlineSensors} offline={offlineSensors} fault={faultSensors} calibrationDue={calDueSensors} />
         </div>
-        <div className="bg-white border border-[#D9E2F0] rounded-xl p-5 shadow-sm">
+        <div className="rounded-2xl p-5" style={{ background: "#fff", boxShadow: "0 1px 3px rgba(13,27,53,0.05), 0 4px 16px rgba(13,27,53,0.06)", border: "1px solid rgba(13,27,53,0.06)" }}>
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-[#0D1B35] font-semibold">Site Asset Coverage</h3>
@@ -122,9 +131,9 @@ export default async function OperationsDashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Alert Queue */}
-        <div className="lg:col-span-2 bg-white border border-[#D9E2F0] rounded-xl shadow-sm overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-[#E4EAF5] bg-[#F2F5FB]">
-            <h2 className="text-[#0D1B35] font-semibold">Alert Queue</h2>
+        <div className="lg:col-span-2 rounded-2xl overflow-hidden" style={{ background: "#fff", boxShadow: "0 1px 3px rgba(13,27,53,0.05), 0 4px 16px rgba(13,27,53,0.06)", border: "1px solid rgba(13,27,53,0.06)" }}>
+          <div className="flex items-center justify-between px-5 py-4 border-b border-[#F0F4FA]" style={{ background: "rgba(240,244,250,0.6)" }}>
+            <h2 className="text-[#0D1B35] font-bold">Alert Queue</h2>
             <a href="/alerts" className="text-[#B8901A] text-xs font-semibold hover:underline">Manage all →</a>
           </div>
           <div>
@@ -173,9 +182,9 @@ export default async function OperationsDashboardPage() {
         </div>
 
         {/* Site Status */}
-        <div className="bg-white border border-[#D9E2F0] rounded-xl shadow-sm overflow-hidden">
-          <div className="px-5 py-4 border-b border-[#E4EAF5] bg-[#F2F5FB]">
-            <h2 className="text-[#0D1B35] font-semibold">Site Status</h2>
+        <div className="rounded-2xl overflow-hidden" style={{ background: "#fff", boxShadow: "0 1px 3px rgba(13,27,53,0.05), 0 4px 16px rgba(13,27,53,0.06)", border: "1px solid rgba(13,27,53,0.06)" }}>
+          <div className="px-5 py-4 border-b border-[#F0F4FA]" style={{ background: "rgba(240,244,250,0.6)" }}>
+            <h2 className="text-[#0D1B35] font-bold">Site Status</h2>
           </div>
           <div className="p-4 space-y-2">
             {sites.map((site, i) => {

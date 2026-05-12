@@ -6,7 +6,7 @@ import {
   LayoutDashboard, Zap, Activity, ShieldCheck,
   MapPin, Package, Radio, Wifi, Bell, BarChart2,
   Users, Settings, FileText, Cpu, ChevronRight,
-  Building2, Layers, Plug, ScrollText, DoorOpen,
+  Building2, Layers, Plug, ScrollText,
 } from "lucide-react";
 
 const NAV = [
@@ -22,10 +22,10 @@ const NAV = [
   {
     section: "LOCATIONS",
     items: [
-      { label: "Sites",          href: "/sites",               icon: MapPin },
-      { label: "Departments",    href: "/departments",         icon: Building2 },
-      { label: "Bagians",        href: "/bagians",             icon: Layers },
-      { label: "Install. Points",href: "/installation-points", icon: Cpu },
+      { label: "Sites",           href: "/sites",               icon: MapPin },
+      { label: "Departments",     href: "/departments",         icon: Building2 },
+      { label: "Bagians",         href: "/bagians",             icon: Layers },
+      { label: "Install. Points", href: "/installation-points", icon: Cpu },
     ],
   },
   {
@@ -64,25 +64,47 @@ export default function Sidebar() {
       : pathname.startsWith(href);
 
   return (
-    <aside className="w-[220px] flex-shrink-0 flex flex-col h-screen bg-[#0F1C3F] border-r border-white/[0.06] sticky top-0 overflow-y-auto">
+    <aside
+      className="w-[228px] flex-shrink-0 flex flex-col h-screen sticky top-0 overflow-y-auto"
+      style={{
+        background: "linear-gradient(180deg, #0B1526 0%, #0F1D3A 60%, #0D1830 100%)",
+        borderRight: "1px solid rgba(255,255,255,0.05)",
+      }}
+    >
       {/* Logo */}
-      <div className="px-5 py-5 border-b border-white/[0.06]">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[#B8901A] flex items-center justify-center shadow-lg shadow-[#B8901A]/25 flex-shrink-0">
-            <span className="text-white font-bold text-sm tracking-tight">E</span>
+      <div className="px-4 pt-5 pb-4">
+        <Link href="/dashboard/executive" className="flex items-center gap-3 group">
+          <div
+            className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 shadow-gold relative overflow-hidden"
+            style={{ background: "linear-gradient(135deg, #B8901A 0%, #D4A82A 50%, #9A7814 100%)" }}
+          >
+            <span className="text-white font-black text-sm tracking-tight relative z-10">E</span>
           </div>
           <div>
-            <p className="text-white font-bold text-sm leading-tight tracking-tight">ELEMENT</p>
-            <p className="text-[#B8901A] text-[10px] font-semibold tracking-widest uppercase leading-tight">Monitoring System</p>
+            <p className="text-white font-black text-[13px] leading-tight tracking-wide">ELEMENT</p>
+            <p
+              className="text-[9px] font-bold tracking-[0.18em] uppercase leading-tight"
+              style={{ color: "#B8901A" }}
+            >
+              Monitoring System
+            </p>
           </div>
-        </div>
+        </Link>
       </div>
 
+      {/* Divider */}
+      <div className="mx-4 h-px" style={{ background: "rgba(255,255,255,0.06)" }} />
+
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-5 overflow-y-auto">
+      <nav className="flex-1 px-3 py-3 space-y-4 overflow-y-auto">
         {NAV.map(({ section, items }) => (
           <div key={section}>
-            <p className="text-white/30 text-[9px] font-bold uppercase tracking-[0.14em] px-2 mb-1.5">{section}</p>
+            <p
+              className="px-2 mb-1 text-[9px] font-black uppercase tracking-[0.16em]"
+              style={{ color: "rgba(255,255,255,0.22)" }}
+            >
+              {section}
+            </p>
             <div className="space-y-0.5">
               {items.map(({ label, href, icon: Icon }) => {
                 const active = isActive(href);
@@ -90,22 +112,58 @@ export default function Sidebar() {
                   <Link
                     key={href}
                     href={href}
-                    className={`group relative flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 ${
+                    className="group relative flex items-center gap-2.5 px-3 py-[7px] rounded-xl text-[13px] font-medium transition-all duration-150"
+                    style={
                       active
-                        ? "bg-white/[0.10] text-white"
-                        : "text-white/55 hover:text-white hover:bg-white/[0.06]"
-                    }`}
+                        ? {
+                            background: "linear-gradient(90deg, rgba(184,144,26,0.18) 0%, rgba(184,144,26,0.06) 100%)",
+                            color: "#FFFFFF",
+                          }
+                        : {}
+                    }
+                    onMouseEnter={(e) => {
+                      if (!active) {
+                        (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.05)";
+                        (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.85)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!active) {
+                        (e.currentTarget as HTMLElement).style.background = "";
+                        (e.currentTarget as HTMLElement).style.color = "";
+                      }
+                    }}
                   >
+                    {/* Active left bar */}
                     {active && (
-                      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[#B8901A] rounded-r-full" />
+                      <span
+                        className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[22px] rounded-r-full"
+                        style={{ background: "linear-gradient(180deg, #D4A82A 0%, #B8901A 100%)" }}
+                      />
                     )}
+
                     <Icon
-                      className={`w-[15px] h-[15px] flex-shrink-0 transition-colors ${
-                        active ? "text-[#B8901A]" : "text-white/35 group-hover:text-white/65"
-                      }`}
+                      className="w-[15px] h-[15px] flex-shrink-0 transition-colors"
+                      style={{
+                        color: active
+                          ? "#D4A82A"
+                          : "rgba(255,255,255,0.30)",
+                      }}
                     />
-                    <span className="truncate leading-none">{label}</span>
-                    {active && <ChevronRight className="w-3 h-3 text-white/25 ml-auto flex-shrink-0" />}
+
+                    <span
+                      className="truncate leading-none"
+                      style={{ color: active ? "#FFFFFF" : "rgba(255,255,255,0.48)" }}
+                    >
+                      {label}
+                    </span>
+
+                    {active && (
+                      <ChevronRight
+                        className="w-3 h-3 ml-auto flex-shrink-0"
+                        style={{ color: "rgba(212,168,42,0.5)" }}
+                      />
+                    )}
                   </Link>
                 );
               })}
@@ -115,9 +173,19 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-5 py-4 border-t border-white/[0.06]">
-        <p className="text-white/25 text-[10px] font-medium">WIT.ID © 2026</p>
-        <p className="text-white/15 text-[9px] mt-0.5">Element Monitoring v1.0</p>
+      <div
+        className="px-4 py-4"
+        style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}
+      >
+        <div className="flex items-center gap-2">
+          <div
+            className="w-1.5 h-1.5 rounded-full animate-pulse"
+            style={{ backgroundColor: "#22C55E" }}
+          />
+          <p className="text-[10px] font-semibold" style={{ color: "rgba(255,255,255,0.22)" }}>
+            WIT.ID © 2026 · v1.0
+          </p>
+        </div>
       </div>
     </aside>
   );

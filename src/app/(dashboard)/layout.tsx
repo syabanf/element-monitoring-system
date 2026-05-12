@@ -8,7 +8,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const userRole = (session?.user as any)?.role ?? "SUPER_ADMIN";
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#F2F5FB]">
+    <div className="flex h-screen overflow-hidden" style={{ background: "linear-gradient(160deg, #EDF1FA 0%, #F0F4FB 50%, #EBF0F8 100%)" }}>
       <Sidebar />
       <div className="flex flex-col flex-1 overflow-hidden">
         <Topbar
