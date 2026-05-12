@@ -1,4 +1,4 @@
-import Sidebar from "@/components/layout/Sidebar";
+import DashboardShell from "@/components/layout/DashboardShell";
 import { Topbar } from "@/components/layout/Topbar";
 import { auth } from "@/lib/auth";
 
@@ -8,17 +8,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const userRole = (session?.user as any)?.role ?? "SUPER_ADMIN";
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: "linear-gradient(160deg, #EDF1FA 0%, #F0F4FB 50%, #EBF0F8 100%)" }}>
-      <Sidebar />
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <Topbar
-          title="Element Monitoring System"
-          notificationCount={3}
-          userName={userName}
-          userRole={userRole}
-        />
-        <main className="flex-1 overflow-y-auto">{children}</main>
-      </div>
-    </div>
+    <DashboardShell>
+      <Topbar
+        title="Element Monitoring System"
+        notificationCount={3}
+        userName={userName}
+        userRole={userRole}
+      />
+      <main className="flex-1 overflow-y-auto">{children}</main>
+    </DashboardShell>
   );
 }
