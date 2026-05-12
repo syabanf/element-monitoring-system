@@ -1,3 +1,5 @@
+"use client";
+
 interface PillarStatusCardProps {
   pillar: string;
   icon: React.ReactNode;
