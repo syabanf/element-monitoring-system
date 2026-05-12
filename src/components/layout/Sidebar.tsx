@@ -6,7 +6,7 @@ import {
   LayoutDashboard, Zap, Activity, ShieldCheck,
   MapPin, Package, Radio, Wifi, Bell, BarChart2,
   Users, Settings, FileText, Cpu, ChevronRight,
-  Building2, Layers, Plug, ScrollText,
+  Building2, Layers, Plug, ScrollText, MonitorDot,
 } from "lucide-react";
 
 const NAV = [
@@ -39,6 +39,7 @@ const NAV = [
   {
     section: "MONITORING",
     items: [
+      { label: "SCADA View",     href: "/scada",       icon: MonitorDot },
       { label: "Live Telemetry", href: "/telemetry",   icon: BarChart2 },
       { label: "Alerts",         href: "/alerts",      icon: Bell },
       { label: "Alert Rules",    href: "/alert-rules", icon: Settings },
