@@ -40,6 +40,8 @@ export default function AssetsPage() {
   const [loading, setLoading]   = useState(true);
   const [search, setSearch]     = useState("");
   const [filterPillar, setFilterPillar] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [siteFilter, setSiteFilter]     = useState("");
   const [modal, setModal]       = useState<"create" | "edit" | null>(null);
   const [form, setForm]         = useState<Partial<Asset>>(EMPTY);
   const [saving, setSaving]     = useState(false);
@@ -51,10 +53,14 @@ export default function AssetsPage() {
 
   const pillarCount = PILLARS.reduce((acc, p) => { acc[p] = assets.filter(a => a.pillar === p).length; return acc; }, {} as Record<string, number>);
 
+  const uniqueSites = [...new Set(assets.map(a => a.site.name))].sort();
+
   const filtered = assets.filter(a => {
     const matchSearch = a.name.toLowerCase().includes(search.toLowerCase()) || a.code.toLowerCase().includes(search.toLowerCase()) || a.site.name.toLowerCase().includes(search.toLowerCase());
     const matchPillar = !filterPillar || a.pillar === filterPillar;
-    return matchSearch && matchPillar;
+    const matchStatus = !statusFilter || a.status === statusFilter;
+    const matchSite   = !siteFilter || a.site.name === siteFilter;
+    return matchSearch && matchPillar && matchStatus && matchSite;
   });
 
   const openCreate = () => { setForm(EMPTY); setModal("create"); };
@@ -117,10 +123,30 @@ export default function AssetsPage() {
         })}
       </div>
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6378A0]" />
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search assets…" className="w-full pl-9 pr-4 py-2.5 border border-[#D9E2F0] rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#B8901A]/30 focus:border-[#B8901A] text-[#0D1B35] placeholder:text-[#6378A0]" />
+      {/* Filter bar */}
+      <div className="flex items-center gap-3 flex-wrap p-4 rounded-2xl" style={{ background: "#fff", boxShadow: "0 1px 3px rgba(13,27,53,0.05), 0 4px 16px rgba(13,27,53,0.06)", border: "1px solid rgba(13,27,53,0.06)" }}>
+        <div className="relative flex-1 min-w-[180px]">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#98A8C0]" />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search assets…"
+            className="w-full pl-8 pr-3 py-1.5 rounded-lg text-xs text-[#0D1B35] outline-none placeholder:text-[#C0CCDE]"
+            style={{ border: "1px solid rgba(13,27,53,0.1)", background: "#F8FAFC" }} />
+        </div>
+        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
+          className="text-xs text-[#0D1B35] outline-none rounded-lg px-2.5 py-1.5 bg-white"
+          style={{ border: "1px solid rgba(13,27,53,0.1)" }}>
+          <option value="">All statuses</option>
+          {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+        </select>
+        <select value={siteFilter} onChange={e => setSiteFilter(e.target.value)}
+          className="text-xs text-[#0D1B35] outline-none rounded-lg px-2.5 py-1.5 bg-white"
+          style={{ border: "1px solid rgba(13,27,53,0.1)" }}>
+          <option value="">All sites</option>
+          {uniqueSites.map(s => <option key={s} value={s}>{s}</option>)}
+        </select>
+        {(search || statusFilter || siteFilter) && (
+          <button onClick={() => { setSearch(""); setStatusFilter(""); setSiteFilter(""); }} className="text-xs font-semibold text-[#B8901A] hover:underline whitespace-nowrap">Clear</button>
+        )}
+        <span className="text-[#6378A0] text-xs ml-auto whitespace-nowrap">{filtered.length} results</span>
       </div>
 
       <div className="bg-white border border-[#D9E2F0] rounded-xl overflow-hidden shadow-sm">

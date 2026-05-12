@@ -5,6 +5,7 @@ import {
   Droplets, Zap, Wrench, ClipboardList, BarChart2, Target,
   BookOpen, DollarSign, Leaf, Wind, ShieldCheck,
 } from "lucide-react";
+import { SearchableCatalog } from "./SearchableCatalog";
 
 type IconComponent = React.FC<LucideProps>;
 import { format } from "date-fns";
@@ -79,15 +80,6 @@ export default async function ReportsPage({
     ? REPORT_CATALOG
     : REPORT_CATALOG.filter(c => c.category === activeCategory);
 
-  // Group catalog by category for "All" view
-  const catalogByCategory = (CATEGORIES.filter(c => c !== "All") as Exclude<Category, "All">[]).reduce(
-    (acc, cat) => {
-      acc[cat] = REPORT_CATALOG.filter(r => r.category === cat) as (typeof REPORT_CATALOG)[number][];
-      return acc;
-    },
-    {} as Record<Exclude<Category, "All">, (typeof REPORT_CATALOG)[number][]>,
-  );
-
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -161,34 +153,7 @@ export default async function ReportsPage({
       {/* Generate section */}
       <div>
         <h2 className="text-[#0D1B35] font-bold mb-4">Generate New Report</h2>
-
-        {activeCategory === "All" ? (
-          // Grouped view
-          <div className="space-y-6">
-            {Object.entries(catalogByCategory).map(([cat, items]) => {
-              const cs = categoryStyle[cat] ?? { bg: "#F2F5FB", text: "#6378A0" };
-              return (
-                <div key={cat}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: cs.bg, color: cs.text }}>{cat}</span>
-                    <span className="text-[#6378A0] text-xs">{items.length} report type{items.length > 1 ? "s" : ""}</span>
-                  </div>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
-                    {items.map(rt => (
-                      <ReportTypeCard key={rt.type} rt={rt} />
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
-            {filteredCatalog.map(rt => (
-              <ReportTypeCard key={rt.type} rt={rt} />
-            ))}
-          </div>
-        )}
+        <SearchableCatalog catalog={filteredCatalog} />
       </div>
 
       {/* Recent reports */}
@@ -256,41 +221,6 @@ export default async function ReportsPage({
             })}
           </div>
         )}
-      </div>
-    </div>
-  );
-}
-
-function ReportTypeCard({ rt }: { rt: (typeof REPORT_CATALOG)[number] }) {
-  const cs = categoryStyle[rt.category] ?? { bg: "#F2F5FB", text: "#6378A0" };
-  const Icon = rt.icon;
-  return (
-    <div className="bg-white border border-[#D9E2F0] rounded-xl p-4 space-y-3 hover:shadow-md hover:border-[#C6D0E8] transition-all cursor-pointer group">
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: cs.bg }}>
-            <Icon className="w-4 h-4" style={{ color: rt.color }} />
-          </div>
-          <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: cs.bg, color: cs.text }}>
-            {rt.category}
-          </span>
-        </div>
-        <FileText className="w-3.5 h-3.5 text-[#6378A0] group-hover:text-[#B8901A] transition-colors flex-shrink-0 mt-0.5" />
-      </div>
-      <div>
-        <p className="text-[#0D1B35] text-sm font-semibold leading-tight">{rt.label}</p>
-        <p className="text-[#6378A0] text-xs mt-1 leading-relaxed">{rt.description}</p>
-      </div>
-      <div className="flex items-center justify-between pt-1">
-        <div className="flex items-center gap-1">
-          {rt.formats.map(fmt => (
-            <span key={fmt} className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ${formatBadge[fmt]}`}>{fmt}</span>
-          ))}
-        </div>
-        <span className="text-[10px] text-[#6378A0]">{rt.roles}</span>
-      </div>
-      <div className="border-t border-[#E4EAF5] pt-2">
-        <span className="text-[10px] text-[#B8901A] font-semibold group-hover:underline">Generate report →</span>
       </div>
     </div>
   );

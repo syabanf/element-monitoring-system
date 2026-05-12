@@ -1,10 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import type { LucideProps } from "lucide-react";
 import {
-  Plug, CheckCircle, XCircle,
+  Plug,
   MessageSquare, Bell, Building2, Tag, Wrench,
   Mail, Smartphone, BarChart2, AlertTriangle, Link,
 } from "lucide-react";
+import { FilterableIntegrations } from "./FilterableIntegrations";
 
 type IconComponent = React.FC<LucideProps>;
 
@@ -36,7 +37,7 @@ const INTEGRATION_CATALOG = [
 
 export default async function IntegrationsPage() {
   const configs = await prisma.integrationConfig.findMany();
-  const configMap = new Map(configs.map(c => [c.type, c]));
+  const configData = configs.map(c => ({ type: c.type, isEnabled: c.isEnabled }));
 
   return (
     <div className="p-6 space-y-6">
@@ -50,47 +51,11 @@ export default async function IntegrationsPage() {
         </div>
       </div>
 
-      {/* Group by category */}
-      {["Notifications", "CMMS / ERP", "Analytics", "On-call", "Developer"].map(category => {
-        const items = INTEGRATION_CATALOG.filter(i => i.category === category);
-        return (
-          <div key={category}>
-            <h2 className="text-[#0D1B35] font-bold mb-3">{category}</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
-              {items.map((item) => {
-                const config = configMap.get(item.type);
-                const isEnabled = config?.isEnabled ?? false;
-                return (
-                  <div key={item.type} className="bg-white border border-[#D9E2F0] rounded-xl p-4 space-y-3 hover:shadow-md hover:border-[#C6D0E8] transition-all">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        {(() => { const Icon = integrationIcons[item.type] ?? Plug; return <Icon className="w-6 h-6 text-[#3D5280]" />; })()}
-                        <div>
-                          <p className="text-[#0D1B35] font-semibold text-sm">{item.name}</p>
-                          <p className="text-[#6378A0] text-xs">{item.description}</p>
-                        </div>
-                      </div>
-                      {isEnabled ? (
-                        <CheckCircle className="w-4 h-4 text-[#166534] flex-shrink-0 mt-0.5" />
-                      ) : (
-                        <XCircle className="w-4 h-4 text-[#D9E2F0] flex-shrink-0 mt-0.5" />
-                      )}
-                    </div>
-                    <div className="flex items-center justify-between border-t border-[#E4EAF5] pt-3">
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${isEnabled ? "bg-[#F0FDF4] text-[#166534]" : "bg-[#F2F5FB] text-[#6378A0]"}`}>
-                        {isEnabled ? "Connected" : "Not configured"}
-                      </span>
-                      <button className="text-xs text-[#B8901A] hover:text-[#9A7A14] font-semibold hover:underline transition-colors">
-                        {isEnabled ? "Edit" : "Configure"}
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })}
+      <FilterableIntegrations
+        catalog={INTEGRATION_CATALOG}
+        configs={configData}
+        icons={integrationIcons}
+      />
     </div>
   );
 }

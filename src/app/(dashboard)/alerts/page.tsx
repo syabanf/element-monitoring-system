@@ -1,5 +1,22 @@
-import { prisma } from "@/lib/prisma";
+"use client";
+import { useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
+import { Search } from "lucide-react";
+
+type Alert = {
+  id: string;
+  title: string;
+  description: string | null;
+  severity: string;
+  status: string;
+  alertType: string;
+  metricName: string | null;
+  metricValue: number | null;
+  openedAt: string;
+  asset: { name: string; pillar: string; site: { name: string } };
+  assignee: { name: string } | null;
+  workOrder: { id: string; status: string } | null;
+};
 
 const severityConfig: Record<string, { bg: string; text: string; border: string }> = {
   CRITICAL: { bg: "#FEF2F2", text: "#B91C1C", border: "#FECACA" },
@@ -18,27 +35,38 @@ const statusConfig: Record<string, { bg: string; text: string }> = {
   FALSE_POSITIVE: { bg: "#F2F5FB", text: "#6378A0" },
 };
 
-export default async function AlertsPage() {
-  const [alerts, counts] = await Promise.all([
-    prisma.alert.findMany({
-      include: {
-        asset: { select: { name: true, pillar: true, site: { select: { name: true } } } },
-        assignee: { select: { name: true } },
-        workOrder: { select: { id: true, status: true } },
-      },
-      orderBy: [{ severity: "asc" }, { openedAt: "desc" }],
-      take: 100,
-    }),
-    prisma.alert.groupBy({
-      by: ["status"],
-      _count: { _all: true },
-    }),
-  ]);
+const SEVERITIES = ["CRITICAL","HIGH","MEDIUM","LOW","INFO"];
+const STATUSES   = ["OPEN","ACKNOWLEDGED","INVESTIGATING","RESOLVED","CLOSED","FALSE_POSITIVE"];
+const PILLARS    = ["ELECTRICITY","WATER","WASTEWATER","GAS_AIR","ENVIRONMENT","THERMAL_HVAC","COMPRESSED_AIR"];
 
-  const statusCounts = counts.reduce((acc, c) => {
-    acc[c.status] = c._count._all;
+export default function AlertsPage() {
+  const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch]           = useState("");
+  const [severityFilter, setSeverityFilter] = useState("");
+  const [statusFilter, setStatusFilter]     = useState("");
+  const [pillarFilter, setPillarFilter]     = useState("");
+
+  const load = () => {
+    setLoading(true);
+    fetch("/api/alerts").then(r => r.json()).then(d => { setAlerts(Array.isArray(d) ? d : []); setLoading(false); });
+  };
+  useEffect(load, []);
+
+  const statusCounts = STATUSES.reduce((acc, s) => {
+    acc[s] = alerts.filter(a => a.status === s).length;
     return acc;
   }, {} as Record<string, number>);
+
+  const filtered = alerts.filter(a => {
+    const matchSearch   = a.title.toLowerCase().includes(search.toLowerCase()) || a.asset.name.toLowerCase().includes(search.toLowerCase());
+    const matchSeverity = !severityFilter || a.severity === severityFilter;
+    const matchStatus   = !statusFilter || a.status === statusFilter;
+    const matchPillar   = !pillarFilter || a.asset.pillar === pillarFilter;
+    return matchSearch && matchSeverity && matchStatus && matchPillar;
+  });
+
+  const anyFilter = search || severityFilter || statusFilter || pillarFilter;
 
   return (
     <div className="p-6 space-y-6">
@@ -51,7 +79,7 @@ export default async function AlertsPage() {
 
       {/* Status summary */}
       <div className="flex flex-wrap gap-2">
-        {Object.entries(statusCounts).map(([status, count]) => {
+        {Object.entries(statusCounts).filter(([, count]) => count > 0).map(([status, count]) => {
           const sc = statusConfig[status] ?? statusConfig.CLOSED;
           return (
             <div key={status} className="flex items-center gap-2 bg-white border border-[#D9E2F0] rounded-lg px-3 py-1.5 shadow-sm">
@@ -60,6 +88,38 @@ export default async function AlertsPage() {
             </div>
           );
         })}
+      </div>
+
+      {/* Filter bar */}
+      <div className="flex items-center gap-3 flex-wrap p-4 rounded-2xl" style={{ background: "#fff", boxShadow: "0 1px 3px rgba(13,27,53,0.05), 0 4px 16px rgba(13,27,53,0.06)", border: "1px solid rgba(13,27,53,0.06)" }}>
+        <div className="relative flex-1 min-w-[180px]">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#98A8C0]" />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search alerts…"
+            className="w-full pl-8 pr-3 py-1.5 rounded-lg text-xs text-[#0D1B35] outline-none placeholder:text-[#C0CCDE]"
+            style={{ border: "1px solid rgba(13,27,53,0.1)", background: "#F8FAFC" }} />
+        </div>
+        <select value={severityFilter} onChange={e => setSeverityFilter(e.target.value)}
+          className="text-xs text-[#0D1B35] outline-none rounded-lg px-2.5 py-1.5 bg-white"
+          style={{ border: "1px solid rgba(13,27,53,0.1)" }}>
+          <option value="">All severities</option>
+          {SEVERITIES.map(s => <option key={s} value={s}>{s}</option>)}
+        </select>
+        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
+          className="text-xs text-[#0D1B35] outline-none rounded-lg px-2.5 py-1.5 bg-white"
+          style={{ border: "1px solid rgba(13,27,53,0.1)" }}>
+          <option value="">All statuses</option>
+          {STATUSES.map(s => <option key={s} value={s}>{s.replace("_"," ")}</option>)}
+        </select>
+        <select value={pillarFilter} onChange={e => setPillarFilter(e.target.value)}
+          className="text-xs text-[#0D1B35] outline-none rounded-lg px-2.5 py-1.5 bg-white"
+          style={{ border: "1px solid rgba(13,27,53,0.1)" }}>
+          <option value="">All pillars</option>
+          {PILLARS.map(p => <option key={p} value={p}>{p.replace(/_/g," ")}</option>)}
+        </select>
+        {anyFilter && (
+          <button onClick={() => { setSearch(""); setSeverityFilter(""); setStatusFilter(""); setPillarFilter(""); }} className="text-xs font-semibold text-[#B8901A] hover:underline whitespace-nowrap">Clear</button>
+        )}
+        <span className="text-[#6378A0] text-xs ml-auto whitespace-nowrap">{filtered.length} results</span>
       </div>
 
       {/* Alert list */}
@@ -74,7 +134,11 @@ export default async function AlertsPage() {
               </tr>
             </thead>
             <tbody>
-              {alerts.map((alert) => {
+              {loading ? (
+                <tr><td colSpan={9} className="px-5 py-12 text-center text-[#6378A0]">Loading…</td></tr>
+              ) : filtered.length === 0 ? (
+                <tr><td colSpan={9} className="px-5 py-12 text-center text-[#6378A0]">No alerts found</td></tr>
+              ) : filtered.map((alert) => {
                 const sev = severityConfig[alert.severity] ?? severityConfig.INFO;
                 const st = statusConfig[alert.status] ?? statusConfig.CLOSED;
                 return (
