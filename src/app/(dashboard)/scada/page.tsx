@@ -1,15 +1,15 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { formatDistanceToNow } from "date-fns";
 import { Activity, Wifi, WifiOff, AlertTriangle, Clock, MonitorDot } from "lucide-react";
-import { SensorTile, type SensorTileData } from "@/components/scada/SensorTile";
+import { ScadaCarousel, type SiteSlide } from "@/components/scada/ScadaCarousel";
+import type { SensorTileData } from "@/components/scada/SensorTile";
 
 const PILLAR_CFG: Record<string, { color: string; label: string }> = {
-  ELECTRICITY:    { color: "#B45309", label: "Electricity" },
-  WATER:          { color: "#1E5FA8", label: "Water" },
-  WASTEWATER:     { color: "#7C3AED", label: "Wastewater" },
-  GAS_AIR:        { color: "#166534", label: "Gas / Air" },
-  ENVIRONMENT:    { color: "#0891B2", label: "Environment" },
+  ELECTRICITY:    { color: "#B45309", label: "Electricity"    },
+  WATER:          { color: "#1E5FA8", label: "Water"          },
+  WASTEWATER:     { color: "#7C3AED", label: "Wastewater"     },
+  GAS_AIR:        { color: "#166534", label: "Gas / Air"      },
+  ENVIRONMENT:    { color: "#0891B2", label: "Environment"    },
   THERMAL_HVAC:   { color: "#B8901A", label: "Thermal / HVAC" },
   COMPRESSED_AIR: { color: "#0E7490", label: "Compressed Air" },
 };
@@ -29,15 +29,16 @@ export default async function ScadaPage() {
 
   const online = sensors.filter((s) => s.status === "ONLINE").length;
   const offline = sensors.filter((s) => s.status === "OFFLINE").length;
-  const fault = sensors.filter((s) => s.status === "FAULT").length;
-  const calDue = sensors.filter((s) => s.status === "CALIBRATION_DUE").length;
+  const fault   = sensors.filter((s) => s.status === "FAULT").length;
+  const calDue  = sensors.filter((s) => s.status === "CALIBRATION_DUE").length;
 
-  // Group: site → pillar → sensors
+  // Build slides: site → pillar → sensors
   const bySite = new Map<string, { siteName: string; byPillar: Map<string, SensorTileData[]> }>();
+
   for (const s of sensors) {
-    const siteId = s.asset.site.id;
-    const siteName = s.asset.site.name;
-    const pillar = s.asset.pillar as string;
+    const siteId      = s.asset.site.id;
+    const siteName    = s.asset.site.name;
+    const pillar      = s.asset.pillar as string;
     const pillarColor = PILLAR_CFG[pillar]?.color ?? "#6378A0";
 
     if (!bySite.has(siteId)) bySite.set(siteId, { siteName, byPillar: new Map() });
@@ -45,25 +46,22 @@ export default async function ScadaPage() {
     if (!siteEntry.byPillar.has(pillar)) siteEntry.byPillar.set(pillar, []);
 
     siteEntry.byPillar.get(pillar)!.push({
-      id: s.id,
-      name: s.name,
-      sensorType: s.sensorType,
-      metricName: s.metricName,
-      unit: s.unit,
+      id: s.id, name: s.name, sensorType: s.sensorType,
+      metricName: s.metricName, unit: s.unit,
       status: s.status as string,
       lastValue: s.lastValue,
       lastReadingAt: s.lastReadingAt ? s.lastReadingAt.toISOString() : null,
-      minValue: s.minValue,
-      maxValue: s.maxValue,
-      assetName: s.asset.name,
-      assetCode: s.asset.code,
-      pillar,
-      pillarColor,
-      siteName,
+      minValue: s.minValue, maxValue: s.maxValue,
+      assetName: s.asset.name, assetCode: s.asset.code,
+      pillar, pillarColor, siteName,
     });
   }
 
-  const sites = [...bySite.entries()];
+  const slides: SiteSlide[] = [...bySite.entries()].map(([siteId, { siteName, byPillar }]) => ({
+    siteId,
+    siteName,
+    byPillar: [...byPillar.entries()],
+  }));
 
   return (
     <div className="p-6 space-y-6">
@@ -79,12 +77,11 @@ export default async function ScadaPage() {
           <div>
             <h1 className="text-[#0D1B35] text-2xl font-bold">SCADA Monitor</h1>
             <p className="text-[#6378A0] text-sm mt-0.5">
-              {sensors.length} sensors across {sites.length} sites
+              {sensors.length} sensors across {slides.length} site{slides.length !== 1 ? "s" : ""}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          {/* Live badge */}
           <div className="flex items-center gap-2 bg-[#F0FDF4] border border-[#BBF7D0] rounded-full px-4 py-1.5">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-75" />
@@ -129,58 +126,21 @@ export default async function ScadaPage() {
         ))}
       </div>
 
-      {/* Site sections */}
-      {sites.map(([siteId, { siteName, byPillar }]) => (
-        <section key={siteId} className="space-y-4">
-          {/* Site header */}
-          <div className="flex items-center gap-3">
-            <div className="h-px flex-1 bg-gradient-to-r from-[#D9E2F0] to-transparent" />
-            <a
-              href={`/sites/${siteId}`}
-              className="flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold hover:opacity-80 transition-opacity"
-              style={{ background: "linear-gradient(135deg, #0D1B35, #1E3A6A)", color: "#fff" }}
-            >
-              <Activity className="w-3 h-3" />
-              {siteName}
-            </a>
-            <div className="h-px flex-1 bg-gradient-to-l from-[#D9E2F0] to-transparent" />
+      {/* Carousel */}
+      <div
+        className="rounded-2xl p-5"
+        style={{ background: "#fff", boxShadow: "0 1px 3px rgba(13,27,53,0.05), 0 4px 16px rgba(13,27,53,0.06)", border: "1px solid rgba(13,27,53,0.06)" }}
+      >
+        {slides.length === 0 ? (
+          <div className="flex flex-col items-center py-20">
+            <MonitorDot className="w-12 h-12 text-[#D9E2F0] mb-3" />
+            <p className="text-[#0D1B35] font-semibold">No sensors found</p>
+            <p className="text-[#6378A0] text-sm mt-1">Add sensors and assets to see them here</p>
           </div>
-
-          {/* Pillar groups within site */}
-          {[...byPillar.entries()].map(([pillar, tileSensors]) => {
-            const pcfg = PILLAR_CFG[pillar] ?? { color: "#6378A0", label: pillar };
-            const pillarOnline = tileSensors.filter((s) => s.status === "ONLINE").length;
-            return (
-              <div key={pillar} className="space-y-3">
-                {/* Pillar sub-header */}
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-sm flex-shrink-0" style={{ backgroundColor: pcfg.color }} />
-                  <span className="text-[#0D1B35] text-sm font-bold">{pcfg.label}</span>
-                  <span className="text-[#98A8C0] text-xs">
-                    {pillarOnline}/{tileSensors.length} online
-                  </span>
-                  <div className="h-px flex-1" style={{ backgroundColor: `${pcfg.color}22` }} />
-                </div>
-
-                {/* Sensor tile grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
-                  {tileSensors.map((sensor) => (
-                    <SensorTile key={sensor.id} s={sensor} />
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </section>
-      ))}
-
-      {sensors.length === 0 && (
-        <div className="flex flex-col items-center py-20">
-          <MonitorDot className="w-12 h-12 text-[#D9E2F0] mb-3" />
-          <p className="text-[#0D1B35] font-semibold">No sensors found</p>
-          <p className="text-[#6378A0] text-sm mt-1">Add sensors and assets to see them here</p>
-        </div>
-      )}
+        ) : (
+          <ScadaCarousel slides={slides} />
+        )}
+      </div>
     </div>
   );
 }
